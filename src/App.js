@@ -1,24 +1,42 @@
-import logo from './logo.svg';
-import './App.css';
+import { Routes, Route, useLocation } from "react-router-dom";
+import { useEffect } from "react";
+import Landing from "./landing/pages/landing";
+import Welcome from "./landing/pages/welcome";
+import Login from "./studentDash/pages/login";
+import StudentSignup from "./studentDash/pages/signup";
+import Dashboard from "./studentDash/pages/dashboard";
+import { CustomProvider, Container } from 'rsuite';
+import 'rsuite/dist/rsuite.min.css';
+import TeacherLogin from "./teacherDash/pages/teacherLogin";
+import TeacherSignup from "./teacherDash/pages/teacherSignup";
+import TeacherDashboard from "./teacherDash/pages/teacherDashboard";
 
 function App() {
+
+  const location = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+    <CustomProvider theme="light">
+      <Container>
+        <Routes>
+          <Route path="/" element={ <Landing/> }/>
+          <Route path="/getStarted" element={ <Welcome/> }/>
+          <Route path="/studentlogin" element={ <Login/> }/>
+          <Route path="/studentSignup" element={ <StudentSignup/> }/>
+          <Route path="/studentDashboard" element={ <Dashboard/> }/>
+          <Route path="/teacherslogin" element={ <TeacherLogin/> }/>
+          <Route path="/teachersSignup" element={ <TeacherSignup/> }/>
+          <Route path="/teachersDashboard" element={ <TeacherDashboard/> }/>
+        </Routes>
+      </Container>
+    </CustomProvider>
+    </>
   );
 }
 
