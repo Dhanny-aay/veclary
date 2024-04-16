@@ -106,7 +106,7 @@ const TeacherClasses = () => {
                     <div className=' w-full items-start flex mt-6 justify-between'>
                         <label htmlFor="Class Teacher" className=' font-Outfit flex flex-col text-[#272D37] text-xs font-medium'>
                             {selectedClass.class} {selectedClass.subject} Class
-                                <input type="text" value={'Total Students:'+ ' ' + selectedClass.noOfStudents} className=' mt-2 text-[#272D37] text-sm w-[120px] md:w-auto font-normal border border-[#DAE0E6] rounded-[5px] font-Outfit p-2.5' />
+                                <input type="text" value={'Total Students:'+ ' ' + selectedClass.noOfStudents} className=' mt-2 text-[#272D37] text-sm w-[150px] md:w-auto font-normal border border-[#DAE0E6] rounded-[5px] font-Outfit p-2.5' />
                         </label>
                         <button onClick={()=>{setCreateSchedule(true)}} className=' text-center  text-sm font-Outfit font-medium text-white bg-[#2F52FF] py-2 px-3 md:px-6 rounded-[10px]'>Create a Schedule</button>
                     </div>
@@ -114,7 +114,7 @@ const TeacherClasses = () => {
 
                 <div className="px-6 mt-6">
                     <p className=" font-Outfit text-lg font-semibold">Performance Analysis</p>
-                    <div className=" mt-3 grid grid-cols-3 gap-6">
+                    <div className=" mt-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {performance.map((item, index) => (
                             <div key={index} className=" border border-[#EAEBF0] rounded-[10px] p-4">
                                 <p className=" font-Outfit font-medium text-[#272D37] text-base">{ item.name }</p>
@@ -132,7 +132,7 @@ const TeacherClasses = () => {
                     </div>
                 </div>
 
-                <div className=" mt-6 px-6 grid grid-cols-3 gap-6">
+                <div className=" mt-6 px-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div className=" border border-[#EAEBF0] rounded-[10px]">
                         <div className=" w-full p-4 border-b border-[#eaebf0] flex items-center justify-between">
                             <p className=" font-Outfit text-sm text-[#272D37] font-medium">Resources</p>
@@ -204,7 +204,7 @@ const TeacherClasses = () => {
                     <p className='font-Outfit text-[#2F52FF] text-sm font-medium'>Back</p>
                     <p className='font-Outfit text-xl font-semibold mb-2 ml-3'>Classes</p> 
                 </span>
-                <div className="px-6 mt-6 grid grid-cols-3 gap-6 w-full">
+                <div className="px-6 mt-6 grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
                     {classInfo.map((item, index) =>(
                         <div key={index} onClick={() => handleClassClick(item)} className="w-full bg-[#f8f8f8] rounded-[15px] p-6 cursor-pointer">
                             <p className="font-Outfit text-xl font-semibold text-[#121212]">{item.subject}</p>

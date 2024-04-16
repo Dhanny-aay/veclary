@@ -39,14 +39,14 @@ const TeacherSchedule = () => {
                 <p className=' font-Outfit text-xl font-semibold mb-2 ml-3'>Schedule</p> 
             </span>
 
-            <div className=" mt-6 w-full flex  px-6 flex-row items-start justify-between">
-                <div className=" w-[65%] p-6 border border-[#EAEBF0] rounded-[10px]">
-                    <div className=' w-full items-start flex  justify-between'>
+            <div className=" mt-6 w-full flex flex-col  px-6 lg:flex-row items-start justify-between">
+                <div className=" w-full lg:w-[65%] p-6 border border-[#EAEBF0] rounded-[10px]">
+                    <div className=' w-full items-start flex flex-col md:flex-row  justify-between'>
                         <span className=" flex flex-col">
                             <p className=" font-Outfit text-xl font-semibold text-[#000000]">Upcoming Schedule</p>
                             <p className=" font-Outfit text-xs font-normal text-[#000000B2]">Manage your upcoming classes in just one page</p>
                         </span>
-                        <button className=' text-center  text-sm font-Outfit font-medium text-white bg-[#2F52FF] py-2 px-3 md:px-6 rounded-[10px]'>Add new Schedule</button>
+                        <button className=' text-center mt-6 md:mt-0 text-sm font-Outfit font-medium text-white bg-[#2F52FF] py-2 px-3 md:px-6 rounded-[10px]'>Add new Schedule</button>
                     </div>
                     <div className=" flex mt-3 w-full border-y border-[#9292921A]">
                         <div className="w-16 border-r border-[#9292921A]">
@@ -66,11 +66,11 @@ const TeacherSchedule = () => {
                     </div>
                 </div>
                 
-                <div className=" w-[34%] space-y-4 flex flex-col">
+                <div className=" w-full lg:w-[34%] md:mt-6 lg:mt-0 md:space-x-6 lg:space-x-0 lg:space-y-4 flex flex-col md:flex-row lg:flex-col">
                     <div className=" w-full p-6 border border-[#EAEBF0] rounded-[10px]"></div>
                     <div className=" w-full p-6 border border-[#EAEBF0] rounded-[10px]">
                         <p className=" font-semibold text-base font-Outfit text-black">Upcoming Events</p>
-                        <div className=" space-y-3 mt-3">
+                        <div className=" space-y-3 lg:mt-3">
                         {upcoming.map((item, index) => (
                             <div key={index} className=" w-full pl-1 py-2 bg-[#F8F8F8] rounded-[8px]">
                                 <div style={{borderColor: item.color}} className=" border-l-4">

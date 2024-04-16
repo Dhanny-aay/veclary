@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { TeacherSidebarContext } from "../contexts/TeacherActivePageContext";
+import { TeacherActivePageContext, TeacherSidebarContext } from "../contexts/TeacherActivePageContext";
 import ass from './assets/ass.svg';
 import test from './assets/test.svg';
 import chart from './assets/chart.svg';
@@ -13,7 +13,12 @@ import { DatePicker } from "rsuite";
 const TeacherHome = () => {
 
     const {sidebarVisible, setSidebarVisible} = useContext(TeacherSidebarContext);
+    const {activePage, setActivePage} = useContext(TeacherActivePageContext);
     const [makeAnnouncement, setMakeAnnouncement] = useState(false);
+
+    const handleClick = (page) => {
+        setActivePage(page);
+    };
 
     const streak =[
         {day:'Monday'}, 
@@ -99,7 +104,7 @@ const TeacherHome = () => {
 
             <div className=" mt-6">
                 <p className=" font-Outfit text-lg font-semibold">Performance Analysis</p>
-                <div className=" mt-3 grid grid-cols-3 gap-6">
+                <div className=" mt-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {performance.map((item, index) => (
                         <div key={index} className=" border border-[#EAEBF0] rounded-[10px] p-4">
                             <p className=" font-Outfit font-medium text-[#272D37] text-base">{ item.name }</p>
@@ -117,28 +122,28 @@ const TeacherHome = () => {
                 </div>
             </div>
 
-            <div className=" mt-6 flex flex-row justify-between w-full">
-                <div className=" w-[29%] border border-[#EAEBF0] rounded-[10px] p-4 relative">
+            <div className=" mt-6 flex flex-col space-y-6 lg:space-y-0 lg:flex-row justify-between w-full">
+                <div className=" w-full lg:w-[29%] border border-[#EAEBF0] rounded-[10px] p-4 relative">
                     <p className=' font-Outfit text-lg font-semibold'>Announcements</p>
                     <div className=" flex flex-col items-center">
                         <img src={ nonoti } className=' mt-7' alt="" />
                         <p className=' font-Outfit text-center font-medium mt-3 text-base'>No Announcements</p>
                         <p className=' font-Outfit text-xs text-[#9E9E9E] mt-2 text-center'>When you have an announcement you’ll see them here</p>
-                        <div className=" w-full px-4 absolute bottom-4">
-                            <button onClick={()=>{setMakeAnnouncement(true)}} className=" w-full py-3 flex justify-center items-center space-x-3 bg-[#2F52FF] rounded-[10px]">
+                        <div className=" w-full px-4 lg:absolute bottom-4">
+                            <button onClick={()=>{setMakeAnnouncement(true)}} className=" w-full  mt-8 lg:mt-0 py-3 flex justify-center items-center space-x-3 bg-[#2F52FF] rounded-[10px]">
                                 <img src={ add } alt="" />
                                 <p className=" font-Outfit text-sm text-white font-medium">Make an Announcement</p>
                             </button>
                         </div>
                     </div>
                 </div>
-                <div className=" w-[39%] border border-[#EAEBF0] rounded-[10px] p-4">
+                <div className=" w-full lg:w-[39%] border border-[#EAEBF0] rounded-[10px] p-4">
                     <div className=" flex flex-row justify-between items-start">
                         <span className="">
                             <p className=" font-Outfit text-lg font-semibold">Upcoming Schedule</p>
                             <p className=" font-Outfit text-[#000000B2] text-xs font-normal">Today is Wednesday, March 27th, 2024</p>
                         </span>
-                        <button className=" rounded-[10px] bg-[#2F52FF] px-3 py-1 text-white text-sm font-medium">View all</button>
+                        <button onClick={ () =>{handleClick('Schedule')}} className=" rounded-[10px] bg-[#2F52FF] px-3 py-1 text-white text-sm font-medium">View all</button>
                     </div>
                     <div className="flex mt-3 w-full border-y border-[#9292921A]">
                         <div className="w-16 border-r border-[#9292921A]">
@@ -158,7 +163,7 @@ const TeacherHome = () => {
                     </div>
                 </div>
 
-                <div className=" w-[29%] border border-[#EAEBF0] rounded-[10px] p-4">
+                <div className=" w-full lg:w-[29%] border border-[#EAEBF0] rounded-[10px] p-4">
                     <p className=' font-Outfit text-lg font-semibold'>Students Feedbacks</p>
                     <div className=" flex flex-col items-center">
                         <img src={ nofeed } className=' mt-7' alt="" />

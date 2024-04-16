@@ -42,34 +42,36 @@ const TeacherRecords = () => {
 
             <div className=' mt-6 px-6'>
                 <div className=' border border-[#EAEBF0] rounded-[10px]'>
-                    <table className="border-collapse border border-[#EAEBF0] rounded-[10px] w-full">
-                        <thead>
-                            <tr>
-                                <th className="border-b font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 text-center">S/N</th>
-                                <th className="border-b font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 text-center">Student Names</th>
-                                <th className="border-b font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 text-center">Registration Number</th>
-                                <th className="border-b font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 text-center">Test 1</th>
-                                <th className="border-b font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 text-center">Test 2</th>
-                                <th className="border-b font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 text-center">Test 3</th>
-                                <th className="border-b font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 text-center">Exam</th>
-                                <th className="border-b font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 text-center">Total Score</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {testData.map((data, index) => (
-                                <tr key={index}>
-                                    <td className=" font-Outfit py-4 border-t border-[#EAEBF0] text-sm text-[#5F6D7E] font-medium text-center">0{index + 1}</td>
-                                    <td className=" font-Outfit py-4 border-t border-[#EAEBF0] text-[#272D37] font-medium text-sm text-center">{data.name}</td>
-                                    <td className=" font-Outfit py-4 border-t border-[#EAEBF0] text-[#272D37] font-medium text-sm text-center">{data.regNo}</td>
-                                    <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">{data.test1}/10</td>
-                                    <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">{data.test2}/10</td>
-                                    <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">{data.test3}/10</td>
-                                    <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">{data.exam}/40</td>
-                                    <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">{data.test1 + data.test2 + data.test3 + data.exam}/70</td>
+                    <div className="w-full overflow-x-auto">
+                        <table className="border-collapse border border-[#EAEBF0] rounded-[10px] w-full">
+                            <thead>
+                                <tr>
+                                    <th className="border-b font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 px-4 text-center">S/N</th>
+                                    <th className="border-b font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 px-4 text-center">Student Names</th>
+                                    <th className="border-b font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 px-4 text-center">Registration Number</th>
+                                    <th className="border-b font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 px-4 text-center">Test 1</th>
+                                    <th className="border-b font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 px-4 text-center">Test 2</th>
+                                    <th className="border-b font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 px-4 text-center">Test 3</th>
+                                    <th className="border-b font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 px-4 text-center">Exam</th>
+                                    <th className="border-b font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 px-4 text-center">Total Score</th>
                                 </tr>
-                            ))}
-                        </tbody> 
-                    </table>
+                            </thead>
+                            <tbody>
+                                {testData.map((data, index) => (
+                                    <tr key={index}>
+                                        <td className=" font-Outfit py-4 border-t border-[#EAEBF0] text-sm text-[#5F6D7E] font-medium text-center">0{index + 1}</td>
+                                        <td className=" font-Outfit py-4 border-t border-[#EAEBF0] text-[#272D37] font-medium text-sm text-center">{data.name}</td>
+                                        <td className=" font-Outfit py-4 border-t border-[#EAEBF0] text-[#272D37] font-medium text-sm text-center">{data.regNo}</td>
+                                        <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">{data.test1}/10</td>
+                                        <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">{data.test2}/10</td>
+                                        <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">{data.test3}/10</td>
+                                        <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">{data.exam}/40</td>
+                                        <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">{data.test1 + data.test2 + data.test3 + data.exam}/70</td>
+                                    </tr>
+                                ))}
+                            </tbody> 
+                        </table>
+                    </div>
                     <div className=" w-full py-3 px-3 flex justify-between items-center">
                         <span className=" flex space-x-1">
                             <img src={ backArr } alt="" />

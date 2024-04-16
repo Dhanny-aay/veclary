@@ -25,7 +25,6 @@ const TeacherSidebar = () => {
         { name: 'My Classes', img: myClass, activeImg: myClassAc, page: 'Classes' },
         { name: 'My Students', img: mystu, activeImg: mystuAc, page: 'Students' },
         { name: 'Records', img: record, activeImg: recordAc, page: 'Records' },
-        { name: 'Schedule', img: record, activeImg: recordAc, page: 'Schedule' },
     ]
 
     const bottom = [
