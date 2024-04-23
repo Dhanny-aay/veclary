@@ -6,16 +6,19 @@ import reportWebVitals from './reportWebVitals';
 import { BrowserRouter as Router } from 'react-router-dom';
 import ActivePageProvider from './studentDash/contexts/ActivePageContext';
 import TeacherActivePageProvider from './teacherDash/contexts/TeacherActivePageContext';
+import ManageActivePageProvider from './manageDash/contexts/ManageActivePageContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <Router>
-      <TeacherActivePageProvider>
-        <ActivePageProvider>
-          <App />
-        </ActivePageProvider>
-      </TeacherActivePageProvider>
+      <ManageActivePageProvider>
+        <TeacherActivePageProvider>
+          <ActivePageProvider>
+            <App />
+          </ActivePageProvider>
+        </TeacherActivePageProvider>
+      </ManageActivePageProvider>
     </Router>
   </React.StrictMode>
 );

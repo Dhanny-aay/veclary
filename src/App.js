@@ -10,6 +10,9 @@ import 'rsuite/dist/rsuite.min.css';
 import TeacherLogin from "./teacherDash/pages/teacherLogin";
 import TeacherSignup from "./teacherDash/pages/teacherSignup";
 import TeacherDashboard from "./teacherDash/pages/teacherDashboard";
+import ManageLogin from "./manageDash/pages/manageLogin";
+import ManageSignup from "./manageDash/pages/manageSignup";
+import ManageDashboard from "./manageDash/pages/manageDashboard";
 
 function App() {
 
@@ -33,6 +36,9 @@ function App() {
           <Route path="/teacherslogin" element={ <TeacherLogin/> }/>
           <Route path="/teachersSignup" element={ <TeacherSignup/> }/>
           <Route path="/teachersDashboard" element={ <TeacherDashboard/> }/>
+          <Route path="/managementlogin" element={ <ManageLogin/> }/>
+          <Route path="/managementSignup" element={ <ManageSignup/> }/>
+          <Route path="/managementDashboard" element={ <ManageDashboard/> }/>
         </Routes>
       </Container>
     </CustomProvider>

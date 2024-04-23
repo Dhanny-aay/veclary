@@ -1,14 +1,16 @@
-import { useContext } from "react";
-import { TeacherActivePageContext, TeacherSidebarContext } from "../contexts/TeacherActivePageContext";
 import arrowBlue from './assets/arrowblue.svg';
 import backArr from './assets/backArr.svg';
 import fwdArr from './assets/fwdArr.svg';
 import edit from './assets/edit.svg';
+import trash from './assets/trash.svg';
+import vis from './assets/vis.svg';
+import { ManageActivePageContext, ManageSidebarContext } from '../contexts/ManageActivePageContext';
+import { useContext } from 'react';
 
-const TeacherStudents = () => {
+const ManageStudents = () => {
 
-    const {sidebarVisible, setSidebarVisible} = useContext(TeacherSidebarContext);
-    const {activePage, setActivePage} = useContext(TeacherActivePageContext);
+    const {sidebarVisible, setSidebarVisible} = useContext(ManageSidebarContext);
+    const {activePage, setActivePage} = useContext(ManageActivePageContext);
 
     const handleClick = (page) => {
         setActivePage(page);
@@ -31,21 +33,19 @@ const TeacherStudents = () => {
                 <p className=' font-Outfit text-xl font-semibold mb-2 ml-3'>Students</p> 
             </span>
 
-            <div className=' w-full items-start flex flex-col md:flex-row px-6 mt-6 justify-between'>
+            <div className=' w-full items-end flex flex-row px-6 mt-6 justify-between'>
                 <span className=" flex items-start space-x-6">
                     <label htmlFor="Class Teacher" className=' font-Outfit flex flex-col text-[#272D37] text-xs font-medium'>
-                        Test
-                        <input type="text" value={'Biology'} className=' mt-2 text-[#272D37] text-sm w-[120px] md:w-auto font-normal border border-[#DAE0E6] rounded-[5px] font-Outfit p-2.5' />
-                    </label>
-                    <label htmlFor="Class Teacher" className=' font-Outfit flex flex-col text-[#272D37] text-xs font-medium'>
-                        Choose exam subject
-                        <input type="text" value={'Biology'} className=' mt-2 text-[#272D37] text-sm w-[120px] md:w-auto font-normal border border-[#DAE0E6] rounded-[5px] font-Outfit p-2.5' />
+                        Choose Class
+                        <select type="text" value={'Jss1'} className=' mt-2 text-[#272D37] text-sm w-[120px] md:w-[200px] font-normal border border-[#DAE0E6] rounded-[5px] font-Outfit p-2.5'>
+                            <option value="Jss1">Jss1</option>
+                            <option value="Jss1">Jss1</option>
+                        </select>
                     </label>
                 </span>
 
-                <span className=" flex items-start mt-8 md:mt-0 space-x-6">
-                    <button className=' text-center  text-sm font-Outfit font-medium text-black bg-[#F8F8F8] py-2 px-3 md:px-6 rounded-[10px]'>Compute Result</button>
-                    <button onClick={ () =>{handleClick('Attendance')}} className=' text-center  text-sm font-Outfit font-medium text-white bg-[#2F52FF] py-2 px-3 md:px-6 rounded-[10px]'>Mark Attendance</button>
+                <span className=" flex items-start">
+                    <button className=' text-center  text-sm font-Outfit font-medium text-white bg-[#2F52FF] py-2 px-3 md:px-6 rounded-[10px]'>Add New Student</button>
                 </span>
             </div>
 
@@ -73,7 +73,11 @@ const TeacherStudents = () => {
                                         <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">{data.dob}</td>
                                         <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">{data.rate1}</td>
                                         <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">{data.rate2}</td>
-                                        <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center"><img src={ edit } alt="" /></td>
+                                        <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center flex space-x-3">
+                                            <img className=' w-3' src={ edit } alt="" />
+                                            <img className=' w-3' src={ vis } alt="" />
+                                            <img className=' w-3' src={ trash } alt="" />
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody> 
@@ -103,4 +107,4 @@ const TeacherStudents = () => {
      );
 }
  
-export default TeacherStudents;
+export default ManageStudents;
