@@ -7,18 +7,22 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import ActivePageProvider from './studentDash/contexts/ActivePageContext';
 import TeacherActivePageProvider from './teacherDash/contexts/TeacherActivePageContext';
 import ManageActivePageProvider from './manageDash/contexts/ManageActivePageContext';
+import VendorActivePageProvider from './vendorDashboard/contexts/VendorActivePageContext';
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <Router>
-      <ManageActivePageProvider>
-        <TeacherActivePageProvider>
-          <ActivePageProvider>
-            <App />
-          </ActivePageProvider>
-        </TeacherActivePageProvider>
-      </ManageActivePageProvider>
+      <VendorActivePageProvider>
+        <ManageActivePageProvider>
+          <TeacherActivePageProvider>
+            <ActivePageProvider>
+              <App />
+            </ActivePageProvider>
+          </TeacherActivePageProvider>
+        </ManageActivePageProvider>
+      </VendorActivePageProvider>
     </Router>
   </React.StrictMode>
 );

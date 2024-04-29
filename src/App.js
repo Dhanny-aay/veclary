@@ -13,6 +13,10 @@ import TeacherDashboard from "./teacherDash/pages/teacherDashboard";
 import ManageLogin from "./manageDash/pages/manageLogin";
 import ManageSignup from "./manageDash/pages/manageSignup";
 import ManageDashboard from "./manageDash/pages/manageDashboard";
+import VendorLogin from "./vendorDashboard/pages/vendorLogin";
+import VendorSignup from "./vendorDashboard/pages/vendorSignup";
+import VendorDashboard from "./vendorDashboard/pages/vendorDashboard";
+
 
 function App() {
 
@@ -39,6 +43,9 @@ function App() {
           <Route path="/managementlogin" element={ <ManageLogin/> }/>
           <Route path="/managementSignup" element={ <ManageSignup/> }/>
           <Route path="/managementDashboard" element={ <ManageDashboard/> }/>
+          <Route path="/vendorlogin" element={ <VendorLogin /> }/>
+          <Route path="/vendorSignup" element={ < VendorSignup/> }/>
+          <Route path="/vendorDashboard" element={ <VendorDashboard/> }/>
         </Routes>
       </Container>
     </CustomProvider>

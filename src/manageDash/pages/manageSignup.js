@@ -22,8 +22,8 @@ const ManageSignup = () => {
         {name:'Symbol', example:'$#^'}
     ]
 
-    const [personal, setPersonal] = useState(true);
-    const [academic, setAcademic] = useState(false);
+    const [personal, setPersonal] = useState(false);
+    const [academic, setAcademic] = useState(true);
     const [plans, setPlans] = useState(false);
     const [selectedPlan, setSelectedPlan] = useState(null);
 
@@ -109,8 +109,8 @@ const ManageSignup = () => {
 
                     {  academic && <div className='w-full'>
                         <img src={ progress1 } className=' w-full mt-3' alt="" />
-                        <p className=' font-Outfit font-medium text-2xl mt-6'>Account Information</p>
-                        <p className=' font-Outfit text-[#636363] font-normal text-sm'>A centralized hub for streamlined school operations</p>
+                        <p className=' font-Outfit font-medium text-2xl mt-6'>School Administrator Information</p>
+                        <p className=' font-Outfit text-[#636363] font-normal text-sm'>Individual approve...</p>
 
                         <div className=' w-full mt-4 lg:overflow-y-scroll lg:h-[260px]'>
                             

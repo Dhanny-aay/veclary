@@ -14,7 +14,7 @@ const Welcome = () => {
         {image:student, name:'Student', link:'/studentlogin'},
         {image:teacher, name:'Teacher', link:'/teacherslogin'},
         {image:school, name:'School', link:'/managementlogin'},
-        {image:vendor, name:'Vendor', link:''}
+        {image:vendor, name:'Vendor', link:'/vendorlogin'}
     ]
     return ( 
         <>
