@@ -31,7 +31,7 @@ const VendorProfile = () => {
           className=" cursor-pointer px-6 mt-6 flex flex-row items-center"
         >
           <img src={arrowBlue} alt="" />
-          <p className=" font-Outfit text-[#2F52FF] text-sm font-medium">
+          <p className=" font-Outfit text-[#0530A1] text-sm font-medium">
             Back
           </p>
           <p className=" font-Outfit text-xl font-semibold mb-2 ml-3">
@@ -59,7 +59,7 @@ const VendorProfile = () => {
                 Edit Profile
               </p>
             </button>
-            <button className=" flex items-center space-x-2 px-4 py-2 bg-[#2F52FF] rounded-[8px]">
+            <button className=" flex items-center space-x-2 px-4 py-2 bg-[#0530A1] rounded-[8px]">
               <img src={userPlus} alt="" />
               <p className=" font-Outfit text-sm font-semibold text-[#fff]">
                 Share

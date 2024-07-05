@@ -1,28 +1,30 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-import { BrowserRouter as Router } from 'react-router-dom';
-import ActivePageProvider from './studentDash/contexts/ActivePageContext';
-import TeacherActivePageProvider from './teacherDash/contexts/TeacherActivePageContext';
-import ManageActivePageProvider from './manageDash/contexts/ManageActivePageContext';
-import VendorActivePageProvider from './vendorDashboard/contexts/VendorActivePageContext';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
+import { BrowserRouter as Router } from "react-router-dom";
+import ActivePageProvider from "./studentDash/contexts/ActivePageContext";
+import TeacherActivePageProvider from "./teacherDash/contexts/TeacherActivePageContext";
+import ManageActivePageProvider from "./manageDash/contexts/ManageActivePageContext";
+import VendorActivePageProvider from "./vendorDashboard/contexts/VendorActivePageContext";
+import AdminActivePageProvider from "./adminDash/contexts/AdminActivePageContext";
 
-
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <Router>
-      <VendorActivePageProvider>
-        <ManageActivePageProvider>
-          <TeacherActivePageProvider>
-            <ActivePageProvider>
-              <App />
-            </ActivePageProvider>
-          </TeacherActivePageProvider>
-        </ManageActivePageProvider>
-      </VendorActivePageProvider>
+      <AdminActivePageProvider>
+        <VendorActivePageProvider>
+          <ManageActivePageProvider>
+            <TeacherActivePageProvider>
+              <ActivePageProvider>
+                <App />
+              </ActivePageProvider>
+            </TeacherActivePageProvider>
+          </ManageActivePageProvider>
+        </VendorActivePageProvider>
+      </AdminActivePageProvider>
     </Router>
   </React.StrictMode>
 );

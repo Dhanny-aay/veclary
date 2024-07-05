@@ -7,7 +7,7 @@ export const VendorUserType = createContext();
 const VendorActivePageProvider = (props) => {
   const [activePage, setActivePage] = useState("Home");
   const [sidebarVisible, setSidebarVisible] = useState(false);
-  const [userType, setUserType] = useState("Publisher");
+  const [userType, setUserType] = useState("Author");
 
   return (
     <>

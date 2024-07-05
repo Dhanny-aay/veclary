@@ -3,13 +3,11 @@
 @tailwind utilities;
 
 @font-face {
-  font-family: 'Outfit';
-  src: url('./fonts/Outfit-VariableFont_wght.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
+  font-family: "Outfit";
+  src: url("./fonts/Outfit-VariableFont_wght.ttf") format("truetype");
 }
-body{
-  color: #121212;
+* {
+  color: #000;
 }
 
 .answer {
@@ -45,7 +43,12 @@ body{
   justify-content: center;
   width: 100vw;
   height: 100vh;
-  background-image: linear-gradient(to top, #dad4ec 0%, #dad4ec 1%, #f3e7e9 100%);
+  background-image: linear-gradient(
+    to top,
+    #dad4ec 0%,
+    #dad4ec 1%,
+    #f3e7e9 100%
+  );
 }
 .demo .menu-icon {
   transform: scale(1.5);
@@ -95,24 +98,29 @@ body{
 .menu-icon span:last-of-type {
   bottom: 0;
 }
-.menu-icon.active span:first-of-type, .menu-icon .menu-icon__cheeckbox:checked + div span:first-of-type {
+.menu-icon.active span:first-of-type,
+.menu-icon .menu-icon__cheeckbox:checked + div span:first-of-type {
   transform: rotate(45deg);
   top: 5px;
 }
-.menu-icon.active span:last-of-type, .menu-icon .menu-icon__cheeckbox:checked + div span:last-of-type {
+.menu-icon.active span:last-of-type,
+.menu-icon .menu-icon__cheeckbox:checked + div span:last-of-type {
   transform: rotate(-45deg);
   bottom: 5px;
 }
-.menu-icon.active:hover span:first-of-type, .menu-icon.active:hover span:last-of-type, .menu-icon:hover .menu-icon__cheeckbox:checked + div span:first-of-type, .menu-icon:hover .menu-icon__cheeckbox:checked + div span:last-of-type {
+.menu-icon.active:hover span:first-of-type,
+.menu-icon.active:hover span:last-of-type,
+.menu-icon:hover .menu-icon__cheeckbox:checked + div span:first-of-type,
+.menu-icon:hover .menu-icon__cheeckbox:checked + div span:last-of-type {
   width: 22px;
 }
 @media (min-width: 1024px) {
   .menu-icon:hover span:first-of-type {
     width: 26px;
- }
+  }
   .menu-icon:hover span:last-of-type {
     width: 12px;
- }
+  }
 }
 
 /* The switch - the box around the slider */
@@ -138,9 +146,9 @@ body{
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #DAE0E6;
-  -webkit-transition: .4s;
-  transition: .4s;
+  background-color: #dae0e6;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
 }
 
 .slider:before {
@@ -153,16 +161,16 @@ body{
   left: 4px;
   bottom: 4px;
   background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
 }
 
 input:checked + .slider {
-  background-color: #2F52FF;
+  background-color: #0530a1;
 }
 
 input:focus + .slider {
-  box-shadow: 0 0 1px #2F52FF;
+  box-shadow: 0 0 1px #0530a1;
 }
 
 input:checked + .slider:before {
@@ -180,3 +188,75 @@ input:checked + .slider:before {
   border-radius: 50%;
 }
 
+/* Hide the default checkbox */
+.custom-checkbox {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+  position: relative;
+  height: 20px;
+  width: 20px;
+  background-color: #eee;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  display: inline-block;
+  margin-right: 10px;
+}
+
+/* Style the checkmark when the checkbox is checked */
+.custom-checkbox:checked + .checkmark {
+  background-color: #437ef7;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark/indicator when checked */
+.custom-checkbox:checked + .checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.checkmark:after {
+  left: 7px;
+  top: 3px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  transform: rotate(45deg);
+}
+.fade-in {
+  -webkit-animation: fade-in 1s ease-in-out both;
+  animation: fade-in 1s ease-in-out both;
+}
+
+@-webkit-keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+li {
+  color: #676767;
+}

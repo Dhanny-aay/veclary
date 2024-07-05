@@ -26,7 +26,7 @@ const VendorSidebar = () => {
     { name: "Home", img: home, activeImg: homeAc, page: "Home" },
     { name: "My Books", img: book, activeImg: book, page: "MyBooks" },
     { name: "Analysis", img: anal, activeImg: anal, page: "Analysis" },
-    { name: "Market", img: market, activeImg: market, page: "Market" },
+    { name: "Marketing", img: market, activeImg: market, page: "Marketing" },
     ...(userType !== "Author"
       ? [{ name: "Authors", img: autho, activeImg: autho, page: "Authors" }]
       : []),
@@ -80,7 +80,7 @@ const VendorSidebar = () => {
                   key={index}
                   className={`text-center py-2 px-6 flex flex-row space-x-4 items-center ${
                     activePage === item.page
-                      ? "text-[#2F52FF]"
+                      ? "text-[#0530A1]"
                       : "text-[#929292]"
                   }`}
                   onClick={() => handleClick(item.page)}
@@ -104,7 +104,7 @@ const VendorSidebar = () => {
                     key={index}
                     className={`text-center py-2 px-6 flex flex-row space-x-4 items-center ${
                       activePage === item.page
-                        ? "text-[#2F52FF]"
+                        ? "text-[#0530A1]"
                         : "text-[#929292]"
                     }`}
                     onClick={() => handleClick(item.page)}

@@ -1,35 +1,43 @@
-import React from 'react';
-import styled, { keyframes, css } from 'styled-components';
-import slack from './assets/slack.svg';
-import trello from './assets/trello.svg';
-import mailchimp from './assets/mailchimp.svg';
-import medium from './assets/medium.svg';
-import google from './assets/google.svg';
-import pintrest from './assets/pintrest.svg';
+import React from "react";
+import styled, { keyframes, css } from "styled-components";
+import slack from "./assets/slack.svg";
+import trello from "./assets/trello.svg";
+import mailchimp from "./assets/mailchimp.svg";
+import medium from "./assets/medium.svg";
+import google from "./assets/google.svg";
+import pintrest from "./assets/pintrest.svg";
 
 const row1 = [slack, trello, mailchimp, medium, google, pintrest];
 
 const Carousel = () => {
   return (
     <>
-      <div className=' my-8 md:my-16 px-4 md:px-16 lg:px-20 w-full font-Outfit'>
-        <p className='text-[#000] font-semibold text-xl px-[8%] md:px-0 text-center'>Join 100+ Schools using our product like</p>
+      <div className=" px-4 md:px-16 w-full font-Outfit">
+        <p className="text-[#000] font-semibold text-xl px-[8%] md:px-0 text-center">
+          Join 100+ Schools using our product like
+        </p>
 
         <AppContainer>
           <Wrapper>
             <Marquee>
               <MarqueeGroup>
                 {row1.map((image, i) => (
-                  <span key={i} className=' px-3 md:px-8 md:py-4 bg-[#f9f9f9] rounded-[5px] md:mx-6 md:w-auto'>
-                    <img src={image} className=' w-[95px]' alt='' />
+                  <span
+                    key={i}
+                    className=" px-3 md:px-8 md:py-4 bg-[#f9f9f9] rounded-[5px] md:mx-6 md:w-auto"
+                  >
+                    <img src={image} className=" w-[95px]" alt="" />
                   </span>
                 ))}
               </MarqueeGroup>
 
               <MarqueeGroup>
                 {row1.map((image, i) => (
-                  <span key={i} className=' px-3 md:px-8 md:py-4 bg-[#f9f9f9] rounded-[5px] md:mx-6 md:w-auto'>
-                    <img src={image} className=' w-[95px]' alt='' />
+                  <span
+                    key={i}
+                    className=" px-3 md:px-8 md:py-4 bg-[#f9f9f9] rounded-[5px] md:mx-6 md:w-auto"
+                  >
+                    <img src={image} className=" w-[95px]" alt="" />
                   </span>
                 ))}
               </MarqueeGroup>
@@ -83,7 +91,7 @@ const common = css`
   align-items: center;
   justify-content: space-around;
   white-space: nowrap;
- 
+
   animation: ${scrollX} 30s linear infinite;
 `;
 
@@ -92,4 +100,3 @@ const MarqueeGroup = styled.div`
 
   }
 `;
-

@@ -145,7 +145,7 @@ const VendorBooks = () => {
               <div className=" mt-6 w-full border border-[#DAE0E6] rounded-[5px] flex items-center justify-center flex-col p-3">
                 <img src={pload} alt="" />
                 <p className=" mt-3 text-sm font-normal font-Outfit text-[#667085]">
-                  <span className=" font-semibold text-[#2F52FF] mr-1">
+                  <span className=" font-semibold text-[#0530A1] mr-1">
                     Click to upload
                   </span>
                   or drag and drop
@@ -200,7 +200,7 @@ const VendorBooks = () => {
                     onClick={() => {
                       setUploadBook(false);
                     }}
-                    className=" w-full py-3 font-Outfit rounded-md text-[#fff] bg-[#2F52FF] font-semibold text-base"
+                    className=" w-full py-3 font-Outfit rounded-md text-[#fff] bg-[#0530A1] font-semibold text-base"
                   >
                     Publish Now
                   </button>
@@ -217,7 +217,7 @@ const VendorBooks = () => {
                   >
                     Cancel
                   </button>
-                  <button className=" w-full py-3 font-Outfit rounded-md text-[#fff] bg-[#2F52FF] font-semibold text-base">
+                  <button className=" w-full py-3 font-Outfit rounded-md text-[#fff] bg-[#0530A1] font-semibold text-base">
                     Continue
                   </button>
                 </div>
@@ -239,7 +239,7 @@ const VendorBooks = () => {
           className=" cursor-pointer px-6 mt-6 flex flex-row items-center"
         >
           <img src={arrowBlue} alt="" />
-          <p className=" font-Outfit text-[#2F52FF] text-sm font-medium">
+          <p className=" font-Outfit text-[#0530A1] text-sm font-medium">
             Back
           </p>
           <p className=" font-Outfit text-xl font-semibold mb-2 ml-3">
@@ -252,7 +252,7 @@ const VendorBooks = () => {
             onClick={() => {
               setUploadBook(true);
             }}
-            className=" px-6 py-3 flex items-center space-x-3 rounded-[10px] bg-[#2F52FF]"
+            className=" px-6 py-3 flex items-center space-x-3 rounded-[10px] bg-[#0530A1]"
           >
             <img src={upload} alt="" />
             <p className=" font-Outfit text-sm font-medium text-white">
@@ -264,7 +264,7 @@ const VendorBooks = () => {
             <button
               className={`font-normal font-Outfit text-sm pb-3 text-[#00000080] md:w-auto transition-all ${
                 activeButton === "all"
-                  ? "border-b-[3px] border-[#2F52FF] text-[#2F52FF]"
+                  ? "border-b-[3px] border-[#0530A1] text-[#0530A1]"
                   : ""
               }`}
               onClick={() => handleButtonClick("all")}
@@ -279,7 +279,7 @@ const VendorBooks = () => {
                 key={index}
                 className={`font-normal font-Outfit pb-3 text-sm text-[#00000080] px-5 transition-all ${
                   activeButton === tag
-                    ? "border-b-[3px] border-[#2F52FF] text-[#2F52FF]"
+                    ? "border-b-[3px] border-[#0530A1] text-[#0530A1]"
                     : ""
                 }`}
                 onClick={() => handleButtonClick(tag)}

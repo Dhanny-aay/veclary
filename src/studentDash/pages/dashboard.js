@@ -11,43 +11,53 @@ import StudentHome from "../components/studenthome";
 import StudentLib from "../components/studentlib";
 import StudentProfile from "../components/studentprofile";
 import StudentSub from "../components/studentsub";
-import { ActivePageContext, SidebarContext } from "../contexts/ActivePageContext";
+import {
+  ActivePageContext,
+  SidebarContext,
+} from "../contexts/ActivePageContext";
+import StudentPayment from "../components/studentPayment";
+import McqView from "../components/mcqView";
+import McqQuestions from "../components/mcqQuestions";
+import BookReader from "../components/bookReader";
+import StudentAssistant from "../components/studentAssistant";
 
 const Dashboard = () => {
+  const componentMap = {
+    Home: <StudentHome />,
+    Lib: <StudentLib />,
+    Subject: <StudentSub />,
+    Profile: <StudentProfile />,
+    Settings: <StudentSettings />,
+    Classroom: <StudentClassroom />,
+    EditProfile: <StudentEditProfile />,
+    Performance: <StudentPerfomance />,
+    Assignment: <StudentAssignment />,
+    McqView: <McqView />,
+    McqQuestions: <McqQuestions />,
+    Notepad: <StudentNotepad />,
+    Payments: <StudentPayment />,
+    Reader: <BookReader />,
+    Assistant: <StudentAssistant />,
+  };
 
+  const { activePage } = useContext(ActivePageContext);
+  const { setSidebarVisible } = useContext(SidebarContext);
 
-    const componentMap = {
-        Home: <StudentHome />,
-        Lib: <StudentLib />,
-        Subject: <StudentSub />,
-        Profile: <StudentProfile />,
-        Settings: <StudentSettings />,
-        Classroom: <StudentClassroom />,
-        EditProfile: <StudentEditProfile />,
-        Performance: <StudentPerfomance />,
-        Assignment: <StudentAssignment />,
-        Notepad: <StudentNotepad />,
-    };
+  useEffect(() => {
+    setSidebarVisible(false);
+  }, [activePage, setSidebarVisible]);
 
-    const { activePage } = useContext(ActivePageContext);
-    const { setSidebarVisible } = useContext(SidebarContext);
+  const ComponentToRender = componentMap[activePage] || null;
 
-    useEffect(() => {
-        setSidebarVisible(false);
-    }, [activePage, setSidebarVisible]);
+  return (
+    <>
+      <div className=" relative">
+        <Sidebar />
+        <Headbar />
+        {ComponentToRender}
+      </div>
+    </>
+  );
+};
 
-
-    const ComponentToRender = componentMap[activePage] || null;
-
-    return ( 
-        <>
-        <div className=" relative">
-            <Sidebar/>
-            <Headbar/>
-            {ComponentToRender}
-        </div>
-        </>
-     );
-}
- 
 export default Dashboard;
