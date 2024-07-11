@@ -1,4 +1,4 @@
-import logo from "./assets/blueLogo.svg";
+import logo from "./assets/whitwlogo.svg";
 import ig from "./assets/ig.svg";
 import tt from "./assets/tt.svg";
 import lin from "./assets/in.svg";

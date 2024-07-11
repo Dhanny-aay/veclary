@@ -7,49 +7,56 @@ import arrowBlue from "./assets/arrowblue.svg";
 import backArr from "./assets/backArr.svg";
 import fwdArr from "./assets/fwdArr.svg";
 
-const AdminSchools = () => {
+const BookApprovalsPC = () => {
   const { sidebarVisible, setSidebarVisible } = useContext(AdminSidebarContext);
   const { activePage, setActivePage } = useContext(AdminActivePageContext);
+  const [activeButton, setActiveButton] = useState("Pending");
 
   const handleClick = (page) => {
     setActivePage(page);
   };
 
-  const authors = [
+  const buttons = [
     {
-      name: "Grand Rapids",
-      noOfStu: "21",
-      noOfTeach: "21",
-      regStu: "SCI-20-0102",
-      sub: "Biology",
+      label: "Pending Approvals",
+      value: "Pending",
     },
     {
-      name: "Grand Rapids",
-      noOfStu: "21",
-      noOfTeach: "21",
-      regStu: "SCI-20-0102",
-      sub: "Biology",
+      label: "Completed Approvals",
+      value: "Completed",
+    },
+  ];
+
+  const handleButtonClick = (value) => {
+    setActiveButton(value);
+    // Add logic for button click action here
+  };
+
+  const schData = [
+    {
+      author: "Grand Rapids",
+      title: "Understanding Chemistry",
+      desc: "Understanding General Chemistry details the fundamentals of genera....",
     },
     {
-      name: "Grand Rapids",
-      noOfStu: "21",
-      noOfTeach: "21",
-      regStu: "SCI-20-0102",
-      sub: "Chemistry",
+      author: "Grand Rapids",
+      title: "Understanding Chemistry",
+      desc: "Understanding General Chemistry details the fundamentals of genera....",
     },
     {
-      name: "Grand Rapids",
-      noOfStu: "21",
-      noOfTeach: "21",
-      regStu: "SCI-20-0102",
-      sub: "Chemistry",
+      author: "Grand Rapids",
+      title: "Understanding Chemistry",
+      desc: "Understanding General Chemistry details the fundamentals of genera....",
     },
     {
-      name: "Grand Rapids",
-      noOfStu: "21",
-      noOfTeach: "21",
-      regStu: "SCI-20-0102",
-      sub: "Biology",
+      author: "Grand Rapids",
+      title: "Understanding Chemistry",
+      desc: "Understanding General Chemistry details the fundamentals of genera....",
+    },
+    {
+      author: "Grand Rapids",
+      title: "Understanding Chemistry",
+      desc: "Understanding General Chemistry details the fundamentals of genera....",
     },
   ];
 
@@ -67,42 +74,41 @@ const AdminSchools = () => {
         >
           <img src={arrowBlue} alt="Back Arrow" />
           <p className="font-Outfit text-[#0530A1] text-sm font-medium">Back</p>
-          <p className="font-Outfit text-xl font-semibold mb-2 ml-3">Schools</p>
+          <p className="font-Outfit text-xl font-semibold mb-2 ml-3">
+            Book Approvals
+          </p>
         </span>
 
-        <div className="w-full items-start space-y-3 md:space-y-0 md:items-end flex flex-col md:flex-row mt-6 justify-between">
-          <span className="flex items-start space-x-6">
-            <label
-              htmlFor="Class Teacher"
-              className="font-Outfit flex flex-col text-[#272D37] text-xs font-medium"
-            >
-              Choose Country
-              <select className="mt-2 text-[#272D37] text-sm w-[120px] md:w-[200px] font-normal border border-[#DAE0E6] rounded-[5px] font-Outfit p-2.5">
-                <option value="">Nigeria</option>
-              </select>
-            </label>
-            <label
-              htmlFor="Class Teacher"
-              className="font-Outfit flex flex-col text-[#272D37] text-xs font-medium"
-            >
-              Choose State
-              <select className="mt-2 text-[#272D37] text-sm w-[120px] md:w-[200px] font-normal border border-[#DAE0E6] rounded-[5px] font-Outfit p-2.5">
-                <option value="">Lagos</option>
-              </select>
-            </label>
-          </span>
-
-          <span className="flex items-start">
-            <button
-              //   onClick={() => {
-              //     setUploadBook(true);
-              //   }}
-              className="text-center text-sm font-Outfit font-medium text-white bg-[#0530A1] py-2 px-3 md:px-6 rounded-[10px]"
-            >
-              Add New School
-            </button>
-          </span>
+        <div className="w-full border-b mt-6 border-[#EAECF0] h-full">
+          <div className="flex">
+            {buttons.map((button, index) => (
+              <button
+                key={index}
+                className={`font-medium font-Outfit text-sm pb-4 px-2 transition-all ${
+                  activeButton === button.value
+                    ? "border-b-2 border-[#0530A1] text-[#0530A1]"
+                    : ""
+                }`}
+                onClick={() => handleButtonClick(button.value)}
+              >
+                {button.label}
+              </button>
+            ))}
+          </div>
         </div>
+
+        <span className="flex items-start mt-6">
+          <label
+            htmlFor="Class Teacher"
+            className="font-Outfit flex flex-col text-[#272D37] text-xs font-medium"
+          >
+            Filter
+            <select className="mt-2 text-[#272D37] text-sm w-[120px] md:w-[200px] font-normal border border-[#DAE0E6] rounded-[5px] font-Outfit p-2.5">
+              <option value="">Sort by Authors</option>
+              <option value="">Sort by Publisher</option>
+            </select>
+          </label>
+        </span>
 
         <div className=" mt-6">
           <div className=" border border-[#EAEBF0] px-3 rounded-[10px]">
@@ -114,46 +120,42 @@ const AdminSchools = () => {
                       S/N
                     </th>
                     <th className="border-b font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 text-center px-4">
-                      School Names
+                      Author
                     </th>
                     <th className="border-b  font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 text-center px-4">
-                      Registration Number
+                      Book title
                     </th>
                     <th className="border-b  font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 text-center px-4">
-                      Number of Students
+                      Book description
                     </th>
-                    <th className="border-b font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 text-center px-4">
-                      Number of Teachers
-                    </th>
+
                     <th className="border-b font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 text-center px-4">
                       Actions
                     </th>
                   </tr>
                 </thead>
                 <tbody>
-                  {authors.map((data, index) => (
+                  {schData.map((data, index) => (
                     <tr key={index}>
                       <td className=" font-Outfit py-4 border-t border-[#EAEBF0] text-sm text-[#5F6D7E] font-medium text-center">
                         0{index + 1}
                       </td>
                       <td className=" font-Outfit py-4 border-t border-[#EAEBF0] text-[#272D37] font-medium text-sm text-center">
-                        {data.name}
+                        {data.author}
                       </td>
-                      <td className=" font-Outfit py-4 border-t border-[#EAEBF0] text-[#272D37] font-medium text-sm text-center">
-                        {data.regStu}
+                      <td className=" font-Outfit  py-4 border-t border-[#EAEBF0] text-[#272D37] font-medium text-sm text-center">
+                        {data.title}
                       </td>
-                      <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">
-                        {data.noOfStu}
+                      <td className=" font-Outfit py-4 w-[200px] border-t border-[#EAEBF0] text-[#272D37] font-medium text-sm text-center">
+                        {data.desc}
                       </td>
-                      <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">
-                        {data.noOfTeach}
-                      </td>
+
                       <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">
                         <button
-                          onClick={() => handleClick("schoolProfile")}
+                          onClick={() => handleClick("BookDetailsPC")}
                           className="text-center text-sm font-Outfit font-medium text-white bg-[#0530A1] py-2 px-3 rounded-[10px]"
                         >
-                          View Profile
+                          View Details
                         </button>
                       </td>
                     </tr>
@@ -189,4 +191,4 @@ const AdminSchools = () => {
   );
 };
 
-export default AdminSchools;
+export default BookApprovalsPC;

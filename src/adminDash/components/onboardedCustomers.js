@@ -187,7 +187,7 @@ const OnboardedCustomers = () => {
       >
         <span
           onClick={() => handleClick("Home")}
-          className="cursor-pointer px-6 mt-6 flex flex-row items-center"
+          className="cursor-pointer mt-6 flex flex-row items-center"
         >
           <img src={arrowBlue} alt="Back Arrow" />
           <p className="font-Outfit text-[#0530A1] text-sm font-medium">Back</p>

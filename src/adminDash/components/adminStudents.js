@@ -72,7 +72,7 @@ const AdminStudents = () => {
           </p>
         </span>
 
-        <div className="w-full items-end flex flex-row mt-6 justify-between">
+        <div className="w-full items-start space-y-3 md:space-y-0 md:items-end flex flex-col md:flex-row mt-6 justify-between">
           <span className="flex items-start space-x-6">
             <label
               htmlFor="Class Teacher"

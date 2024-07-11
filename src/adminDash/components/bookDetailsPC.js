@@ -6,7 +6,7 @@ import {
 import file from "./assets/file.svg";
 import arrowBlue from "./assets/arrowblue.svg";
 
-const BookDetails = () => {
+const BookDetailsPC = () => {
   const { sidebarVisible, setSidebarVisible } = useContext(AdminSidebarContext);
   const { activePage, setActivePage } = useContext(AdminActivePageContext);
 
@@ -40,7 +40,7 @@ const BookDetails = () => {
           </p>
         </span>
 
-        <div className=" mt-8 flex items-center flex-col md:flex-row space-y-4 md:space-y-0 justify-between">
+        <div className=" mt-8 flex items-start md:items-center md:flex-row flex-col space-y-3 md:space-y-0 justify-between">
           <div className=" flex items-center space-x-4">
             <span className=" w-[120px] h-[160px] bg-[#f8f8f8] border-4 border-white shadow shadow-[#10182814]"></span>
             <span>
@@ -56,12 +56,12 @@ const BookDetails = () => {
           <div className=" space-x-4 flex">
             <button className=" flex items-center space-x-2 px-4 py-2 bg-[#01813F] rounded-[8px]">
               <p className=" font-Outfit text-sm font-semibold text-[#fff]">
-                Submit Approval
+                Approve
               </p>
             </button>
             <button className=" flex items-center space-x-2 px-4 py-2 bg-[#E84343] rounded-[8px]">
               <p className=" font-Outfit text-sm font-semibold text-[#fff]">
-                Submit Denial Request
+                Deny
               </p>
             </button>
           </div>
@@ -123,15 +123,15 @@ const BookDetails = () => {
               className=" mt-3 border border-[#DAE0E6] rounded-[6px] px-4 py-3 h-[124px] text-[#919BA7] font-Outfit font-normal text-[15px]"
               id=""
               placeholder="Enter report"
+              value={
+                "Understanding General Chemistry details the fundamentals of general chemistry through a wide range of topics, relating the structure of atoms and molecules to the properties of matter. Written in an easy-to-understand format with helpful pedagogy to fuel learning the book features main objectives at the beginning of each chapter, get smart sections, and check your rea"
+              }
             ></textarea>
           </label>
-          <button className="text-center text-sm font-Outfit font-medium text-white bg-[#0530A1] py-2 px-3 mt-4 rounded-[10px]">
-            Save
-          </button>
         </div>
       </div>
     </>
   );
 };
 
-export default BookDetails;
+export default BookDetailsPC;

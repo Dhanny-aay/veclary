@@ -7,49 +7,65 @@ import arrowBlue from "./assets/arrowblue.svg";
 import backArr from "./assets/backArr.svg";
 import fwdArr from "./assets/fwdArr.svg";
 
-const AdminSchools = () => {
+const SchoolApprovalsPC = () => {
   const { sidebarVisible, setSidebarVisible } = useContext(AdminSidebarContext);
   const { activePage, setActivePage } = useContext(AdminActivePageContext);
+  const [activeButton, setActiveButton] = useState("Pending");
 
   const handleClick = (page) => {
     setActivePage(page);
   };
 
-  const authors = [
+  const buttons = [
     {
-      name: "Grand Rapids",
-      noOfStu: "21",
-      noOfTeach: "21",
-      regStu: "SCI-20-0102",
-      sub: "Biology",
+      label: "Pending Registrations",
+      value: "PendingRegistration",
     },
     {
-      name: "Grand Rapids",
-      noOfStu: "21",
-      noOfTeach: "21",
-      regStu: "SCI-20-0102",
-      sub: "Biology",
+      label: "Pending Approvals",
+      value: "Pending",
     },
     {
-      name: "Grand Rapids",
-      noOfStu: "21",
-      noOfTeach: "21",
-      regStu: "SCI-20-0102",
-      sub: "Chemistry",
+      label: "Completed Approvals",
+      value: "Completed",
+    },
+  ];
+
+  const handleButtonClick = (value) => {
+    setActiveButton(value);
+    // Add logic for button click action here
+  };
+
+  const schData = [
+    {
+      regNo: "SCI-20-0102",
+      school: "Federal Girls College",
+      status: "Pending",
+      noOfDoc: "20",
     },
     {
-      name: "Grand Rapids",
-      noOfStu: "21",
-      noOfTeach: "21",
-      regStu: "SCI-20-0102",
-      sub: "Chemistry",
+      regNo: "SCI-20-0103",
+      school: "Federal Girls College",
+      status: "completed",
+      noOfDoc: "20",
     },
     {
-      name: "Grand Rapids",
-      noOfStu: "21",
-      noOfTeach: "21",
-      regStu: "SCI-20-0102",
-      sub: "Biology",
+      regNo: "SCI-20-0104",
+      school: "Federal Girls College",
+      status: "Pending",
+      noOfDoc: "20",
+    },
+    {
+      regNo: "SCI-20-0105",
+      school: "Federal Girls College",
+      status: "completed",
+      noOfDoc: "25",
+    },
+    {
+      regNo: "SCI-20-0106",
+      school: "Federal Girls College",
+      status: "Pending",
+      noOfDoc: "25",
     },
   ];
 
@@ -67,42 +83,40 @@ const AdminSchools = () => {
         >
           <img src={arrowBlue} alt="Back Arrow" />
           <p className="font-Outfit text-[#0530A1] text-sm font-medium">Back</p>
-          <p className="font-Outfit text-xl font-semibold mb-2 ml-3">Schools</p>
+          <p className="font-Outfit text-xl font-semibold mb-2 ml-3">
+            School Approvals
+          </p>
         </span>
 
-        <div className="w-full items-start space-y-3 md:space-y-0 md:items-end flex flex-col md:flex-row mt-6 justify-between">
-          <span className="flex items-start space-x-6">
-            <label
-              htmlFor="Class Teacher"
-              className="font-Outfit flex flex-col text-[#272D37] text-xs font-medium"
-            >
-              Choose Country
-              <select className="mt-2 text-[#272D37] text-sm w-[120px] md:w-[200px] font-normal border border-[#DAE0E6] rounded-[5px] font-Outfit p-2.5">
-                <option value="">Nigeria</option>
-              </select>
-            </label>
-            <label
-              htmlFor="Class Teacher"
-              className="font-Outfit flex flex-col text-[#272D37] text-xs font-medium"
-            >
-              Choose State
-              <select className="mt-2 text-[#272D37] text-sm w-[120px] md:w-[200px] font-normal border border-[#DAE0E6] rounded-[5px] font-Outfit p-2.5">
-                <option value="">Lagos</option>
-              </select>
-            </label>
-          </span>
-
-          <span className="flex items-start">
-            <button
-              //   onClick={() => {
-              //     setUploadBook(true);
-              //   }}
-              className="text-center text-sm font-Outfit font-medium text-white bg-[#0530A1] py-2 px-3 md:px-6 rounded-[10px]"
-            >
-              Add New School
-            </button>
-          </span>
+        <div className="w-full border-b mt-6 border-[#EAECF0] h-full">
+          <div className="flex">
+            {buttons.map((button, index) => (
+              <button
+                key={index}
+                className={`font-medium font-Outfit text-sm pb-4 px-2 transition-all ${
+                  activeButton === button.value
+                    ? "border-b-2 border-[#0530A1] text-[#0530A1]"
+                    : ""
+                }`}
+                onClick={() => handleButtonClick(button.value)}
+              >
+                {button.label}
+              </button>
+            ))}
+          </div>
         </div>
+
+        <span className="flex items-start mt-6">
+          <label
+            htmlFor="Class Teacher"
+            className="font-Outfit flex flex-col text-[#272D37] text-xs font-medium"
+          >
+            Filter
+            <select className="mt-2 text-[#272D37] text-sm w-[120px] md:w-[200px] font-normal border border-[#DAE0E6] rounded-[5px] font-Outfit p-2.5">
+              <option value="">Sort by School</option>
+            </select>
+          </label>
+        </span>
 
         <div className=" mt-6">
           <div className=" border border-[#EAEBF0] px-3 rounded-[10px]">
@@ -116,14 +130,15 @@ const AdminSchools = () => {
                     <th className="border-b font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 text-center px-4">
                       School Names
                     </th>
+                    <th className="border-b  invisible font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 text-center px-4">
+                      Number of Students
+                    </th>
                     <th className="border-b  font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 text-center px-4">
                       Registration Number
                     </th>
-                    <th className="border-b  font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 text-center px-4">
-                      Number of Students
-                    </th>
+
                     <th className="border-b font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 text-center px-4">
-                      Number of Teachers
+                      Number of Uploaded Documents
                     </th>
                     <th className="border-b font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 text-center px-4">
                       Actions
@@ -131,29 +146,30 @@ const AdminSchools = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {authors.map((data, index) => (
+                  {schData.map((data, index) => (
                     <tr key={index}>
                       <td className=" font-Outfit py-4 border-t border-[#EAEBF0] text-sm text-[#5F6D7E] font-medium text-center">
                         0{index + 1}
                       </td>
                       <td className=" font-Outfit py-4 border-t border-[#EAEBF0] text-[#272D37] font-medium text-sm text-center">
-                        {data.name}
+                        {data.school}
+                      </td>
+                      <td className=" font-Outfit invisible py-4 border-t border-[#EAEBF0] text-[#272D37] font-medium text-sm text-center">
+                        {data.school}
                       </td>
                       <td className=" font-Outfit py-4 border-t border-[#EAEBF0] text-[#272D37] font-medium text-sm text-center">
-                        {data.regStu}
+                        {data.regNo}
                       </td>
+
                       <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">
-                        {data.noOfStu}
-                      </td>
-                      <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">
-                        {data.noOfTeach}
+                        {data.noOfDoc}
                       </td>
                       <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">
                         <button
-                          onClick={() => handleClick("schoolProfile")}
+                          onClick={() => handleClick("SchoolProfilePC")}
                           className="text-center text-sm font-Outfit font-medium text-white bg-[#0530A1] py-2 px-3 rounded-[10px]"
                         >
-                          View Profile
+                          View Documents
                         </button>
                       </td>
                     </tr>
@@ -189,4 +205,4 @@ const AdminSchools = () => {
   );
 };
 
-export default AdminSchools;
+export default SchoolApprovalsPC;

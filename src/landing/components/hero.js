@@ -57,7 +57,7 @@ const Hero = () => {
             initial={{ y: 50, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.1, duration: 0.8, type: "tween" }}
-            className="font-Outfit text-4xl leading-[50px] md:text-[55px] font-semibold md:leading-[82.5px] text-black text-center md:text-left"
+            className="font-Outfit text-4xl leading-[50px] md:text-[50px] font-semibold md:leading-[65px] text-black text-center md:text-left"
           >
             {currentContent.mainText}
           </motion.p>
@@ -66,7 +66,7 @@ const Hero = () => {
             initial={{ y: 50, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.8, type: "tween" }}
-            className="text-xl font-normal font-Outfit text-[#000000CC] text-center md:text-left mt-3"
+            className="text-lg font-normal font-Outfit text-[#000000CC] text-center md:text-left mt-2"
           >
             {currentContent.subText}
           </motion.p>
@@ -75,7 +75,7 @@ const Hero = () => {
             initial={{ y: 50, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.3, duration: 0.8, type: "tween" }}
-            className=" w-full md:w-[500px] lg:w-[500px] h-[54px] border-[3px] border-[#F1F1F1] rounded-[10px] relative flex items-center justify-between mt-12 bg-white pr-[6px]"
+            className=" w-full md:w-[500px] lg:w-[500px] h-[54px] border-[3px] border-[#F1F1F1] rounded-[10px] relative flex items-center justify-between mt-8 bg-white pr-[6px]"
           >
             <img src={search} className=" absolute left-5" alt="" />
             <input

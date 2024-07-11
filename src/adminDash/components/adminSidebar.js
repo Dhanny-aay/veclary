@@ -45,10 +45,40 @@ const AdminSidebar = () => {
       page: "Salary",
     },
     {
+      name: "Paid Salary",
+      img: home,
+      activeImg: homeAc,
+      page: "PaidSalary",
+    },
+    {
+      name: "Paid Salary",
+      img: home,
+      activeImg: homeAc,
+      page: "PaidSalaryCEO",
+    },
+    {
+      name: "Pending Salary",
+      img: home,
+      activeImg: homeAc,
+      page: "PendingSalary",
+    },
+    {
+      name: "Pending Salary",
+      img: home,
+      activeImg: homeAc,
+      page: "PendingSalaryCEO",
+    },
+    {
       name: "Publisher/Author’s Fee",
       img: home,
       activeImg: homeAc,
       page: "PublisherFee",
+    },
+    {
+      name: "Complaints",
+      img: home,
+      activeImg: homeAc,
+      page: "Complaints",
     },
     {
       name: "School Approvals",
@@ -57,10 +87,22 @@ const AdminSidebar = () => {
       page: "schoolApprovals",
     },
     {
+      name: "School Approvals",
+      img: home,
+      activeImg: homeAc,
+      page: "schoolApprovalsPC",
+    },
+    {
       name: "Book Approvals",
       img: home,
       activeImg: homeAc,
       page: "bookApprovals",
+    },
+    {
+      name: "Book Approvals",
+      img: home,
+      activeImg: homeAc,
+      page: "bookApprovalsPC",
     },
     {
       name: "Customer Complaint",
@@ -87,6 +129,12 @@ const AdminSidebar = () => {
       activeImg: homeAc,
       page: "CustomerServiceTeam",
     },
+    {
+      name: "Website Control",
+      img: home,
+      activeImg: homeAc,
+      page: "WebsiteControl",
+    },
   ];
 
   const bottom = [
@@ -112,6 +160,17 @@ const AdminSidebar = () => {
       "PublisherFee",
       "Salary",
     ],
+    FinLead: ["Home", "Transaction"],
+    Technical: ["Home", "Complaints"],
+    PCOfficer: ["Home", "bookApprovalsPC", "schoolApprovalsPC"],
+    CEO: ["Home", "PaidSalaryCEO", "PendingSalaryCEO", "PublisherFee"],
+    RemunerationManager: [
+      "Home",
+      "PaidSalary",
+      "PendingSalary",
+      "PublisherFee",
+    ],
+    ContentManager: ["Home"],
   };
 
   const handleClick = (page) => {

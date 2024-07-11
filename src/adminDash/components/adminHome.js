@@ -11,6 +11,12 @@ import Supervisor from "./subcomponents/supervisor";
 import JuniorPC from "./subcomponents/juniorPC";
 import JuniorFinLead from "./subcomponents/juniorFinLead";
 import Management from "./subcomponents/management";
+import FinanceLead from "./subcomponents/FinLead";
+import TechnicalTeam from "./subcomponents/technical";
+import PCOfficer from "./subcomponents/PCOfficer";
+import RemunerationManager from "./subcomponents/remunerationManager";
+import CEO from "./subcomponents/ceo";
+import ContentManager from "./subcomponents/ContentManager";
 
 const AdminHome = () => {
   const { sidebarVisible, setSidebarVisible } = useContext(AdminSidebarContext);
@@ -37,6 +43,18 @@ const AdminHome = () => {
         return <JuniorFinLead />;
       case "Management":
         return <Management />;
+      case "FinLead":
+        return <FinanceLead />;
+      case "Technical":
+        return <TechnicalTeam />;
+      case "PCOfficer":
+        return <PCOfficer />;
+      case "RemunerationManager":
+        return <RemunerationManager />;
+      case "CEO":
+        return <CEO />;
+      case "ContentManager":
+        return <ContentManager />;
       default:
         return null;
     }

@@ -5,9 +5,9 @@ import right from "./assets/right.svg";
 import { useContext, useState } from "react";
 import { AdminActivePageContext } from "../../contexts/AdminActivePageContext";
 
-const CustomerSupport = () => {
-  const [makeAnnouncement, setMakeAnnouncement] = useState(false);
+const TechnicalTeam = () => {
   const { activePage, setActivePage } = useContext(AdminActivePageContext);
+  const [makeAnnouncement, setMakeAnnouncement] = useState(false);
 
   const handleClick = (page) => {
     setActivePage(page);
@@ -26,12 +26,6 @@ const CustomerSupport = () => {
       stat: "Weekly Stats",
       img: pie,
     },
-    {
-      name: "Active School mgmt",
-      percentage: "88%",
-      stat: "Weekly Stats",
-      img: pie,
-    },
   ];
 
   const compaints = [
@@ -42,14 +36,13 @@ const CustomerSupport = () => {
     { name: "Veek Designs" },
     { name: "Veek Designs" },
   ];
-
   return (
     <>
-      <div className="flex border-b border-[#EAEBF0] pb-6 flex-row md:items-center space-x-4 md:space-x-3">
+      <div className=" border-b border-[#EAEBF0] pb-6 w-full flex-row md:items-center space-x-4 md:space-x-3">
         <span className=" w-[50px] md:w-[85px] h-[45px] md:h-[85px] rounded-[50%] bg-[#EAEBF0]"></span>
         <span className=" flex flex-col">
           <p className="font-Outfit font-medium text-xl text-black md:text-3xl">
-            Welcome back, Conflict and Resolution Officer!
+            Welcome back, Technical Team!
           </p>
           <p className=" font-Outfit text-base md:text-lg font-normal text-[#000000B2]">
             Take the first steps to Get a clear view of customer interactions.
@@ -59,7 +52,7 @@ const CustomerSupport = () => {
 
       <div className=" mt-6">
         <p className=" font-Outfit text-lg font-semibold">Analysis</p>
-        <div className=" mt-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className=" mt-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
           {analysis.map((item, index) => (
             <div
               key={index}
@@ -99,6 +92,7 @@ const CustomerSupport = () => {
           ))}
         </div>
       </div>
+
       {/* row 2 */}
       <div className=" mt-6 flex flex-col space-y-6 lg:space-y-0 lg:flex-row justify-between w-full">
         <div className=" w-full lg:w-[34%] border border-[#EAEBF0] rounded-[10px] p-4 relative">
@@ -166,4 +160,4 @@ const CustomerSupport = () => {
   );
 };
 
-export default CustomerSupport;
+export default TechnicalTeam;

@@ -112,7 +112,7 @@ const Management = () => {
   return (
     <>
       {addPerson && <AddPersonnel setAddPerson={setAddPerson} />}
-      <div className="border-b border-[#EAEBF0] pb-6 w-full flex items-center justify-between">
+      <div className="border-b border-[#EAEBF0] pb-6 w-full flex flex-col md:flex-row items-start md:items-center space-y-3 md:space-y-0 justify-between">
         <div className=" w-full flex-row md:items-center space-x-4 md:space-x-3">
           <span className=" w-[50px] md:w-[85px] h-[45px] md:h-[85px] rounded-[50%] bg-[#EAEBF0]"></span>
           <span className=" flex flex-col">

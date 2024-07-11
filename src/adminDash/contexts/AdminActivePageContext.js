@@ -6,7 +6,7 @@ export const AdminAccountTypeContext = createContext();
 
 const AdminActivePageProvider = (props) => {
   const [activePage, setActivePage] = useState("Home");
-  const [accountType, setAccountType] = useState("Management"); //SalesOfficer || JuniorPC || TitleOfficer || Supervisor || JuniorFinLead || Management
+  const [accountType, setAccountType] = useState("ContentManager"); //SalesOfficer || JuniorPC || TitleOfficer || Supervisor || JuniorFinLead || Management || FinLead || Technical || PCOfficer || RemunerationManager || CustomerSupport || CEO || ContentManager
   const [sidebarVisible, setSidebarVisible] = useState(false);
 
   return (

@@ -5,8 +5,8 @@ const AddPersonnel = ({ setAddPerson }) => {
   return (
     <>
       <div className=" w-[120%] h-[100vh] bg-[#1212128d] z-[99999] fixed top-0 -left-[20%] flex justify-center items-center">
-        <div className=" w-full h-full flex justify-center items-center">
-          <div className="ml-[20%] bg-[#FFFFFF] py-6 rounded-[15px] w-[500px] md:h-[400px] lg:h-[550px]">
+        <div className=" w-full h-full flex justify-center items-center pr-6">
+          <div className="ml-[20%] bg-[#FFFFFF] py-6 rounded-[15px] w-[500px] h-[400px] md:h-[400px] lg:h-[550px]">
             <div className=" w-full h-full overflow-y-auto px-5">
               <span className=" w-full flex items-center justify-between">
                 <img src={icon} alt="" />

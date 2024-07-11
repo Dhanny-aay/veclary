@@ -21,6 +21,15 @@ import TechnicalTeam from "../components/technicalTeam";
 import AdminTeacher from "../components/adminTeacher";
 import PublisherFee from "../components/publisherFee";
 import Salary from "../components/salary";
+import AdminComplaints from "../components/adminComplaints";
+import SchoolProfilePC from "../components/SchoolProfilePC";
+import SchoolApprovalsPC from "../components/schoolApprovalPC";
+import BookApprovalsPC from "../components/bookApprovalsPC";
+import BookDetailsPC from "../components/bookDetailsPC";
+import PaidSalary from "../components/paidSalary";
+import PendingSalary from "../components/pendingSalary";
+import PaidSalaryCEO from "../components/PaidSalaryCEO";
+import PendingSalaryCEO from "../components/PendingSalaryCEO";
 
 const AdminDashBoard = () => {
   const componentMap = {
@@ -34,7 +43,9 @@ const AdminDashBoard = () => {
     schoolProfileApprovals: <SchoolProfile />,
     schoolApprovals: <SchoolApprovals />,
     bookApprovals: <BookApprovals />,
+    bookApprovalsPC: <BookApprovalsPC />,
     BookDetails: <BookDetails />,
+    BookDetailsPC: <BookDetailsPC />,
     Transaction: <AdminTransactions />,
     HumanResources: <HRTeam />,
     FinanceTeam: <FinanceTeam />,
@@ -42,6 +53,13 @@ const AdminDashBoard = () => {
     Teachers: <AdminTeacher />,
     PublisherFee: <PublisherFee />,
     Salary: <Salary />,
+    Complaints: <AdminComplaints />,
+    schoolApprovalsPC: <SchoolApprovalsPC />,
+    SchoolProfilePC: <SchoolProfilePC />,
+    PaidSalary: <PaidSalary />,
+    PendingSalary: <PendingSalary />,
+    PaidSalaryCEO: <PaidSalaryCEO />,
+    PendingSalaryCEO: <PendingSalaryCEO />,
   };
 
   const { activePage } = useContext(AdminActivePageContext);

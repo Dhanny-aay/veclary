@@ -38,18 +38,18 @@ const PublisherFee = () => {
       id: "SCI-20-0105",
       name: "Grand Rapids",
       amount: "$59000",
-      status: "Successful",
+      status: "Done",
     },
     {
       id: "SCI-20-0106",
       name: "Grand Rapids",
       amount: "$59000",
-      status: "Successful",
+      status: "Done",
     },
   ];
 
   const statusStyles = {
-    Successful: "text-[#2D8A39] bg-[#F0FAF0]",
+    Done: "text-[#2D8A39] bg-[#F0FAF0]",
     Pending: "text-[#E2341D] bg-[#FFF2F0]",
     default: "text-gray-600 bg-gray-100", // Default style for other statuses
   };

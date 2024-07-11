@@ -5,7 +5,7 @@ import right from "./assets/right.svg";
 import { useContext, useState } from "react";
 import { AdminActivePageContext } from "../../contexts/AdminActivePageContext";
 
-const CustomerSupport = () => {
+const PCOfficer = () => {
   const [makeAnnouncement, setMakeAnnouncement] = useState(false);
   const { activePage, setActivePage } = useContext(AdminActivePageContext);
 
@@ -35,12 +35,12 @@ const CustomerSupport = () => {
   ];
 
   const compaints = [
-    { name: "Veek Designs" },
-    { name: "Veek Designs" },
-    { name: "Veek Designs" },
-    { name: "Veek Designs" },
-    { name: "Veek Designs" },
-    { name: "Veek Designs" },
+    { name: "School Name" },
+    { name: "School Name" },
+    { name: "School Name" },
+    { name: "School Name" },
+    { name: "School Name" },
+    { name: "School Name" },
   ];
 
   return (
@@ -49,7 +49,7 @@ const CustomerSupport = () => {
         <span className=" w-[50px] md:w-[85px] h-[45px] md:h-[85px] rounded-[50%] bg-[#EAEBF0]"></span>
         <span className=" flex flex-col">
           <p className="font-Outfit font-medium text-xl text-black md:text-3xl">
-            Welcome back, Conflict and Resolution Officer!
+            Welcome back, P&C officer!
           </p>
           <p className=" font-Outfit text-base md:text-lg font-normal text-[#000000B2]">
             Take the first steps to Get a clear view of customer interactions.
@@ -130,10 +130,10 @@ const CustomerSupport = () => {
         <div className=" w-full lg:w-[64%] border border-[#EAEBF0] rounded-[10px] p-4">
           <div className=" w-full flex flex-row items-center justify-between">
             <p className=" font-Outfit text-xl font-semibold text-black">
-              Complaints
+              Pending Approval
             </p>
             <button
-              onClick={() => handleClick("customerComplaint")}
+              //   onClick={() => handleClick("customerComplaint")}
               className=" px-3 py-2 text-center text-sm font-Outfit text-white font-normal bg-[#0530A1] rounded-[7px]"
             >
               View all
@@ -151,9 +151,6 @@ const CustomerSupport = () => {
                     <p className=" text-[#101828] font-medium text-sm font-Outfit">
                       {item.name}
                     </p>
-                    <p className=" font-Outfit text-[#667085] text-sm font-normal">
-                      Message
-                    </p>
                   </span>
                 </div>
                 <img src={right} alt="" />
@@ -166,4 +163,4 @@ const CustomerSupport = () => {
   );
 };
 
-export default CustomerSupport;
+export default PCOfficer;

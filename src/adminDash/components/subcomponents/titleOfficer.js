@@ -99,12 +99,12 @@ const TitleOfficer = () => {
         <p className=" font-Outfit text-xl text-black font-semibold">
           Book Upload
         </p>
-        <div className=" w-full mt-6 flex flex-row justify-between items-start">
-          <div className=" w-[64%] flex flex-col">
-            <div className=" flex flex-row justify-between">
+        <div className=" w-full mt-6 flex flex-col space-y-3 md:space-y-0 md:flex-row justify-between items-start">
+          <div className=" w-full md:w-[64%] flex flex-col">
+            <div className=" flex flex-col md:flex-row justify-between space-y-3 md:space-y-0">
               <label
                 htmlFor=""
-                className=" w-[49%] flex flex-col text-[#272D37] font-medium font-Outfit text-sm"
+                className=" w-full md:w-[49%] flex flex-col text-[#272D37] font-medium font-Outfit text-sm"
               >
                 Book Title
                 <input
@@ -114,7 +114,7 @@ const TitleOfficer = () => {
               </label>
               <label
                 htmlFor=""
-                className=" w-[49%] flex flex-col text-[#272D37] font-medium font-Outfit text-sm"
+                className=" w-full md:w-[49%] flex flex-col text-[#272D37] font-medium font-Outfit text-sm"
               >
                 Book ISBN
                 <input
@@ -159,7 +159,7 @@ const TitleOfficer = () => {
               </button>
             </span>
           </div>
-          <div className=" w-[34%] flex flex-col">
+          <div className=" w-full md:w-[34%] flex flex-col">
             <label
               htmlFor=""
               className=" w-full flex flex-col text-[#272D37] font-medium font-Outfit text-sm"
