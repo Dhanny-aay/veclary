@@ -9,6 +9,8 @@ import TeacherActivePageProvider from "./teacherDash/contexts/TeacherActivePageC
 import ManageActivePageProvider from "./manageDash/contexts/ManageActivePageContext";
 import VendorActivePageProvider from "./vendorDashboard/contexts/VendorActivePageContext";
 import AdminActivePageProvider from "./adminDash/contexts/AdminActivePageContext";
+import { SnackbarProvider } from "notistack";
+import { SnackbarUtilsConfigurator } from "./utils/snackbarUtils";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -19,7 +21,10 @@ root.render(
           <ManageActivePageProvider>
             <TeacherActivePageProvider>
               <ActivePageProvider>
-                <App />
+                <SnackbarProvider maxSnack={3}>
+                  <SnackbarUtilsConfigurator />
+                  <App />
+                </SnackbarProvider>
               </ActivePageProvider>
             </TeacherActivePageProvider>
           </ManageActivePageProvider>

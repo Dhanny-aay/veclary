@@ -2,9 +2,40 @@ import grid from "./assets/grid.svg";
 import logo from "./assets/logo.svg";
 import ilus from "./assets/ilus.svg";
 import prog from "./assets/prog.svg";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import load from "./assets/load.gif";
+import { useEffect, useState } from "react";
+import { handleStudentLogin } from "../../controllers/studentControllers/userAuthController";
+import { useSnackbar } from "notistack";
 
 const Login = () => {
+  const [identifier, setIdentifier] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
+
+  // console.log(password);
+
+  const onSuccess = (response) => {
+    setLoading(false);
+    enqueueSnackbar("Login successful!", { variant: "success" });
+    // console.log(response);
+    navigate("/studentDashboard");
+  };
+
+  const onError = (error) => {
+    setLoading(false);
+    // enqueueSnackbar("Login failed. Please try again.", { variant: "error" });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setLoading(true);
+    const userData = { identifier, password };
+    handleStudentLogin(userData, onSuccess, onError);
+  };
+
   return (
     <>
       <div className="  w-full h-[100vh] flex justify-center items-center bg-[#f1f1f1] text-[#000]">
@@ -25,6 +56,8 @@ const Login = () => {
                 Email Address
                 <input
                   type="email"
+                  value={identifier}
+                  onChange={(e) => setIdentifier(e.target.value)}
                   className=" border border-[#EAEBF0] h-[45px] p-2.5 font-Outfit text-sm rounded-[15px] mt-3"
                 />
               </label>
@@ -35,14 +68,16 @@ const Login = () => {
               >
                 Password
                 <input
-                  type="email"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   className=" border border-[#EAEBF0] h-[45px] p-2.5 font-Outfit text-sm rounded-[15px] mt-3"
                 />
               </label>
             </div>
 
             <div className=" w-full flex justify-between mt-3">
-              <label className="flex items-center">
+              {/* <label className="flex items-center">
                 <input
                   type="checkbox"
                   className={`form-checkbox h-3 w-3 text-blue-600`}
@@ -50,15 +85,21 @@ const Login = () => {
                 <span className="ml-2 text-sm text-[#000] font-Outfit font-medium">
                   Remember me
                 </span>
-              </label>
-              <p className=" text-[#0530A1] text-sm font-medium font-Outfit">
+              </label> */}
+              <Link
+                to="/forgotpassword"
+                className=" text-[#0530A1] text-sm font-medium font-Outfit block ml-auto"
+              >
                 Forgot Password
-              </p>
+              </Link>
             </div>
 
             <div className=" lg:absolute mt-16 lg:mt-0 bottom-0 w-full left-0 lg:px-10">
-              <button className=" w-full bg-[#0530A1] rounded-[10px] flex items-center justify-center  h-[48px] text-white text-center font-Outfit text-base">
-                Login
+              <button
+                onClick={handleSubmit}
+                className=" w-full bg-[#0530A1] rounded-[10px] flex items-center justify-center  h-[48px] text-white text-center font-Outfit text-base"
+              >
+                {loading ? <img src={load} className=" w-6" alt="" /> : "Login"}
               </button>
               <Link to="/studentSignup">
                 <p className=" mt-[19px] font-Outfit font-medium text-sm text-[#12121266] text-center">

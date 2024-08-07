@@ -8,8 +8,10 @@ import {
   ActivePageContext,
   SidebarContext,
 } from "../contexts/ActivePageContext";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
-const StudentProfile = () => {
+const StudentProfile = ({ profile, loading }) => {
   const { activePage, setActivePage } = useContext(ActivePageContext);
   const { sidebarVisible, setSidebarVisible } = useContext(SidebarContext);
 
@@ -40,9 +42,17 @@ const StudentProfile = () => {
 
         <div className=" w-full flex flex-col items-center justify-center mt-16">
           <span className=" w-[120px] h-[120px] rounded-[50%] bg-[#f8f8f8]"></span>
-          <p className=" font-Outfit w-full text-center text-xl font-medium text-[#272D37] mt-2">
-            Dave Jones
-          </p>
+
+          {loading ? (
+            <Skeleton height={20} />
+          ) : (
+            profile && (
+              <p className=" font-Outfit w-full text-center text-xl font-medium text-[#272D37] mt-2">
+                {profile.user.name}
+              </p>
+            )
+          )}
+
           <button
             onClick={() => handleClick("EditProfile")}
             className=" mt-3 px-2 py-1 rounded-[5px] border border-[#D9D9D9] shadow-sm flex flex-row items-center space-x-1"

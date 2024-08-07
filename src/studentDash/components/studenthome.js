@@ -11,8 +11,10 @@ import file from "./assets/file.svg";
 import download from "./assets/download.svg";
 import { useContext } from "react";
 import { SidebarContext } from "../contexts/ActivePageContext";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
-const StudentHome = () => {
+const StudentHome = ({ profile, loading }) => {
   const { sidebarVisible, setSidebarVisible } = useContext(SidebarContext);
 
   const streak = [
@@ -64,9 +66,15 @@ const StudentHome = () => {
         <div className="flex flex-row md:items-center space-x-4 md:space-x-3">
           <span className=" w-[50px] md:w-[85px] h-[45px] md:h-[85px] rounded-[50%] bg-[#EAEBF0]"></span>
           <span className=" flex flex-col">
-            <p className="font-Outfit font-medium text-xl md:text-3xl">
-              Welcome back, Veek!
-            </p>
+            {loading ? (
+              <Skeleton height={30} />
+            ) : (
+              profile && (
+                <p className="font-Outfit font-medium text-xl md:text-3xl">
+                  Welcome back, {profile.user.name}!
+                </p>
+              )
+            )}
             <p className=" font-Outfit text-base md:text-lg font-normal text-[#000000B2]">
               Take the first steps to improve your Education.
             </p>

@@ -29,6 +29,7 @@ import DetailedBlog from "./landing/pages/detailedBlog";
 import Career from "./landing/pages/career";
 import DetailedCareer from "./landing/pages/detailedCareer";
 import Application from "./landing/pages/application";
+import ForgotPassword from "./landing/pages/forgotPassword";
 
 function App() {
   const location = useLocation();
@@ -53,6 +54,7 @@ function App() {
             <Route path="/DetailedCareer" element={<DetailedCareer />} />
             <Route path="/detailedBlog" element={<DetailedBlog />} />
             <Route path="/getStarted" element={<Welcome />} />
+            <Route path="/forgotpassword" element={<ForgotPassword />} />
             <Route path="/studentlogin" element={<Login />} />
             <Route path="/studentSignup" element={<StudentSignup />} />
             <Route path="/studentDashboard" element={<Dashboard />} />

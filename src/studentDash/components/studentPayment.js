@@ -67,7 +67,7 @@ const StudentPayment = () => {
         </span>
 
         <div className="px-6 mt-6 font-Outfit">
-          <div className="w-full border-b border-[#EAECF0] h-full">
+          <div className="w-full border-b border-[#E4E7EC] h-full">
             <div className="flex">
               {buttons.map((button, index) => (
                 <button

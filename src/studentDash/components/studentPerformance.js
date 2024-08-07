@@ -1,13 +1,17 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   ActivePageContext,
   SidebarContext,
 } from "../contexts/ActivePageContext";
 import arrowBlue from "./assets/arrowblue.svg";
+import { handleGetStudentPerformance } from "../../controllers/studentControllers/performanceController";
+import { useSnackbar } from "notistack";
 
 const StudentPerfomance = () => {
   const { activePage, setActivePage } = useContext(ActivePageContext);
   const { sidebarVisible, setSidebarVisible } = useContext(SidebarContext);
+  const [performance, setPerformance] = useState(null);
+  const enqueueSnackbar = useSnackbar();
 
   const handleClick = (page) => {
     setActivePage(page);
@@ -21,6 +25,28 @@ const StudentPerfomance = () => {
     { subject: "Chemistry", test1: 7, test2: 9, test3: 10 },
     { subject: "Biology", test1: 3, test2: 10, test3: 10 },
   ];
+
+  const fetchPerformance = async () => {
+    try {
+      const data = await handleGetStudentPerformance();
+      if (data) {
+        setPerformance(data);
+      } else {
+        enqueueSnackbar("Failed to fetch Note data", { variant: "error" });
+      }
+    } catch (error) {
+      console.error("Error fetching note:", error);
+      enqueueSnackbar("An error occurred while fetching Note data", {
+        variant: "error",
+      });
+    }
+  };
+
+  console.log(performance);
+
+  useEffect(() => {
+    fetchPerformance();
+  }, []);
 
   return (
     <>

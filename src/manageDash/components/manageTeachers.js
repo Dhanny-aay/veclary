@@ -7,12 +7,14 @@ import {
   ManageActivePageContext,
   ManageSidebarContext,
 } from "../contexts/ManageActivePageContext";
-import { useContext } from "react";
+import { useContext, useState } from "react";
+import AddTeacher from "./addTeacher";
 
 const ManageTeachers = () => {
   const { sidebarVisible, setSidebarVisible } =
     useContext(ManageSidebarContext);
   const { activePage, setActivePage } = useContext(ManageActivePageContext);
+  const [addTeach, setAddTeach] = useState(false);
 
   const handleClick = (page) => {
     setActivePage(page);
@@ -58,6 +60,7 @@ const ManageTeachers = () => {
 
   return (
     <>
+      {addTeach && <AddTeacher setAddTeach={setAddTeach} />}
       <div
         onClick={() => {
           setSidebarVisible(false);
@@ -96,7 +99,12 @@ const ManageTeachers = () => {
           </span>
 
           <span className=" flex items-start">
-            <button className=" text-center  text-sm font-Outfit font-medium text-white bg-[#0530A1] py-2 px-3 md:px-6 rounded-[10px]">
+            <button
+              onClick={() => {
+                setAddTeach(true);
+              }}
+              className=" text-center  text-sm font-Outfit font-medium text-white bg-[#0530A1] py-2 px-3 md:px-6 rounded-[10px]"
+            >
               Add New Teacher
             </button>
           </span>

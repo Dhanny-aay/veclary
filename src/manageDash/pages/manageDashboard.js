@@ -1,5 +1,8 @@
-import { useContext, useEffect } from "react";
-import { ManageActivePageContext, ManageSidebarContext } from "../contexts/ManageActivePageContext";
+import { useContext, useEffect, useState } from "react";
+import {
+  ManageActivePageContext,
+  ManageSidebarContext,
+} from "../contexts/ManageActivePageContext";
 import ManageHeadbar from "../components/manageHeadbar";
 import ManageSidebar from "../components/manageSidebar";
 import ManageHome from "../components/manageHome";
@@ -10,40 +13,71 @@ import ManageResource from "../components/manageResource";
 import ManageSetting from "../components/manageSettings";
 import ManageBursary from "../components/manageBursary";
 import ManageAddResources from "../components/manageAddResources";
+import { refreshToken } from "../../controllers/studentControllers/userAuthController";
+import { handleGetSchoolDashboard } from "../../controllers/schoolControllers/schoolAUthController";
 
 const ManageDashboard = () => {
+  const componentMap = {
+    Home: <ManageHome />,
+    Students: <ManageStudents />,
+    Teachers: <ManageTeachers />,
+    Timetable: <ManageTimetable />,
+    Resources: <ManageResource />,
+    Settings: <ManageSetting />,
+    Bursary: <ManageBursary />,
+    AddResources: <ManageAddResources />,
+  };
 
+  const { activePage } = useContext(ManageActivePageContext);
+  const { setSidebarVisible } = useContext(ManageSidebarContext);
+  const [dashboard, setDashboard] = useState(null);
 
-    const componentMap = {
-        Home: <ManageHome />,
-        Students: <ManageStudents />,
-        Teachers: <ManageTeachers />,
-        Timetable: <ManageTimetable />,
-        Resources: <ManageResource />,
-        Settings: <ManageSetting />,
-        Bursary: <ManageBursary />,
-        AddResources: <ManageAddResources />,
+  useEffect(() => {
+    setSidebarVisible(false);
+  }, [activePage, setSidebarVisible]);
+
+  useEffect(() => {
+    const fetchDashboard = async () => {
+      try {
+        const data = await handleGetSchoolDashboard();
+        if (data) {
+          setDashboard(data);
+        } else {
+          // enqueueSnackbar("Failed to fetch profile data", { variant: "error" });
+        }
+      } catch (error) {
+        console.error("Error fetching Dashboard:", error);
+        // enqueueSnackbar("An error occurred while fetching profile data", {
+        //   variant: "error",
+        // });
+      } finally {
+      }
     };
 
-    const { activePage } = useContext(ManageActivePageContext);
-    const { setSidebarVisible } = useContext(ManageSidebarContext);
+    fetchDashboard();
+  }, []);
 
-    useEffect(() => {
-        setSidebarVisible(false);
-    }, [activePage, setSidebarVisible]);
+  console.log(dashboard);
 
+  const ComponentToRender = componentMap[activePage] || null;
 
-    const ComponentToRender = componentMap[activePage] || null;
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      refreshToken();
+    }, 300000); // 300000 ms = 5 minutes
 
-    return ( 
-        <>
-        <div className=" relative">
-            <ManageHeadbar/>
-            <ManageSidebar/>
-            {ComponentToRender}
-        </div>
-        </>
-     );
-}
- 
+    return () => clearInterval(intervalId);
+  }, []);
+
+  return (
+    <>
+      <div className=" relative">
+        <ManageHeadbar />
+        <ManageSidebar />
+        {ComponentToRender}
+      </div>
+    </>
+  );
+};
+
 export default ManageDashboard;

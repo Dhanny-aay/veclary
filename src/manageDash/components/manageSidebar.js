@@ -88,7 +88,15 @@ const ManageSidebar = () => {
                     className="w-4 h-4"
                     alt=""
                   />
-                  <p className="font-Outfit text-xs">{item.name}</p>
+                  <p
+                    className={`font-Outfit text-xs ${
+                      activePage === item.page
+                        ? "text-[#0530A1]"
+                        : "text-[#929292]"
+                    }`}
+                  >
+                    {item.name}
+                  </p>
                 </button>
               ))}
             </div>
@@ -112,7 +120,15 @@ const ManageSidebar = () => {
                       className="w-4 h-4"
                       alt=""
                     />
-                    <p className="font-Outfit text-xs">{item.name}</p>
+                    <p
+                      className={`font-Outfit text-xs ${
+                        activePage === item.page
+                          ? "text-[#0530A1]"
+                          : "text-[#929292]"
+                      }`}
+                    >
+                      {item.name}
+                    </p>
                   </button>
                 ))}
               </div>

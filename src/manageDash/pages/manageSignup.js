@@ -1,39 +1,65 @@
 import grid from "./assets/grid.svg";
 import logo from "./assets/logo.svg";
-import progress from "./assets/progress.svg";
-import progress1 from "./assets/progress1.svg";
-import progress2 from "./assets/progress2.svg";
-import { Link } from "react-router-dom";
-import down from "./assets/down.svg";
+import { Link, useNavigate } from "react-router-dom";
+import load from "./assets/load.gif";
 import ilus1 from "./assets/ilus1.svg";
 import prog1 from "./assets/prog1.svg";
 import { useState } from "react";
-import individual from "./assets/Individualplan.svg";
-import pro from "./assets/proplan.svg";
-import ent from "./assets/entplan.svg";
+import PersonalManage from "./signupComponents/personal";
+import AcademicManage from "./signupComponents/academic";
+import PlanManage from "./signupComponents/plan";
+import { handleSchoolRegister } from "../../controllers/schoolControllers/schoolAUthController";
 
 const ManageSignup = () => {
-  const req = [
-    { name: "Characters", example: "8+" },
-    { name: "Uppercase", example: "AA" },
-    { name: "Lowercase", example: "aa" },
-    { name: "Numbers", example: "123" },
-    { name: "Symbol", example: "$#^" },
+  const [currentStep, setCurrentStep] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    adminName: "",
+    adminEmail: "",
+    AdminPassword: "",
+    schoolEmail: "",
+    schoolName: "",
+    schoolReg: "",
+    schoolCAC: "",
+    schoolPhone: "",
+    schoolWebsite: "",
+    schoolAddress: "",
+  });
+
+  // console.log(formData);
+
+  const steps = [
+    <PersonalManage formData={formData} setFormData={setFormData} />,
+    <AcademicManage formData={formData} setFormData={setFormData} />,
+    <PlanManage formData={formData} setFormData={setFormData} />,
   ];
 
-  const [personal, setPersonal] = useState(false);
-  const [academic, setAcademic] = useState(true);
-  const [plans, setPlans] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState(null);
+  const handleProceed = () => {
+    if (currentStep < steps.length - 1) {
+      setCurrentStep(currentStep + 1);
+    }
+  };
 
-  const plan = [
-    { name: "Individual", price: "₦900/mon", image: individual },
-    { name: "Pro", price: "₦2500/mon", image: pro },
-    { name: "Enterprise", price: "Custom price/mon", image: ent },
-  ];
+  const handleBack = () => {
+    if (currentStep > 0) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
 
-  const handlePlanSelect = (index) => {
-    setSelectedPlan(selectedPlan === index ? null : index);
+  const onSuccess = () => {
+    setLoading(false);
+    navigate("/managementlogin");
+  };
+  const onError = () => {
+    setLoading(false);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setLoading(true);
+    const userData = formData;
+    handleSchoolRegister(userData, onSuccess, onError);
   };
 
   return (
@@ -48,222 +74,38 @@ const ManageSignup = () => {
               Get Started Now
             </p>
 
-            {personal && (
-              <div className="w-full">
-                <img src={progress} className=" w-full mt-3" alt="" />
-                <p className=" font-Outfit font-medium text-2xl mt-6">
-                  School Information
-                </p>
-
-                <div className=" w-full mt-4 lg:overflow-y-auto lg:h-[260px]">
-                  <label
-                    htmlFor="Email"
-                    className=" flex flex-col w-full font-Outfit text-sm font-medium"
-                  >
-                    School Name
-                    <input
-                      type="email"
-                      className=" border border-[#EAEBF0] h-[40px] p-2.5 font-Outfit text-sm rounded-[15px] mt-2"
-                    />
-                  </label>
-
-                  <div className=" w-full flex justify-between items-center">
-                    <label
-                      htmlFor="Email"
-                      className=" flex flex-col w-[48%] font-Outfit text-sm font-medium mt-4"
-                    >
-                      School CAC Number
-                      <input
-                        type="email"
-                        className=" border border-[#EAEBF0] h-[40px] p-2.5 font-Outfit text-sm rounded-[15px] mt-2"
-                      />
-                    </label>
-
-                    <label
-                      htmlFor="Email"
-                      className=" flex flex-col w-[48%] font-Outfit text-sm font-medium mt-4"
-                    >
-                      School Registration Number
-                      <input
-                        type="email"
-                        className=" border border-[#EAEBF0] h-[40px] p-2.5 font-Outfit text-sm rounded-[15px] mt-2"
-                      />
-                    </label>
-                  </div>
-
-                  <div className=" w-full flex justify-between items-end">
-                    <label
-                      htmlFor="Email"
-                      className=" flex flex-col w-[48%] font-Outfit text-sm font-medium mt-4"
-                    >
-                      School Contact Information
-                      <input
-                        type="email"
-                        placeholder="Enter Phone Number"
-                        className=" border border-[#EAEBF0] h-[40px] p-2.5 font-Outfit text-sm rounded-[15px] mt-2"
-                      />
-                    </label>
-
-                    <label
-                      htmlFor="Email"
-                      className=" flex flex-col w-[48%] font-Outfit text-sm font-medium mt-4"
-                    >
-                      <input
-                        type="email"
-                        placeholder="Enter Email Address"
-                        className=" border border-[#EAEBF0] h-[40px] p-2.5 font-Outfit text-sm rounded-[15px] mt-2"
-                      />
-                    </label>
-                  </div>
-
-                  <label
-                    htmlFor="Email"
-                    className=" flex flex-col w-full font-Outfit text-sm font-medium mt-4"
-                  >
-                    School Address
-                    <input
-                      type="email"
-                      className=" border border-[#EAEBF0] h-[40px] p-2.5 font-Outfit text-sm rounded-[15px] mt-2"
-                    />
-                  </label>
-
-                  <div className=" w-full flex justify-between items-end">
-                    <label
-                      htmlFor="Email"
-                      className=" flex flex-col w-[48%] font-Outfit text-sm font-medium mt-4"
-                    >
-                      State
-                      <input
-                        type="email"
-                        className=" border border-[#EAEBF0] h-[40px] p-2.5 font-Outfit text-sm rounded-[15px] mt-2"
-                      />
-                    </label>
-
-                    <label
-                      htmlFor="Email"
-                      className=" flex flex-col w-[48%] font-Outfit text-sm font-medium mt-4"
-                    >
-                      Country
-                      <input
-                        type="email"
-                        className=" border border-[#EAEBF0] h-[40px] p-2.5 font-Outfit text-sm rounded-[15px] mt-2"
-                      />
-                    </label>
-                  </div>
-
-                  <label
-                    htmlFor="Email"
-                    className=" flex flex-col w-full font-Outfit text-sm font-medium mt-4"
-                  >
-                    School Website (optional)
-                    <input
-                      type="email"
-                      className=" border border-[#EAEBF0] h-[40px] mb-10 p-2.5 font-Outfit text-sm rounded-[15px] mt-2"
-                    />
-                  </label>
-                </div>
-              </div>
-            )}
-
-            {academic && (
-              <div className="w-full">
-                <img src={progress1} className=" w-full mt-3" alt="" />
-                <p className=" font-Outfit font-medium text-2xl mt-6">
-                  School Administrator Information
-                </p>
-                <p className=" font-Outfit text-[#636363] font-normal text-sm">
-                  Individual approve...
-                </p>
-
-                <div className=" w-full mt-4 lg:overflow-y-scroll lg:h-[260px]">
-                  <label
-                    htmlFor="Email"
-                    className=" flex flex-col w-full font-Outfit text-sm font-medium mt-4"
-                  >
-                    Administrator Name
-                    <input
-                      type="email"
-                      className=" border border-[#EAEBF0] h-[40px] p-2.5 font-Outfit text-sm rounded-[15px] mt-2"
-                    />
-                  </label>
-
-                  <label
-                    htmlFor="Email"
-                    className=" flex flex-col w-full font-Outfit text-sm font-medium mt-4"
-                  >
-                    Administrator Email Address
-                    <input
-                      type="email"
-                      className=" border border-[#EAEBF0] h-[40px] p-2.5 font-Outfit text-sm rounded-[15px] mt-2"
-                    />
-                  </label>
-
-                  <label
-                    htmlFor="Email"
-                    className=" flex flex-col mb-12 w-full font-Outfit text-sm font-medium mt-4"
-                  >
-                    Administrator Password
-                    <input
-                      type="email"
-                      className=" border border-[#EAEBF0] h-[40px] p-2.5 font-Outfit text-sm rounded-[15px] mt-2"
-                    />
-                  </label>
-                </div>
-              </div>
-            )}
-
-            {plans && (
-              <div className="w-full">
-                <img src={progress2} className=" w-full mt-3" alt="" />
-                <p className=" font-Outfit font-medium text-xl mt-6">
-                  Unlock Velcary full learning experience by choosing a plan
-                </p>
-
-                <div className="w-full mt-4 pb-8 lg:overflow-y-scroll lg:h-[260px]">
-                  <div className="mt-4 space-y-3 flex flex-col items-center w-full">
-                    {plan.map((item, index) => (
-                      <div
-                        key={index}
-                        className={`w-full border ${
-                          selectedPlan === index
-                            ? "border-[#0530A1] border-2"
-                            : "border-[#EAEBF0]"
-                        } flex py-4 px-5 rounded-[10px] flex-col justify-between items- bg-[#F4F4F5] cursor-pointer`}
-                        onClick={() => handlePlanSelect(index)}
-                      >
-                        <div className="flex items-center w-full justify-between space-x-2">
-                          {" "}
-                          {/* Added container for plan details */}
-                          <span className=" flex items-center space-x-2">
-                            <p className="font-Outfit text-base font-medium">
-                              {item.name}
-                            </p>
-                            <p className="font-Outfit text-xs mb-2 text-[#00000094] font-medium">
-                              {item.price}
-                            </p>
-                          </span>
-                          <img src={down} alt="" />
-                        </div>
-                        {selectedPlan === index && (
-                          <img
-                            src={item.image}
-                            className="mt-6 w-full"
-                            alt=""
-                          />
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )}
+            {steps[currentStep]}
 
             <div className=" mt-16 lg:mt-0 lg:absolute bottom-0 w-full left-0 lg:px-10">
-              <Link to="/managementDashboard" className=" w-full">
-                <button className=" w-full bg-[#0530A1] rounded-[10px] flex items-center justify-center  h-[38px] text-white text-center font-Outfit text-base">
-                  Proceed
+              <div className="flex justify-between">
+                {currentStep > 0 && (
+                  <button
+                    className="w-[48%] bg-[#e0e0e0] rounded-[10px] flex items-center justify-center h-[38px] text-black text-center font-Outfit text-base"
+                    onClick={handleBack}
+                  >
+                    Back
+                  </button>
+                )}
+
+                <button
+                  className={`${
+                    currentStep > 0 ? "w-[48%]" : "w-full"
+                  } bg-[#0530A1] rounded-[10px] flex items-center justify-center h-[38px] text-white text-center font-Outfit text-base`}
+                  onClick={
+                    currentStep < steps.length - 1
+                      ? handleProceed
+                      : handleSubmit
+                  }
+                >
+                  {loading ? (
+                    <img src={load} className=" w-6" alt="" />
+                  ) : currentStep < steps.length - 1 ? (
+                    "Proceed"
+                  ) : (
+                    "Submit"
+                  )}
                 </button>
-              </Link>
+              </div>
               <Link to="/managementlogin">
                 <p className=" mt-[19px] font-Outfit font-medium text-xs text-[#12121266] text-center">
                   Already have an Account?{" "}
