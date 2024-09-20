@@ -1,21 +1,21 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import arrowBlue from "./assets/arrowblue.svg";
 import upload from "./assets/upload.svg";
 import file from "./assets/file.svg";
 import edit from "./assets/edit.svg";
 import trash from "./assets/trash.svg";
-import uplo from "./assets/uplo.svg";
-import cross from "./assets/cross.svg";
+
 import {
   VendorActivePageContext,
   VendorSidebarContext,
 } from "../contexts/VendorActivePageContext";
-import x from "./assets/x.svg";
-import x1 from "./assets/x (1).svg";
-import x2 from "./assets/x (2).svg";
-import pload from "./assets/pload.svg";
 
-const VendorBooks = () => {
+import AddBook from "./addBook";
+import { handleGetPublisherBooks } from "../../controllers/publisherController/booksContoller";
+import LoadingTable from "../../utils/loadingTable";
+import { handleGetAuthorBooks } from "../../controllers/authorController/generalContoller";
+
+const VendorBooks = ({ role }) => {
   const { sidebarVisible, setSidebarVisible } =
     useContext(VendorSidebarContext);
   const { activePage, setActivePage } = useContext(VendorActivePageContext);
@@ -23,6 +23,42 @@ const VendorBooks = () => {
   const handleClick = (page) => {
     setActivePage(page);
   };
+
+  const [books, setBooks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [noBooks, setNoBooks] = useState(false);
+
+  const fetchBooks = async () => {
+    setLoading(true); // Start loading when fetching books
+    try {
+      let data;
+
+      // Check role and fetch the appropriate books
+      if (role === "AUTHOR") {
+        data = await handleGetAuthorBooks(); // Fetch books for authors
+      } else {
+        data = await handleGetPublisherBooks(); // Fetch books for publishers
+      }
+
+      if (data && data.message === "No books found") {
+        setNoBooks(true); // Set noBooks to true if no books found
+        setBooks([]); // Clear the books array
+      } else {
+        setBooks(data); // Set the books if data is available
+        setNoBooks(false); // Reset noBooks if books are found
+      }
+    } catch (error) {
+      setNoBooks(true); // Set noBooks to true in case of error
+    } finally {
+      setLoading(false); // Stop loading when fetch is complete
+    }
+  };
+
+  useEffect(() => {
+    fetchBooks();
+  }, [role]); // Include role as a dependency to refetch books when role changes
+
+  console.log(books);
 
   const categories = [
     { name: "Veclary Resources", size: "80.69 mb", tag: " Non Academic Books" },
@@ -47,185 +83,11 @@ const VendorBooks = () => {
   const [selectedTag, setSelectedTag] = useState("all");
   const [filteredCategories, setFilteredCategories] = useState(categories);
   const [uploadBook, setUploadBook] = useState(false);
-  const [schedule, setSchedule] = useState(false);
 
   return (
     <>
       {/* upload book component */}
-      {uploadBook && (
-        <div className=" w-[120%] h-[100vh] bg-[#1212128d] z-[99999]  fixed top-0 md:pb-[120px] -left-[20%] flex justify-center items-center">
-          <div className="ml-[20%] h-[90%]  mt-[100px] bg-[#FFFFFF] p-6 rounded-[15px]  w-full md:w-[500px]">
-            <div className=" w-full h-full bg-[#fff] overflow-auto rounded-[15px]">
-              <span className=" w-full flex items-center justify-between">
-                <img src={uplo} alt="" />
-                <img
-                  onClick={() => {
-                    setUploadBook(false);
-                  }}
-                  src={cross}
-                  className=" w-4"
-                  alt=""
-                />
-              </span>
-              <p className=" text-lg text-[#272D37] font-semibold mt-6 font-Outfit">
-                Upload a Book
-              </p>
-              <div className=" w-full flex flex-row justify-between items-center">
-                <label
-                  htmlFor=""
-                  className=" w-[48%] flex flex-col mt-6 text-[#272D37] font-Outfit font-medium text-sm"
-                >
-                  Title
-                  <input
-                    type="text"
-                    name=""
-                    placeholder="Enter title of Book"
-                    className=" font-Outfit text-[#919BA7] placeholder:text-[#919BA7] text-sm font-normal w-full mt-2 border border-[#DAE0E6] p-2.5 rounded-[5px]"
-                    id=""
-                  />
-                </label>
-                <label
-                  htmlFor=""
-                  className=" w-[48%] flex flex-col mt-6 text-[#272D37] font-Outfit font-medium text-sm"
-                >
-                  Book ISBN
-                  <input
-                    type="text"
-                    name=""
-                    placeholder="Enter book ISN"
-                    className=" font-Outfit text-[#919BA7] placeholder:text-[#919BA7] text-sm font-normal w-full mt-2 border border-[#DAE0E6] p-2.5 rounded-[5px]"
-                    id=""
-                  />
-                </label>
-              </div>
-
-              <label
-                htmlFor=""
-                className=" w-full flex flex-col mt-6 text-[#272D37] font-Outfit font-medium text-sm"
-              >
-                Book Description
-                <textarea
-                  type="text"
-                  name=""
-                  placeholder="Enter book Description"
-                  className=" font-Outfit text-[#919BA7] placeholder:text-[#919BA7] text-sm font-normal w-full mt-2 border border-[#DAE0E6] p-2.5 rounded-[5px]"
-                  id=""
-                />
-              </label>
-
-              <label
-                htmlFor=""
-                className=" w-full flex flex-col mt-6 text-[#272D37] font-Outfit font-medium text-sm"
-              >
-                Add book label
-                <input
-                  type="text"
-                  name=""
-                  placeholder="Search for Label"
-                  className=" font-Outfit text-[#919BA7] placeholder:text-[#919BA7] text-sm font-normal w-full mt-2 border border-[#DAE0E6] p-2.5 rounded-[5px]"
-                  id=""
-                />
-              </label>
-
-              <span className=" flex flex-row items-center space-x-3 mt-6">
-                <button className=" py-[2px] px-2 rounded-[16px] font-Outfit text-xs font-medium flex items-center space-x-1 text-[#026AA2] bg-[#f0f9ff]">
-                  <p className="">Sci-Fi</p>
-                  <img src={x} alt="" />
-                </button>
-                <button className=" py-[2px] px-2 rounded-[16px] font-Outfit text-xs font-medium flex items-center space-x-1 text-[#3538CD] bg-[#EEF4FF]">
-                  <p className="">Novel</p>
-                  <img src={x1} alt="" />
-                </button>
-                <button className=" py-[2px] px-2 rounded-[16px] font-Outfit text-xs font-medium flex items-center space-x-1 text-[#C11574] bg-[#FDF2FA]">
-                  <p className="">Read Alone</p>
-                  <img src={x2} alt="" />
-                </button>
-              </span>
-
-              <div className=" mt-6 w-full border border-[#DAE0E6] rounded-[5px] flex items-center justify-center flex-col p-3">
-                <img src={pload} alt="" />
-                <p className=" mt-3 text-sm font-normal font-Outfit text-[#667085]">
-                  <span className=" font-semibold text-[#0530A1] mr-1">
-                    Click to upload
-                  </span>
-                  or drag and drop
-                </p>
-                <p className=" mt-1 text-xs font-normal font-Outfit text-[#667085]">
-                   PDF, EPUB, or MOBI. (max. 200mb)
-                </p>
-              </div>
-
-              {schedule && (
-                <div className=" w-full flex flex-row justify-between items-center">
-                  <label
-                    htmlFor=""
-                    className=" w-[48%] flex flex-col mt-6 text-[#272D37] font-Outfit font-medium text-sm"
-                  >
-                    Select time
-                    <input
-                      type="text"
-                      name=""
-                      placeholder=""
-                      className=" font-Outfit text-[#919BA7] placeholder:text-[#919BA7] text-sm font-normal w-full mt-2 border border-[#DAE0E6] p-2.5 rounded-[5px]"
-                      id=""
-                    />
-                  </label>
-                  <label
-                    htmlFor=""
-                    className=" w-[48%] flex flex-col mt-6 text-[#272D37] font-Outfit font-medium text-sm"
-                  >
-                    Select date
-                    <input
-                      type="text"
-                      name=""
-                      placeholder=""
-                      className=" font-Outfit text-[#919BA7] placeholder:text-[#919BA7] text-sm font-normal w-full mt-2 border border-[#DAE0E6] p-2.5 rounded-[5px]"
-                      id=""
-                    />
-                  </label>
-                </div>
-              )}
-
-              {schedule === false && (
-                <div className=" w-full mt-6 grid grid-cols-2 gap-4">
-                  <button
-                    onClick={() => {
-                      setSchedule(true);
-                    }}
-                    className=" w-full py-3 font-Outfit rounded-md text-[#272D37] font-semibold border border-[#DAE0E6] text-base"
-                  >
-                    Schedule Publish
-                  </button>
-                  <button
-                    onClick={() => {
-                      setUploadBook(false);
-                    }}
-                    className=" w-full py-3 font-Outfit rounded-md text-[#fff] bg-[#0530A1] font-semibold text-base"
-                  >
-                    Publish Now
-                  </button>
-                </div>
-              )}
-
-              {schedule && (
-                <div className=" w-full mt-6 grid grid-cols-2 gap-4">
-                  <button
-                    onClick={() => {
-                      setUploadBook(false);
-                    }}
-                    className=" w-full py-3 font-Outfit rounded-md text-[#272D37] font-semibold border border-[#DAE0E6] text-base"
-                  >
-                    Cancel
-                  </button>
-                  <button className=" w-full py-3 font-Outfit rounded-md text-[#fff] bg-[#0530A1] font-semibold text-base">
-                    Continue
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
+      {uploadBook && <AddBook setUploadBook={setUploadBook} />}
 
       {/* Books(main) Component */}
       <div
@@ -291,30 +153,50 @@ const VendorBooks = () => {
 
           <div className=" w-full mt-6 ">
             <div className=" w-full border border-[#EAEBF0] rounded-[10px]">
-              <div className=" flex flex-col space-y-3 w-full h-full p-4">
-                {filteredCategories.map((item, index) => (
-                  <div
-                    key={index}
-                    className=" w-full py-3 border-b border-[#EAEBF0] flex flex-row items-center justify-between"
+              {loading ? (
+                // Show loading spinner while fetching data
+                <tr>
+                  <td colSpan="6">
+                    <LoadingTable />
+                  </td>
+                </tr>
+              ) : noBooks ? (
+                // Show "No authors found" message
+
+                <tr>
+                  <td
+                    colSpan="5"
+                    className="px-4 py-3 text-center font-Outfit text-[#667085] text-sm"
                   >
-                    <div className=" flex flex-row space-x-3">
-                      <img src={file} alt="" />
-                      <div className="">
-                        <p className=" font-Outfit font-medium text-[#272D37] text-xs">
-                          {item.name}
-                        </p>
-                        <p className=" font-Outfit text-[8px] text-[#5F6D7E]">
-                          {item.size}
-                        </p>
+                    There are no Books yet.
+                  </td>
+                </tr>
+              ) : (
+                <div className=" flex flex-col space-y-3 w-full h-full p-4">
+                  {filteredCategories.map((item, index) => (
+                    <div
+                      key={index}
+                      className=" w-full py-3 border-b border-[#EAEBF0] flex flex-row items-center justify-between"
+                    >
+                      <div className=" flex flex-row space-x-3">
+                        <img src={file} alt="" />
+                        <div className="">
+                          <p className=" font-Outfit font-medium text-[#272D37] text-xs">
+                            {item.name}
+                          </p>
+                          <p className=" font-Outfit text-[8px] text-[#5F6D7E]">
+                            {item.size}
+                          </p>
+                        </div>
                       </div>
+                      <span className=" flex space-x-3">
+                        <img src={edit} className=" w-4" alt="" />
+                        <img src={trash} className=" w-4" alt="" />
+                      </span>
                     </div>
-                    <span className=" flex space-x-3">
-                      <img src={edit} className=" w-4" alt="" />
-                      <img src={trash} className=" w-4" alt="" />
-                    </span>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>

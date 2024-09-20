@@ -71,7 +71,8 @@ const StudentHome = ({ profile, loading }) => {
             ) : (
               profile && (
                 <p className="font-Outfit font-medium text-xl md:text-3xl">
-                  Welcome back, {profile.user.name}!
+                  Welcome back,{" "}
+                  <span className=" capitalize">{profile.user.name}!</span>
                 </p>
               )
             )}

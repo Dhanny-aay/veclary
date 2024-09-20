@@ -8,11 +8,9 @@ import {
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import load from "./assets/load.gif";
-import {
-  handleAvatarUpload,
-  handleStudentProfileUpdate,
-} from "../../controllers/studentControllers/userAuthController";
+import { handleStudentProfileUpdate } from "../../controllers/studentControllers/userAuthController";
 import { useSnackbar } from "notistack";
+import { handleAvatarUpload } from "../../controllers/generalController/authController";
 
 const StudentEditProfile = ({ profile, loading }) => {
   const { activePage, setActivePage } = useContext(ActivePageContext);
@@ -179,7 +177,7 @@ const StudentEditProfile = ({ profile, loading }) => {
             <Skeleton height={20} />
           ) : (
             profile && (
-              <p className=" font-Outfit text-xl font-medium mt-3">
+              <p className=" font-Outfit text-xl font-medium mt-3 capitalize">
                 {profile.user.name}
               </p>
             )

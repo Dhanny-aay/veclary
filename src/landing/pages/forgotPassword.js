@@ -5,8 +5,8 @@ import prog from "./assets/prog.svg";
 import { Link, useNavigate } from "react-router-dom";
 import load from "./assets/load.gif";
 import { useEffect, useState } from "react";
-import { handleForgotPassword } from "../../controllers/studentControllers/userAuthController";
 import { useSnackbar } from "notistack";
+import { handleForgotPassword } from "../../controllers/generalController/authController";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");

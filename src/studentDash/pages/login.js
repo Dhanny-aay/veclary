@@ -32,7 +32,7 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
-    const userData = { identifier, password };
+    const userData = { identifier: identifier.toLowerCase(), password };
     handleStudentLogin(userData, onSuccess, onError);
   };
 

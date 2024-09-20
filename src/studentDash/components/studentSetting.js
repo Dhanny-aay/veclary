@@ -12,13 +12,14 @@ import {
   SidebarContext,
 } from "../contexts/ActivePageContext";
 import load from "./assets/load.gif";
-import { handleChangeCurrPassword } from "../../controllers/studentControllers/userAuthController";
+import { handleChangeCurrPassword } from "../../controllers/generalController/authController";
 
 const StudentSettings = () => {
   const { activePage, setActivePage } = useContext(ActivePageContext);
   const { sidebarVisible, setSidebarVisible } = useContext(SidebarContext);
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleClick = (page) => {
@@ -96,6 +97,20 @@ const StudentSettings = () => {
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   placeholder="New Password"
+                  className="w-full text-sm font-normal text-[#667085] bg-[#F1F1F1] p-2.5 rounded-[8px] mt-2"
+                />
+              </label>
+
+              <label
+                htmlFor=""
+                className=" w-full font-Outfit text-[#344054] font-medium text-sm"
+              >
+                Confirm New Password
+                <input
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="Confirm New Password"
                   className="w-full text-sm font-normal text-[#667085] bg-[#F1F1F1] p-2.5 rounded-[8px] mt-2"
                 />
               </label>

@@ -11,11 +11,15 @@ import {
   VendorActivePageContext,
   VendorSidebarContext,
 } from "../contexts/VendorActivePageContext";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+import AddBook from "./addBook";
 
-const VendorHome = () => {
+const VendorHome = ({ loading, profile }) => {
   const { sidebarVisible, setSidebarVisible } =
     useContext(VendorSidebarContext);
   const { activePage, setActivePage } = useContext(VendorActivePageContext);
+  const [uploadBook, setUploadBook] = useState(false);
 
   const handleClick = (page) => {
     setActivePage(page);
@@ -42,27 +46,43 @@ const VendorHome = () => {
     },
   ];
 
+  console.log(profile);
+
   return (
     <>
+      {/* upload book component */}
+      {uploadBook && <AddBook setUploadBook={setUploadBook} />}
       <div
         onClick={() => {
           setSidebarVisible(false);
         }}
         className=" absolute lg:left-[20%] top-[56px] p-6 w-full lg:w-[80%]"
       >
-        <div className=" flex flex-row justify-between items-start">
+        <div className=" flex flex-col space-y-6 md:space-y-0 md:flex-row justify-between items-start">
           <div className="flex flex-row md:items-center space-x-4 md:space-x-3">
             <span className=" w-[50px] md:w-[85px] h-[45px] md:h-[85px] rounded-[50%] bg-[#EAEBF0]"></span>
             <span className=" flex flex-col">
-              <p className="font-Outfit font-medium text-xl md:text-3xl">
-                Welcome back, Veek!
-              </p>
+              {loading ? (
+                <Skeleton height={30} />
+              ) : (
+                profile && (
+                  <p className="font-Outfit font-medium text-xl md:text-3xl">
+                    Welcome back,{" "}
+                    <span className=" capitalize">{profile[0].name}!</span>
+                  </p>
+                )
+              )}
               <p className=" font-Outfit text-base md:text-lg font-normal text-[#000000B2]">
                 Let's see how your books are performing!
               </p>
             </span>
           </div>
-          <button className=" px-10 py-3 flex items-center space-x-3 rounded-[10px] bg-[#0530A1]">
+          <button
+            onClick={() => {
+              setUploadBook(true);
+            }}
+            className=" px-10 py-3 flex items-center w-full md:w-auto justify-center space-x-3 rounded-[10px] bg-[#0530A1]"
+          >
             <img src={upload} alt="" />
             <p className=" font-Outfit text-base font-medium text-white">
               Upload a book

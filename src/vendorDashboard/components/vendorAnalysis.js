@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import arrowBlue from "./assets/arrowblue.svg";
 import chart from "./assets/chart.svg";
 import chart1 from "./assets/chart1.svg";
@@ -7,8 +7,10 @@ import {
   VendorActivePageContext,
   VendorSidebarContext,
 } from "../contexts/VendorActivePageContext";
+import { handleGetPublisherAnalysis } from "../../controllers/publisherController/generalController";
+import { handleGetAuthorAnalysis } from "../../controllers/authorController/generalContoller";
 
-const VectorAnalysis = () => {
+const VectorAnalysis = ({ role }) => {
   const { sidebarVisible, setSidebarVisible } =
     useContext(VendorSidebarContext);
   const { activePage, setActivePage } = useContext(VendorActivePageContext);
@@ -37,6 +39,42 @@ const VectorAnalysis = () => {
       img: chart2,
     },
   ];
+
+  const [analysiss, setAnalysis] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [noAnalysis, setNoAnalysis] = useState(false);
+
+  const fetchAnalysis = async () => {
+    setLoading(true); // Start loading when fetching analysis
+    try {
+      let data;
+
+      // Check role and fetch the appropriate analysis
+      if (role === "AUTHOR") {
+        data = await handleGetAuthorAnalysis(); // Fetch analysis for authors
+      } else {
+        data = await handleGetPublisherAnalysis(); // Fetch analysis for publishers
+      }
+
+      if (data && data.message === "No analysis found") {
+        setNoAnalysis(true); // Set noAnalysiss to true if no analysis found
+        setAnalysis([]); // Clear the analysis array
+      } else {
+        setAnalysis(data); // Set the analysis if data is available
+        setNoAnalysis(false); // Reset noAnalysiss if analysis are found
+      }
+    } catch (error) {
+      setNoAnalysis(true); // Set noAnalysiss to true in case of error
+    } finally {
+      setLoading(false); // Stop loading when fetch is complete
+    }
+  };
+
+  useEffect(() => {
+    fetchAnalysis();
+  }, []);
+
+  console.log(analysiss);
 
   const transactions = [
     {

@@ -1,21 +1,50 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import userPlus from "./assets/user-plus.svg";
 import arrowBlue from "./assets/arrowblue.svg";
 import heart from "./assets/heart.svg";
 import bookimg from "./assets/bookimg.svg";
 import {
+  CurrAuthorIDContext,
   VendorActivePageContext,
   VendorSidebarContext,
 } from "../contexts/VendorActivePageContext";
+import { handleGetPublisherAuthorById } from "../../controllers/publisherController/authorController";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 const VendorAuthorProfile = () => {
   const { sidebarVisible, setSidebarVisible } =
     useContext(VendorSidebarContext);
   const { activePage, setActivePage } = useContext(VendorActivePageContext);
+  const { currAuthorID } = useContext(CurrAuthorIDContext);
+  const [loading, setLoading] = useState(true);
+  const [authorDetails, setAuthorDetails] = useState([]);
 
   const handleClick = (page) => {
     setActivePage(page);
   };
+
+  useEffect(() => {
+    const fetchAuthorByID = async () => {
+      try {
+        const data = await handleGetPublisherAuthorById(currAuthorID);
+        if (data) {
+          const recievedItems = data;
+          setAuthorDetails(recievedItems);
+        } else {
+          // enqueueSnackbar("Failed to fetch profile data", { variant: "error" });
+        }
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAuthorByID();
+  }, []);
+
+  console.log(authorDetails);
 
   const categories = [
     {
@@ -129,7 +158,7 @@ const VendorAuthorProfile = () => {
         className=" absolute lg:left-[20%] top-[56px] w-full pb-6 lg:w-[80%]"
       >
         <span
-          onClick={() => handleClick("Home")}
+          onClick={() => handleClick("Authors")}
           className=" cursor-pointer px-6 mt-6 flex flex-row items-center"
         >
           <img src={arrowBlue} alt="" />
@@ -145,20 +174,36 @@ const VendorAuthorProfile = () => {
           <div className=" flex items-center space-x-4">
             <span className=" w-[160px] h-[160px] rounded-[50%] bg-[#f8f8f8] border-4 border-white shadow shadow-[#10182814]"></span>
             <span>
-              <p className=" font-medium text-3xl text-[#101828] font-Outfit">
-                Veek Design
-              </p>
-              <p className=" font-normal text-sm font-Outfit text-[#667085]">
-                Veekdesign@gmail.com
-              </p>
-              <span className=" mt-3 flex space-x-3">
+              {loading ? (
+                <Skeleton width={200} height={30} />
+              ) : (
+                authorDetails &&
+                authorDetails.user && (
+                  <p className="font-medium text-3xl text-[#101828] font-Outfit capitalize">
+                    {authorDetails.user.name}
+                  </p>
+                )
+              )}
+
+              {loading ? (
+                <Skeleton width={300} height={15} />
+              ) : (
+                authorDetails &&
+                authorDetails.user && (
+                  <p className="font-normal text-sm font-Outfit text-[#667085]">
+                    {authorDetails.user.email}
+                  </p>
+                )
+              )}
+
+              {/* <span className=" mt-3 flex space-x-3">
                 <button className=" py-1 px-2 rounded-[15px] bg-[#17BD8D1A] text-[#17BD8D] font-Outfit text-xs font-normal">
                   Novels
                 </button>
                 <button className=" py-1 px-2 rounded-[15px] bg-[#17BD8D1A] text-[#17BD8D] font-Outfit text-xs font-normal">
                   Text-Books
                 </button>
-              </span>
+              </span> */}
             </span>
           </div>
 

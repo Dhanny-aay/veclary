@@ -2,9 +2,38 @@ import grid from "./assets/grid.svg";
 import logo from "./assets/logo.svg";
 import ilus from "./assets/ilus.svg";
 import prog from "./assets/prog.svg";
-import { Link } from "react-router-dom";
+import load from "./assets/load.gif";
+import { Link, useNavigate } from "react-router-dom";
+import { useSnackbar } from "notistack";
+import { useState } from "react";
+import { handleUserLogin } from "../../controllers/generalController/authController";
 
 const VendorLogin = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
+
+  const onSuccess = (response) => {
+    setLoading(false);
+    enqueueSnackbar("Login successful!", { variant: "success" });
+    // console.log(response);
+    navigate("/vendorDashboard");
+  };
+
+  const onError = (error) => {
+    setLoading(false);
+    // enqueueSnackbar("Login failed. Please try again.", { variant: "error" });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setLoading(true);
+    const userData = { email: email.toLowerCase(), password };
+    handleUserLogin(userData, onSuccess, onError);
+  };
+
   return (
     <>
       <div className="  w-full h-[100vh] flex justify-center items-center bg-[#f1f1f1] text-[#000]">
@@ -25,23 +54,27 @@ const VendorLogin = () => {
                 Email Address
                 <input
                   type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className=" border border-[#EAEBF0] h-[45px] p-2.5 font-Outfit text-sm rounded-[15px] mt-3"
                 />
               </label>
 
               <label
-                htmlFor="Email"
+                htmlFor="password"
                 className=" flex flex-col w-full font-Outfit font-medium mt-6"
               >
                 Password
                 <input
-                  type="email"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   className=" border border-[#EAEBF0] h-[45px] p-2.5 font-Outfit text-sm rounded-[15px] mt-3"
                 />
               </label>
             </div>
 
-            <div className=" w-full flex justify-between mt-3">
+            {/* <div className=" w-full flex justify-between mt-3">
               <label className="flex items-center">
                 <input
                   type="checkbox"
@@ -54,11 +87,14 @@ const VendorLogin = () => {
               <p className=" text-[#0530A1] text-sm font-medium font-Outfit">
                 Forgot Password
               </p>
-            </div>
+            </div> */}
 
             <div className=" lg:absolute mt-16 lg:mt-0 bottom-0 w-full left-0 lg:px-10">
-              <button className=" w-full bg-[#0530A1] rounded-[10px] flex items-center justify-center  h-[48px] text-white text-center font-Outfit text-base">
-                Login
+              <button
+                onClick={handleSubmit}
+                className=" w-full bg-[#0530A1] rounded-[10px] flex items-center justify-center  h-[48px] text-white text-center font-Outfit text-base"
+              >
+                {loading ? <img src={load} className=" w-6" alt="" /> : "Login"}
               </button>
               <Link to="/vendorSignup">
                 <p className=" mt-[19px] font-Outfit font-medium text-sm text-[#12121266] text-center">

@@ -32,11 +32,13 @@ const StudentPerfomance = () => {
       if (data) {
         setPerformance(data);
       } else {
-        enqueueSnackbar("Failed to fetch Note data", { variant: "error" });
+        enqueueSnackbar("Failed to fetch performance data", {
+          variant: "error",
+        });
       }
     } catch (error) {
-      console.error("Error fetching note:", error);
-      enqueueSnackbar("An error occurred while fetching Note data", {
+      console.error("Error fetching performance:", error);
+      enqueueSnackbar("An error occurred while fetching performance data", {
         variant: "error",
       });
     }

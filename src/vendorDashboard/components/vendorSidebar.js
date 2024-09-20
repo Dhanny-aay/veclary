@@ -13,28 +13,34 @@ import { useContext } from "react";
 import {
   VendorActivePageContext,
   VendorSidebarContext,
-  VendorUserType,
 } from "../contexts/VendorActivePageContext";
+import { useNavigate } from "react-router-dom";
 
-const VendorSidebar = () => {
+const VendorSidebar = ({ role }) => {
   const { activePage, setActivePage } = useContext(VendorActivePageContext);
+  const navigate = useNavigate();
   const { sidebarVisible, setSidebarVisible } =
     useContext(VendorSidebarContext);
-  const { userType, setUserType } = useContext(VendorUserType);
+
+  const handleLogOut = () => {
+    localStorage.clear();
+    navigate("/"); // Redirect to home
+  };
 
   const sidebar = [
     { name: "Home", img: home, activeImg: homeAc, page: "Home" },
     { name: "My Books", img: book, activeImg: book, page: "MyBooks" },
     { name: "Analysis", img: anal, activeImg: anal, page: "Analysis" },
     { name: "Marketing", img: market, activeImg: market, page: "Marketing" },
-    ...(userType !== "Author"
+    // Check if profile exists and has a valid role
+    ...(role && role !== "AUTHOR"
       ? [{ name: "Authors", img: autho, activeImg: autho, page: "Authors" }]
       : []),
   ];
 
   const bottom = [
     { name: "Setting", img: setting, activeImg: settingAc, page: "Settings" },
-    { name: "Logout", img: logout },
+    { name: "Logout", img: logout, onClick: handleLogOut },
   ];
 
   const handleClick = (page) => {
@@ -90,7 +96,15 @@ const VendorSidebar = () => {
                     className="w-4 h-4"
                     alt=""
                   />
-                  <p className="font-Outfit text-xs">{item.name}</p>
+                  <p
+                    className={`font-Outfit text-xs ${
+                      activePage === item.page
+                        ? "text-[#0530A1]"
+                        : "text-[#929292]"
+                    }`}
+                  >
+                    {item.name}
+                  </p>
                 </button>
               ))}
             </div>
@@ -107,7 +121,9 @@ const VendorSidebar = () => {
                         ? "text-[#0530A1]"
                         : "text-[#929292]"
                     }`}
-                    onClick={() => handleClick(item.page)}
+                    onClick={
+                      item.onClick ? item.onClick : () => handleClick(item.page)
+                    }
                   >
                     <img
                       src={activePage === item.page ? item.activeImg : item.img}

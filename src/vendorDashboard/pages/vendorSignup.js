@@ -48,9 +48,9 @@ const VendorSignup = () => {
                       <button
                         key={index}
                         onClick={() => handleProfileSelect(index)}
-                        className="w-full h-[48px] border border-[#EAEBF0] rounded-[15px] p-1 flex flex-row space-x-4 items-center"
+                        className="w-full border border-[#EAEBF0] rounded-[15px] p-1 flex flex-row space-x-4 items-center"
                       >
-                        <span className="h-full w-[44px] bg-[#81B2FC] rounded-[13px]"></span>
+                        <span className=" w-12 h-12 bg-[#81B2FC] rounded-[13px]"></span>
                         <p className="font-Outfit text-black font-medium text-base">
                           {item.name}
                         </p>

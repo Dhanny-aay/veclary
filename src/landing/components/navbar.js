@@ -47,9 +47,11 @@ const Navbar = () => {
                 Sign Up
               </button>
             </Link>
-            <button className=" rounded-[4px] px-4 py-3 font-Outfit text-xs font-semibold bg-[#0530A1] shadow-sm shadow-[#1018280A] text-[#fff] text-center">
-              Log In
-            </button>
+            <Link to="/login">
+              <button className=" rounded-[4px] px-4 py-3 font-Outfit text-xs font-semibold bg-[#0530A1] shadow-sm shadow-[#1018280A] text-[#fff] text-center">
+                Log In
+              </button>
+            </Link>
           </span>
         </div>
       </div>
@@ -89,9 +91,11 @@ const Navbar = () => {
                 Sign Up
               </button>
             </Link>
-            <button className=" rounded-[5px] px-6 py-3 font-Outfit text-base font-semibold bg-[#0530A1] shadow-sm shadow-[#1018280A] text-[#fff] text-center">
-              Log In
-            </button>
+            <Link to="/login">
+              <button className=" rounded-[5px] px-6 py-3 font-Outfit text-base font-semibold bg-[#0530A1] shadow-sm shadow-[#1018280A] text-[#fff] text-center">
+                Log In
+              </button>
+            </Link>
             <span className=" w-10 h-10 rounded-[50%] bg-[#f1f1f1] hidden md:flex lg:hidden items-center justify-center">
               <div onClick={overlay} className="menu-icon">
                 <input className="menu-icon__cheeckbox" type="checkbox" />

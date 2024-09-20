@@ -21,7 +21,13 @@ root.render(
           <ManageActivePageProvider>
             <TeacherActivePageProvider>
               <ActivePageProvider>
-                <SnackbarProvider maxSnack={3}>
+                <SnackbarProvider
+                  maxSnack={3}
+                  anchorOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                >
                   <SnackbarUtilsConfigurator />
                   <App />
                 </SnackbarProvider>

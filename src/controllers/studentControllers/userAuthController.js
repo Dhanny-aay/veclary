@@ -1,6 +1,6 @@
 import api from "../../index/api";
 
-// Function to handle user registration
+// Function to handle student registration
 export const handleStudentRegister = async (userData, onSuccess, onError) => {
   try {
     const response = await api("POST", "/students/register", userData);
@@ -12,7 +12,7 @@ export const handleStudentRegister = async (userData, onSuccess, onError) => {
   }
 };
 
-// Function to handle user login
+// Function to handle student login
 export const handleStudentLogin = async (userData, onSuccess, onError) => {
   try {
     const response = await api("POST", "/students/login", userData);
@@ -24,7 +24,7 @@ export const handleStudentLogin = async (userData, onSuccess, onError) => {
   }
 };
 
-// Function to get user profile
+// Function to get student profile
 export const handleGetStudentProfile = async () => {
   try {
     const response = await api("GET", "/students/profile");
@@ -34,7 +34,7 @@ export const handleGetStudentProfile = async () => {
   }
 };
 
-// Function to handle user profile update
+// Function to handle student profile update
 export const handleStudentProfileUpdate = async (
   userData,
   onSuccess,
@@ -47,71 +47,5 @@ export const handleStudentProfileUpdate = async (
     if (onError) {
       onError(error);
     }
-  }
-};
-
-// Function to handle change current password
-export const handleChangeCurrPassword = async (
-  userData,
-  onSuccess,
-  onError
-) => {
-  try {
-    const response = await api("POST", "/users/change-password", userData);
-    onSuccess(response);
-  } catch (error) {
-    if (onError) {
-      onError(error);
-    }
-  }
-};
-
-// Function to handle forgot password
-export const handleForgotPassword = async (userData, onSuccess, onError) => {
-  try {
-    const response = await api("POST", "/users/forgot-password", userData);
-    onSuccess(response);
-  } catch (error) {
-    if (onError) {
-      onError(error);
-    }
-  }
-};
-
-// Function to handle forgot password
-export const handleAvatarUpload = async (userData, onSuccess, onError) => {
-  try {
-    const response = await api("PATCH", "/users/avatar", userData);
-    onSuccess(response);
-  } catch (error) {
-    if (onError) {
-      onError(error);
-    }
-  }
-};
-
-// refreshTokenController
-export const refreshToken = async () => {
-  const refreshToken = localStorage.getItem("veclary_refresh_token");
-
-  if (!refreshToken) {
-    window.location = "/login";
-    return;
-  }
-
-  try {
-    const response = await api("POST", "/users/refresh-token", {
-      refreshToken: refreshToken,
-    });
-
-    if (response.accessToken && response.refreshToken) {
-      const { accessToken, refreshToken: newRefreshToken } = response;
-      localStorage.setItem("veclary_token", accessToken);
-      localStorage.setItem("veclary_refresh_token", newRefreshToken);
-    } else {
-      console.error("Failed to refresh token: Invalid response structure");
-    }
-  } catch (error) {
-    console.error("Failed to refresh token", error);
   }
 };

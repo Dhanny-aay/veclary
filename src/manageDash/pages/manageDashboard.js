@@ -13,8 +13,8 @@ import ManageResource from "../components/manageResource";
 import ManageSetting from "../components/manageSettings";
 import ManageBursary from "../components/manageBursary";
 import ManageAddResources from "../components/manageAddResources";
-import { refreshToken } from "../../controllers/studentControllers/userAuthController";
 import { handleGetSchoolDashboard } from "../../controllers/schoolControllers/schoolAUthController";
+import { refreshToken } from "../../controllers/generalController/authController";
 
 const ManageDashboard = () => {
   const componentMap = {

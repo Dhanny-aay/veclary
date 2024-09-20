@@ -1,11 +1,12 @@
 import arrowBlue from "./assets/arrowblue.svg";
 import pbar from "./assets/pbar.svg";
 import bookimg from "./assets/bookimg.svg";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   ActivePageContext,
   SidebarContext,
 } from "../contexts/ActivePageContext";
+import { handleGetLibary } from "../../controllers/studentControllers/eLibaryController";
 
 const StudentLib = () => {
   const { activePage, setActivePage } = useContext(ActivePageContext);
@@ -123,6 +124,8 @@ const StudentLib = () => {
   const [activeButton, setActiveButton] = useState("all");
   const [selectedTag, setSelectedTag] = useState("all");
   const [filteredCategories, setFilteredCategories] = useState(categories);
+  const [loading, setLoading] = useState(true);
+  const [libary, setLibary] = useState([]);
 
   // Function to handle button click
   const handleButtonClick = (tag) => {
@@ -138,6 +141,30 @@ const StudentLib = () => {
   const handleClick = (page) => {
     setActivePage(page);
   };
+
+  useEffect(() => {
+    const fetchLibary = async () => {
+      try {
+        const data = await handleGetLibary();
+        if (data) {
+          setLibary(data);
+        } else {
+          // enqueueSnackbar("Failed to fetch profile data", { variant: "error" });
+        }
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+        // enqueueSnackbar("An error occurred while fetching profile data", {
+        //   variant: "error",
+        // });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchLibary();
+  }, []);
+
+  console.log(libary);
 
   return (
     <>

@@ -7,11 +7,14 @@ import {
   ActivePageContext,
   SidebarContext,
 } from "../contexts/ActivePageContext";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
+import { handleGetClassroom } from "../../controllers/studentControllers/classroomController";
 
 const StudentClassroom = () => {
   const { activePage, setActivePage } = useContext(ActivePageContext);
   const { sidebarVisible, setSidebarVisible } = useContext(SidebarContext);
+  const [loading, setLoading] = useState(true);
+  const [classRoom, setClassroom] = useState([]);
 
   const handleClick = (page) => {
     setActivePage(page);
@@ -34,6 +37,30 @@ const StudentClassroom = () => {
     "Mathematics",
     "History",
   ];
+
+  useEffect(() => {
+    const fetchClassroom = async () => {
+      try {
+        const data = await handleGetClassroom();
+        if (data) {
+          setClassroom(data);
+        } else {
+          // enqueueSnackbar("Failed to fetch profile data", { variant: "error" });
+        }
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+        // enqueueSnackbar("An error occurred while fetching profile data", {
+        //   variant: "error",
+        // });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchClassroom();
+  }, []);
+
+  console.log(classRoom);
 
   return (
     <>

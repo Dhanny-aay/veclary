@@ -20,18 +20,15 @@ import McqView from "../components/mcqView";
 import McqQuestions from "../components/mcqQuestions";
 import BookReader from "../components/bookReader";
 import StudentAssistant from "../components/studentAssistant";
-import {
-  handleGetStudentProfile,
-  refreshToken,
-} from "../../controllers/studentControllers/userAuthController";
+import { handleGetStudentProfile } from "../../controllers/studentControllers/userAuthController";
 import { handleGetNotes } from "../../controllers/studentControllers/noteController";
 import AddNote from "../components/addNote";
 import { useSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
+import { refreshToken } from "../../controllers/generalController/authController";
 
 const Dashboard = () => {
   const [veclaryToken, setVeclaryToken] = useState(null);
-  const [reVeclaryToken, setReVeclaryToken] = useState(null);
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [note, setNote] = useState([]);

@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import arrowBlue from "./assets/arrowblue.svg";
 import {
   ActivePageContext,
@@ -6,11 +6,14 @@ import {
 } from "../contexts/ActivePageContext";
 import SubmittedAssignment from "./submittedAssignmentComp";
 import PresentAssignment from "./presentAssignmentComp";
+import { handleGetAssignment } from "../../controllers/studentControllers/assignmentController";
 
 const StudentAssignment = () => {
   const { activePage, setActivePage } = useContext(ActivePageContext);
   const { sidebarVisible, setSidebarVisible } = useContext(SidebarContext);
   const [activeDropdown, setActiveDropdown] = useState("submitted");
+  const [loading, setLoading] = useState(true);
+  const [assignment, setAssignments] = useState([]);
 
   const handleClick = (page) => {
     setActivePage(page);
@@ -36,6 +39,30 @@ const StudentAssignment = () => {
   const activeComponent = dropdowns.find(
     (dropdown) => dropdown.value === activeDropdown
   )?.component;
+
+  useEffect(() => {
+    const fetchAssignment = async () => {
+      try {
+        const data = await handleGetAssignment();
+        if (data) {
+          setAssignments(data);
+        } else {
+          // enqueueSnackbar("Failed to fetch profile data", { variant: "error" });
+        }
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+        // enqueueSnackbar("An error occurred while fetching profile data", {
+        //   variant: "error",
+        // });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAssignment();
+  }, []);
+
+  console.log(assignment);
 
   return (
     <>

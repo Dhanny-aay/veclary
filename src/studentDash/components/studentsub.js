@@ -6,13 +6,14 @@ import geopgraphy from "./assets/geo.svg";
 import hist from "./assets/hist.svg";
 import bookimg from "./assets/bookimg.svg";
 import phys from "./assets/physics.svg";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import like from "./assets/like.svg";
 import share from "./assets/share.svg";
 import {
   ActivePageContext,
   SidebarContext,
 } from "../contexts/ActivePageContext";
+import { handleGetSubjects } from "../../controllers/studentControllers/subjectController";
 
 const StudentSub = () => {
   const [selectedSubject, setSelectedSubject] = useState(null);
@@ -20,10 +21,36 @@ const StudentSub = () => {
   const [selectedItem, setSelectedItem] = useState(null);
   const { sidebarVisible, setSidebarVisible } = useContext(SidebarContext);
   const { activePage, setActivePage } = useContext(ActivePageContext);
+  const [loading, setLoading] = useState(true);
+  const [subjects, setSubjects] = useState([]);
 
   const handlePageClick = (page) => {
     setActivePage(page);
   };
+
+  useEffect(() => {
+    const fetchSubject = async () => {
+      try {
+        const data = await handleGetSubjects();
+        if (data) {
+          setSubjects(data);
+        } else {
+          // enqueueSnackbar("Failed to fetch profile data", { variant: "error" });
+        }
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+        // enqueueSnackbar("An error occurred while fetching profile data", {
+        //   variant: "error",
+        // });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSubject();
+  }, []);
+
+  console.log(subjects);
 
   const subject = [
     {

@@ -47,7 +47,7 @@ const StudentProfile = ({ profile, loading }) => {
             <Skeleton height={20} />
           ) : (
             profile && (
-              <p className=" font-Outfit w-full text-center text-xl font-medium text-[#272D37] mt-2">
+              <p className=" font-Outfit w-full text-center text-xl font-medium text-[#272D37] mt-2 capitalize">
                 {profile.user.name}
               </p>
             )

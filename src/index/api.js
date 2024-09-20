@@ -41,10 +41,17 @@ const api = async (method, uri, body = null) => {
         localStorage.removeItem("veclary_token");
         window.location = "/login";
       } else if (response.status === 409) {
-        SnackbarUtils.error(
-          res?.data ? res.data.error : "Something went wrong"
-        );
-        throw new Error(res?.data ? res.data.error : "Something went wrong");
+        // Custom handling for "Email Address already Exists" error
+        const errorMessage =
+          res?.error || res?.data?.error || "Something went wrong";
+        if (errorMessage === "Email Address already Exists") {
+          SnackbarUtils.error(
+            "This email is already in use. Please use a different email."
+          );
+        } else {
+          SnackbarUtils.error(errorMessage);
+        }
+        throw new Error(errorMessage);
       } else if (response.status === 422) {
         SnackbarUtils.error(
           res?.message ? res.message : "Something went wrong"
