@@ -88,6 +88,7 @@ const StudentEditProfile = ({ profile, loading }) => {
 
   const handleImageChange = async (e) => {
     const file = e.target.files[0];
+
     if (file && (file.type === "image/png" || file.type === "image/jpeg")) {
       setSelectedImage(URL.createObjectURL(file));
 
@@ -150,7 +151,21 @@ const StudentEditProfile = ({ profile, loading }) => {
         </div>
 
         <div className=" w-full flex flex-col items-center  p-6 justify-center">
-          <span className="w-[110px] h-[110px] rounded-[50%] bg-[#F4F4F5] mt-4 relative flex">
+          <span
+            style={{
+              backgroundImage:
+                profile && profile?.user?.avatar?.url
+                  ? `url(${profile.user.avatar.url})`
+                  : "none",
+              backgroundPosition: "center",
+              backgroundSize: "cover",
+              backgroundColor:
+                profile && profile?.user?.avatar?.url
+                  ? "transparent"
+                  : "#EAEBF0", // Set color only if the image doesn't exist
+            }}
+            className="w-[110px] h-[110px] rounded-[50%] bg-[#F4F4F5] mt-4 relative flex"
+          >
             {selectedImage && (
               <img
                 src={selectedImage}

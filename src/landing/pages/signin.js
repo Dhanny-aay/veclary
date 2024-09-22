@@ -32,8 +32,10 @@ const Signin = () => {
       navigate("/studentDashboard");
     } else if (userRole === "TEACHER") {
       navigate("/teachersDashboard");
-    } else if (userRole === "SCHOOL") {
-      navigate("/managementDashboard");
+    } else if (userRole === "AUTHOR") {
+      navigate("/vendorDashboard");
+    } else if (userRole === "PUBLISHER") {
+      navigate("/vendorDashboard");
     } else {
       enqueueSnackbar("Role not recognized.", { variant: "error" });
     }
@@ -146,6 +148,7 @@ const Signin = () => {
             <div className=" lg:absolute mt-16 lg:mt-0 bottom-0 w-full left-0 lg:px-10">
               <button
                 onClick={handleSubmit}
+                disabled={loading}
                 className=" w-full bg-[#0530A1] rounded-[10px] flex items-center justify-center  h-[48px] text-white text-center font-Outfit text-base"
               >
                 {loading ? <img src={load} className=" w-6" alt="" /> : "Login"}

@@ -4,8 +4,11 @@ import { useState } from "react";
 import { useSnackbar } from "notistack";
 import FileUploader from "../../utils/fileUploader";
 import LabelSelector from "../../utils/labelSelector";
+import { handlePublisherBookUpload } from "../../controllers/publisherController/booksContoller";
+import load from "./assets/load.gif";
+import { handleAuthorBookUpload } from "../../controllers/authorController/generalContoller";
 
-const AddBook = ({ setUploadBook }) => {
+const AddBook = ({ setUploadBook, role }) => {
   const [schedule, setSchedule] = useState(false);
   const [title, setTitle] = useState("");
   const [isbn, setIsbn] = useState("");
@@ -17,7 +20,7 @@ const AddBook = ({ setUploadBook }) => {
   const [errors, setErrors] = useState({});
   const { enqueueSnackbar } = useSnackbar();
 
-  const [bookCover, setBookCover] = useState(null);
+  const [coverImage, setBookCover] = useState(null);
   const [bookFile, setBookFile] = useState(null);
 
   const handleBookCoverSelect = (file) => {
@@ -36,7 +39,7 @@ const AddBook = ({ setUploadBook }) => {
     if (isbn.trim() === "") newErrors.isbn = "Book's ISBN is required";
     if (description.trim() === "")
       newErrors.description = "Book's description is required";
-    if (!bookCover) newErrors.bookCover = "Book cover is required";
+    if (!coverImage) newErrors.coverImage = "Book cover is required";
     if (!bookFile) newErrors.bookFile = "Book file is required";
     if (bookPrice.trim() === "" || isNaN(bookPrice))
       newErrors.bookPrice = "Valid book price is required";
@@ -47,16 +50,44 @@ const AddBook = ({ setUploadBook }) => {
     return Object.keys(newErrors).length === 0;
   };
 
+  const onSuccess = (response) => {
+    setLoading(false);
+    enqueueSnackbar(response.message, { variant: "success" });
+    setUploadBook(false);
+  };
+
+  const onError = (error) => {
+    setLoading(false);
+    enqueueSnackbar(error.message, { variant: "error" });
+    setUploadBook(false);
+  };
+
   const handleSubmit = () => {
     if (validateFields()) {
-      // Submit form logic here
-      enqueueSnackbar("Book successfully uploaded!", { variant: "success" });
+      setLoading(true);
+
+      const formData = new FormData();
+      formData.append("title", title);
+      formData.append("bookIsbn", isbn);
+      formData.append("description", description);
+      formData.append("price", bookPrice);
+      formData.append("labels", labels.join(",")); // Convert labels array to comma-separated string
+      formData.append("coverImage", coverImage); // File object for cover image
+      formData.append("bookFile", bookFile); // File object for book file
+
+      if (role === "AUTHOR") {
+        handleAuthorBookUpload(formData, onSuccess, onError);
+      } else {
+        handlePublisherBookUpload(formData, onSuccess, onError);
+      }
     } else {
       enqueueSnackbar("Please fix the errors in the form", {
         variant: "error",
       });
     }
   };
+
+  // console.log(bookCover, bookFile); // Check the files before sending
 
   return (
     <>
@@ -159,9 +190,9 @@ const AddBook = ({ setUploadBook }) => {
               isImage={true}
               onFileSelect={handleBookCoverSelect}
             />
-            {errors.bookCover && (
+            {errors.coverImage && (
               <span className="text-red-500 text-xs mt-1 font-Outfit">
-                {errors.bookCover}
+                {errors.coverImage}
               </span>
             )}
 
@@ -205,9 +236,14 @@ const AddBook = ({ setUploadBook }) => {
                   </button>
                   <button
                     onClick={handleSubmit}
-                    className="w-full py-3 font-Outfit rounded-md text-[#fff] bg-[#0530A1] font-semibold text-base"
+                    disabled={loading}
+                    className="w-full py-3 font-Outfit rounded-md text-[#fff] bg-[#0530A1] font-semibold text-base flex justify-center items-center"
                   >
-                    Publish Now
+                    {loading ? (
+                      <img src={load} className=" w-6" alt="" />
+                    ) : (
+                      "Publish Now"
+                    )}
                   </button>
                 </>
               )}

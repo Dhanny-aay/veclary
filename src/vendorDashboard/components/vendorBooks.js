@@ -87,7 +87,7 @@ const VendorBooks = ({ role }) => {
   return (
     <>
       {/* upload book component */}
-      {uploadBook && <AddBook setUploadBook={setUploadBook} />}
+      {uploadBook && <AddBook role={role} setUploadBook={setUploadBook} />}
 
       {/* Books(main) Component */}
       <div
@@ -122,7 +122,7 @@ const VendorBooks = ({ role }) => {
             </p>
           </button>
 
-          <div className="flex w-full flex-row items-center justify-start mt-8 overflow-auto border-b pb- border-[#EAEBF0]">
+          {/* <div className="flex w-full flex-row items-center justify-start mt-8 overflow-auto border-b pb- border-[#EAEBF0]">
             <button
               className={`font-normal font-Outfit text-sm pb-3 text-[#00000080] md:w-auto transition-all ${
                 activeButton === "all"
@@ -133,7 +133,7 @@ const VendorBooks = ({ role }) => {
             >
               All Books
             </button>
-            {/* Display unique categories */}
+         
             {Array.from(
               new Set(categories.map((category) => category.tag))
             ).map((tag, index) => (
@@ -149,7 +149,7 @@ const VendorBooks = ({ role }) => {
                 {tag}
               </button>
             ))}
-          </div>
+          </div> */}
 
           <div className=" w-full mt-6 ">
             <div className=" w-full border border-[#EAEBF0] rounded-[10px]">
@@ -173,20 +173,22 @@ const VendorBooks = ({ role }) => {
                 </tr>
               ) : (
                 <div className=" flex flex-col space-y-3 w-full h-full p-4">
-                  {filteredCategories.map((item, index) => (
+                  {books.map((item) => (
                     <div
-                      key={index}
+                      key={item._id}
                       className=" w-full py-3 border-b border-[#EAEBF0] flex flex-row items-center justify-between"
                     >
                       <div className=" flex flex-row space-x-3">
                         <img src={file} alt="" />
                         <div className="">
-                          <p className=" font-Outfit font-medium text-[#272D37] text-xs">
-                            {item.name}
+                          <p className=" font-Outfit font-medium text-[#272D37] text-xs capitalize">
+                            {item.title}
                           </p>
-                          <p className=" font-Outfit text-[8px] text-[#5F6D7E]">
-                            {item.size}
-                          </p>
+                          {item.labels.map((item) => (
+                            <p className=" font-Outfit text-[10px] text-[#5F6D7E] capitalize">
+                              {item}
+                            </p>
+                          ))}
                         </div>
                       </div>
                       <span className=" flex space-x-3">

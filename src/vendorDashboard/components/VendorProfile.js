@@ -1,17 +1,18 @@
 import { useContext, useEffect, useState } from "react";
 import arrowBlue from "./assets/arrowblue.svg";
-import edit from "./assets/edit.svg";
-import userPlus from "./assets/user-plus.svg";
+// import edit from "./assets/edit.svg";
+// import userPlus from "./assets/user-plus.svg";
 import {
   VendorActivePageContext,
   VendorSidebarContext,
-  VendorUserType,
 } from "../contexts/VendorActivePageContext";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import load from "./assets/load.gif";
 import { handlePublisherProfileUpdate } from "../../controllers/publisherController/generalController";
 import { handleAuthorProfileUpdate } from "../../controllers/authorController/generalContoller";
+import { useSnackbar } from "notistack";
+import { handleAvatarUpload } from "../../controllers/generalController/authController";
 
 const VendorProfile = ({ profile, loading, role }) => {
   const { sidebarVisible, setSidebarVisible } =
@@ -19,6 +20,7 @@ const VendorProfile = ({ profile, loading, role }) => {
   const { activePage, setActivePage } = useContext(VendorActivePageContext);
   const [selectedImage, setSelectedImage] = useState(null);
   const [loading1, setLoading1] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -31,7 +33,6 @@ const VendorProfile = ({ profile, loading, role }) => {
     accountName: "",
     accountNumber: "",
     bankName: "",
-    avatar: null,
   });
 
   useEffect(() => {
@@ -48,7 +49,6 @@ const VendorProfile = ({ profile, loading, role }) => {
         accountName: profile[1]?.accountName || "",
         accountNumber: profile[1]?.accountNumber || "",
         bankName: profile[1]?.bankName || "",
-        avatar: profile[1]?.avatar || null, // If profile has an avatar, include it
       });
     }
   }, [profile]);
@@ -67,14 +67,38 @@ const VendorProfile = ({ profile, loading, role }) => {
   };
 
   // Handle image upload
-  const handleImageChange = (e) => {
+  const handleImageChange = async (e) => {
     const file = e.target.files[0];
+
     if (file && (file.type === "image/png" || file.type === "image/jpeg")) {
-      setSelectedImage(URL.createObjectURL(file)); // Show preview
-      setFormData((prevState) => ({
-        ...prevState,
-        avatar: file, // Set avatar as the uploaded file
-      }));
+      setSelectedImage(URL.createObjectURL(file));
+
+      enqueueSnackbar("Uploading image...", { variant: "info" });
+
+      const userData = new FormData();
+      userData.append("avatar", file);
+
+      try {
+        await handleAvatarUpload(
+          userData,
+          () => {
+            enqueueSnackbar("Upload successful!", { variant: "success" });
+          },
+          (error) => {
+            enqueueSnackbar("Upload failed. Please try again.", {
+              variant: "error",
+            });
+          }
+        );
+      } catch (error) {
+        enqueueSnackbar("Upload failed. Please try again.", {
+          variant: "error",
+        });
+      }
+    } else {
+      enqueueSnackbar("Please upload a valid PNG or JPG file.", {
+        variant: "error",
+      });
     }
   };
 
@@ -124,7 +148,21 @@ const VendorProfile = ({ profile, loading, role }) => {
 
         <div className=" mt-8 flex items-center flex-row px-6 justify-between">
           <div className=" flex items-center space-x-4">
-            <span className="w-[160px] h-[160px] rounded-[50%] bg-[#f8f8f8] border-4 border-white shadow shadow-[#10182814] relative flex">
+            <span
+              style={{
+                backgroundImage:
+                  profile && profile[0]?.avatar?.url
+                    ? `url(${profile[0].avatar.url})`
+                    : "none",
+                backgroundPosition: "center",
+                backgroundSize: "cover",
+                backgroundColor:
+                  profile && profile[0]?.avatar?.url
+                    ? "transparent"
+                    : "#EAEBF0", // Set color only if the image doesn't exist
+              }}
+              className="w-[160px] h-[160px] rounded-[50%] bg-[#f8f8f8] border-4 border-white shadow shadow-[#10182814] relative flex"
+            >
               {selectedImage && (
                 <img
                   src={selectedImage}

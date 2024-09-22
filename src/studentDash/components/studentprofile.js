@@ -41,7 +41,21 @@ const StudentProfile = ({ profile, loading }) => {
         </span>
 
         <div className=" w-full flex flex-col items-center justify-center mt-16">
-          <span className=" w-[120px] h-[120px] rounded-[50%] bg-[#f8f8f8]"></span>
+          <span
+            style={{
+              backgroundImage:
+                profile && profile?.user?.avatar?.url
+                  ? `url(${profile.user.avatar.url})`
+                  : "none",
+              backgroundPosition: "center",
+              backgroundSize: "cover",
+              backgroundColor:
+                profile && profile?.user?.avatar?.url
+                  ? "transparent"
+                  : "#EAEBF0", // Set color only if the image doesn't exist
+            }}
+            className=" w-[120px] h-[120px] rounded-[50%] bg-[#f8f8f8]"
+          ></span>
 
           {loading ? (
             <Skeleton height={20} />

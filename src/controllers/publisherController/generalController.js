@@ -25,3 +25,13 @@ export const handleGetPublisherAnalysis = async () => {
     console.log(error);
   }
 };
+
+// Function to get annoumcements
+export const handleGetPublisherAnnounce = async () => {
+  try {
+    const response = await api("GET", "/publishers/announcements");
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+};

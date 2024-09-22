@@ -64,7 +64,21 @@ const StudentHome = ({ profile, loading }) => {
         className=" absolute lg:left-[20%] top-[56px] p-6 w-full lg:w-[80%]"
       >
         <div className="flex flex-row md:items-center space-x-4 md:space-x-3">
-          <span className=" w-[50px] md:w-[85px] h-[45px] md:h-[85px] rounded-[50%] bg-[#EAEBF0]"></span>
+          <span
+            style={{
+              backgroundImage:
+                profile && profile?.user?.avatar?.url
+                  ? `url(${profile.user.avatar.url})`
+                  : "none",
+              backgroundPosition: "center",
+              backgroundSize: "cover",
+              backgroundColor:
+                profile && profile?.user?.avatar?.url
+                  ? "transparent"
+                  : "#EAEBF0", // Set color only if the image doesn't exist
+            }}
+            className=" w-[50px] md:w-[85px] h-[45px] md:h-[85px] rounded-[50%] bg-[#EAEBF0]"
+          ></span>
           <span className=" flex flex-col">
             {loading ? (
               <Skeleton height={30} />

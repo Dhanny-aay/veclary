@@ -1,4 +1,5 @@
 import api from "../../index/api";
+const token = localStorage.getItem("veclary_token");
 
 // Function to handle user login
 export const handleUserLogin = async (userData, onSuccess, onError) => {
@@ -50,15 +51,39 @@ export const handleForgotPassword = async (userData, onSuccess, onError) => {
   }
 };
 
-// Function to update avatar
-export const handleAvatarUpload = async (userData, onSuccess, onError) => {
+// // Function to update avatar
+// export const handleAvatarUpload = async (userData, onSuccess, onError) => {
+//   try {
+//     const response = await api("PATCH", "/users/avatar", userData);
+//     onSuccess(response);
+//   } catch (error) {
+//     if (onError) {
+//       onError(error);
+//     }
+//   }
+// };
+
+export const handleAvatarUpload = async (formData, onSuccess, onError) => {
   try {
-    const response = await api("PATCH", "/users/avatar", userData);
-    onSuccess(response);
-  } catch (error) {
-    if (onError) {
-      onError(error);
+    const response = await fetch(
+      "https://backend-pil9.onrender.com/api/v1/users/avatar",
+      {
+        method: "PATCH",
+        body: formData, // Send formData, not a JSON object
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (response.ok) {
+      const data = await response.json();
+      onSuccess(data);
+    } else {
+      throw new Error("Upload failed");
     }
+  } catch (error) {
+    onError(error);
   }
 };
 

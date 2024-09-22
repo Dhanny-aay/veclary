@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import upload from "./assets/upload.svg";
 import chart from "./assets/chart.svg";
 import chart1 from "./assets/chart1.svg";
@@ -14,16 +14,55 @@ import {
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import AddBook from "./addBook";
+import AddAnnouncement from "./addAnnouncement";
+import { handleGetPublisherAnnounce } from "../../controllers/publisherController/generalController";
 
-const VendorHome = ({ loading, profile }) => {
+const VendorHome = ({ loading, profile, role }) => {
   const { sidebarVisible, setSidebarVisible } =
     useContext(VendorSidebarContext);
   const { activePage, setActivePage } = useContext(VendorActivePageContext);
   const [uploadBook, setUploadBook] = useState(false);
+  const [makeAnnouncement, setMakeAnnouncement] = useState(false);
 
   const handleClick = (page) => {
     setActivePage(page);
   };
+
+  const [announcements, setAnnouncements] = useState([]);
+  const [loadingAnnouncements, setLoadingAnnouncements] = useState(true);
+  const [noAnnouncements, setNoAnnouncements] = useState(false);
+
+  const fetchAnnouncements = async () => {
+    setLoadingAnnouncements(true); // Start loading when fetching books
+    try {
+      let data;
+
+      // Check role and fetch the appropriate announcements
+      if (role === "AUTHOR") {
+        // data = await handleGetAuthorBooks(); // Fetch announcements for authors
+      } else {
+        data = await handleGetPublisherAnnounce(); // Fetch announcements for publishers
+      }
+
+      if (data && data.message === "No announcements found") {
+        setNoAnnouncements(true); // Set noAnnouncements to true if no announcements found
+        setAnnouncements([]); // Clear the announcements array
+      } else {
+        setAnnouncements(data); // Set the announcements if data is available
+        setNoAnnouncements(false); // Reset noAnnouncements if books are found
+      }
+    } catch (error) {
+      setNoAnnouncements(true); // Set noAnnouncements to true in case of error
+    } finally {
+      setLoadingAnnouncements(false); // Stop loading when fetch is complete
+    }
+  };
+
+  useEffect(() => {
+    fetchAnnouncements();
+  }, []);
+
+  console.log(announcements);
 
   const analysis = [
     {
@@ -51,7 +90,11 @@ const VendorHome = ({ loading, profile }) => {
   return (
     <>
       {/* upload book component */}
-      {uploadBook && <AddBook setUploadBook={setUploadBook} />}
+      {uploadBook && <AddBook role={role} setUploadBook={setUploadBook} />}
+      {/* make announcement comp */}
+      {makeAnnouncement && (
+        <AddAnnouncement setMakeAnnouncement={setMakeAnnouncement} />
+      )}
       <div
         onClick={() => {
           setSidebarVisible(false);
@@ -60,7 +103,21 @@ const VendorHome = ({ loading, profile }) => {
       >
         <div className=" flex flex-col space-y-6 md:space-y-0 md:flex-row justify-between items-start">
           <div className="flex flex-row md:items-center space-x-4 md:space-x-3">
-            <span className=" w-[50px] md:w-[85px] h-[45px] md:h-[85px] rounded-[50%] bg-[#EAEBF0]"></span>
+            <span
+              style={{
+                backgroundImage:
+                  profile && profile[0]?.avatar?.url
+                    ? `url(${profile[0].avatar.url})`
+                    : "none",
+                backgroundPosition: "center",
+                backgroundSize: "cover",
+                backgroundColor:
+                  profile && profile[0]?.avatar?.url
+                    ? "transparent"
+                    : "#EAEBF0", // Set color only if the image doesn't exist
+              }}
+              className=" w-[50px] md:w-[85px] h-[45px] md:h-[85px] rounded-[50%] bg-[#EAEBF0]"
+            ></span>
             <span className=" flex flex-col">
               {loading ? (
                 <Skeleton height={30} />
@@ -145,7 +202,12 @@ const VendorHome = ({ loading, profile }) => {
                 When you have an announcement you’ll see them here
               </p>
               <div className=" w-full px-4 lg:absolute bottom-4">
-                <button className=" w-full  mt-8 lg:mt-0 py-3 flex justify-center items-center space-x-3 bg-[#0530A1] rounded-[10px]">
+                <button
+                  onClick={() => {
+                    setMakeAnnouncement(true);
+                  }}
+                  className=" w-full  mt-8 lg:mt-0 py-3 flex justify-center items-center space-x-3 bg-[#0530A1] rounded-[10px]"
+                >
                   <img src={add} alt="" />
                   <p className=" font-Outfit text-sm text-white font-medium">
                     Make an Announcement

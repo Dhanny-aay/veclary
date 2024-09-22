@@ -1,4 +1,5 @@
 import api from "../../index/api";
+const token = localStorage.getItem("veclary_token");
 
 // Function to handle publisher profile update
 export const handleAuthorProfileUpdate = async (
@@ -32,5 +33,29 @@ export const handleGetAuthorAnalysis = async () => {
     return response;
   } catch (error) {
     console.log(error);
+  }
+};
+
+export const handleAuthorBookUpload = async (formData, onSuccess, onError) => {
+  try {
+    const response = await fetch(
+      "https://backend-pil9.onrender.com/api/v1/authors/create-book",
+      {
+        method: "POST",
+        body: formData, // Send formData, not a JSON object
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (response.ok) {
+      const data = await response.json();
+      onSuccess(data);
+    } else {
+      throw new Error("Upload failed");
+    }
+  } catch (error) {
+    onError(error);
   }
 };

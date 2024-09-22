@@ -38,6 +38,7 @@ const VendorDashboard = () => {
     // Set the token if it exists
     if (storedItem) {
       setVeclaryToken(storedItem);
+      // console.log(storedItem);
     } else {
       navigate("/vendorlogin");
     }
@@ -105,7 +106,7 @@ const VendorDashboard = () => {
   }, [role]); // Run this effect when the role is set
 
   const componentMap = {
-    Home: <VendorHome profile={profile} loading={loading} />,
+    Home: <VendorHome profile={profile} role={role} loading={loading} />,
     Profile: <VendorProfile role={role} profile={profile} loading={loading} />,
     Analysis: <VectorAnalysis role={role} />,
     Marketing: <VendorMarket />,
@@ -121,7 +122,7 @@ const VendorDashboard = () => {
     <>
       <div className=" relative">
         <VendorSidebar role={role} />
-        <VendorHeadbar />
+        <VendorHeadbar profile={profile} />
         {ComponentToRender}
       </div>
     </>

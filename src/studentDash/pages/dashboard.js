@@ -138,7 +138,7 @@ const Dashboard = () => {
     <>
       <div className=" relative">
         <Sidebar />
-        <Headbar />
+        <Headbar profile={profile} />
         {ComponentToRender}
         {newNote && <AddNote setNewNote={setNewNote} fetchNote={fetchNote} />}
       </div>
