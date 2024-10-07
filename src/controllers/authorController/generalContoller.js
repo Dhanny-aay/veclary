@@ -59,3 +59,41 @@ export const handleAuthorBookUpload = async (formData, onSuccess, onError) => {
     onError(error);
   }
 };
+
+// Function to get annoumcements
+export const handleGetAuthorAnnounce = async () => {
+  try {
+    const response = await api("GET", "/authors/announcements");
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+// Function to get annoumcements bby ID
+export const handleGetAuthorAnnoumcementsByID = async (
+  annouceID,
+  onSuccess,
+  onError
+) => {
+  try {
+    const response = await api("GET", `/authors/announcements/${annouceID}`);
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+// Function to delete annoumcebooksments
+export const handleDeleteBook = async (bookID, onSuccess, onError) => {
+  try {
+    const response = await api("DELETE", `/authors/books/${bookID}`);
+    if (onSuccess) {
+      onSuccess(response);
+    }
+  } catch (error) {
+    if (onError) {
+      onError(error);
+    }
+  }
+};

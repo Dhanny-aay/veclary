@@ -16,6 +16,13 @@ import "react-loading-skeleton/dist/skeleton.css";
 import AddBook from "./addBook";
 import AddAnnouncement from "./addAnnouncement";
 import { handleGetPublisherAnnounce } from "../../controllers/publisherController/generalController";
+import GenericLoadingSkeleton from "../../utils/loadingSkeleton";
+import noti from "./assets/noticopy.svg";
+import edit from "./assets/edit.svg";
+import trash from "./assets/trash.svg";
+import { handleGetAuthorAnnounce } from "../../controllers/authorController/generalContoller";
+import DeleteAnnouce from "./deleteAnnounce";
+import ViewAnnouncement from "./viewAnnouncement";
 
 const VendorHome = ({ loading, profile, role }) => {
   const { sidebarVisible, setSidebarVisible } =
@@ -23,6 +30,13 @@ const VendorHome = ({ loading, profile, role }) => {
   const { activePage, setActivePage } = useContext(VendorActivePageContext);
   const [uploadBook, setUploadBook] = useState(false);
   const [makeAnnouncement, setMakeAnnouncement] = useState(false);
+  const [trigger, setTrigger] = useState(false);
+  const [makeDelete, setMakeDelete] = useState(false);
+  const [makeView, setMakeView] = useState(false);
+
+  const triggerFetch = () => {
+    setTrigger(!trigger); // Toggle trigger to true or false
+  };
 
   const handleClick = (page) => {
     setActivePage(page);
@@ -31,25 +45,31 @@ const VendorHome = ({ loading, profile, role }) => {
   const [announcements, setAnnouncements] = useState([]);
   const [loadingAnnouncements, setLoadingAnnouncements] = useState(true);
   const [noAnnouncements, setNoAnnouncements] = useState(false);
+  const [annouceID, setAnnounceID] = useState("");
 
   const fetchAnnouncements = async () => {
-    setLoadingAnnouncements(true); // Start loading when fetching books
+    if (!role) {
+      return; // Exit if role is not yet available
+    }
+
+    setLoadingAnnouncements(true); // Start loading when fetching announcements
+
     try {
       let data;
 
       // Check role and fetch the appropriate announcements
       if (role === "AUTHOR") {
-        // data = await handleGetAuthorBooks(); // Fetch announcements for authors
+        data = await handleGetAuthorAnnounce(); // Fetch announcements for authors
       } else {
         data = await handleGetPublisherAnnounce(); // Fetch announcements for publishers
       }
 
-      if (data && data.message === "No announcements found") {
-        setNoAnnouncements(true); // Set noAnnouncements to true if no announcements found
-        setAnnouncements([]); // Clear the announcements array
+      if (!data && data.length === 0) {
+        setNoAnnouncements(true); // If no data, set noAnnouncements to true
+        setAnnouncements([]); // Clear announcements
       } else {
-        setAnnouncements(data); // Set the announcements if data is available
-        setNoAnnouncements(false); // Reset noAnnouncements if books are found
+        setAnnouncements(data); // Set the fetched announcements
+        setNoAnnouncements(false); // Announcements are present, so set to false
       }
     } catch (error) {
       setNoAnnouncements(true); // Set noAnnouncements to true in case of error
@@ -59,8 +79,11 @@ const VendorHome = ({ loading, profile, role }) => {
   };
 
   useEffect(() => {
-    fetchAnnouncements();
-  }, []);
+    // Ensure role is defined before fetching announcements
+    if (role) {
+      fetchAnnouncements();
+    }
+  }, [role, trigger]); // Re-run when role or trigger changes
 
   console.log(announcements);
 
@@ -85,7 +108,17 @@ const VendorHome = ({ loading, profile, role }) => {
     },
   ];
 
-  console.log(profile);
+  const toggleModal = (_id) => {
+    setMakeDelete(true);
+    setAnnounceID(_id);
+  };
+
+  const toggleViewModal = (_id) => {
+    setMakeView(true);
+    setAnnounceID(_id);
+  };
+
+  console.log(annouceID);
 
   return (
     <>
@@ -93,7 +126,27 @@ const VendorHome = ({ loading, profile, role }) => {
       {uploadBook && <AddBook role={role} setUploadBook={setUploadBook} />}
       {/* make announcement comp */}
       {makeAnnouncement && (
-        <AddAnnouncement setMakeAnnouncement={setMakeAnnouncement} />
+        <AddAnnouncement
+          triggerFetch={triggerFetch}
+          setMakeAnnouncement={setMakeAnnouncement}
+        />
+      )}
+      {/* view announcement comp */}
+      {makeView && (
+        <ViewAnnouncement
+          setMakeView={setMakeView}
+          triggerFetch={triggerFetch}
+          role={role}
+          annouceID={annouceID}
+        />
+      )}
+      {/* delete comp */}
+      {makeDelete && (
+        <DeleteAnnouce
+          triggerFetch={triggerFetch}
+          setMakeDelete={setMakeDelete}
+          annouceID={annouceID}
+        />
       )}
       <div
         onClick={() => {
@@ -189,32 +242,100 @@ const VendorHome = ({ loading, profile, role }) => {
             <img src={base} className=" mt-6 w-full" alt="" />
           </div>
 
-          <div className=" w-full lg:w-[29%] border border-[#EAEBF0] rounded-[10px] p-4 relative">
-            <p className=" font-Outfit text-[#272D37] text-lg font-semibold">
-              Announcements
-            </p>
-            <div className=" flex flex-col items-center">
-              <img src={nonoti} className=" mt-7" alt="" />
-              <p className=" font-Outfit text-center font-medium mt-3 text-base">
-                No Announcements
+          <div className="w-full lg:w-[29%] border border-[#EAEBF0] rounded-[10px] p-4 relative">
+            <div className="flex justify-between items-center">
+              <p className="font-Outfit text-[#272D37] text-lg font-semibold">
+                Announcements
               </p>
-              <p className=" font-Outfit text-xs text-[#9E9E9E] mt-2 text-center">
-                When you have an announcement you’ll see them here
-              </p>
-              <div className=" w-full px-4 lg:absolute bottom-4">
-                <button
-                  onClick={() => {
-                    setMakeAnnouncement(true);
-                  }}
-                  className=" w-full  mt-8 lg:mt-0 py-3 flex justify-center items-center space-x-3 bg-[#0530A1] rounded-[10px]"
-                >
-                  <img src={add} alt="" />
-                  <p className=" font-Outfit text-sm text-white font-medium">
-                    Make an Announcement
-                  </p>
-                </button>
-              </div>
+              {role !== "AUTHOR" &&
+                announcements &&
+                announcements.length > 0 && (
+                  <button
+                    onClick={() => {
+                      setMakeAnnouncement(true);
+                    }}
+                    className="py-1 px-3 flex justify-center items-center space-x-2 bg-[#0530A1] rounded-lg"
+                  >
+                    <img src={add} className="w-3 h-3" alt="Add" />
+                    <p className="font-Outfit text-xs text-white font-medium">
+                      Add
+                    </p>
+                  </button>
+                )}
             </div>
+
+            <>
+              {loadingAnnouncements ? (
+                // Show loading spinner while fetching data
+                <GenericLoadingSkeleton
+                  count={9}
+                  width="100%"
+                  height={25}
+                  className="mt-1"
+                />
+              ) : noAnnouncements ? (
+                // Show "No announcements found" message
+                <div className="flex flex-col items-center">
+                  <img src={nonoti} className="mt-7" alt="No notifications" />
+                  <p className="font-Outfit text-center font-medium mt-3 text-base">
+                    No Announcements
+                  </p>
+                  <p className="font-Outfit text-xs text-[#9E9E9E] mt-2 text-center">
+                    When you have an announcement, you’ll see them here
+                  </p>
+                  {role !== "AUTHOR" && (
+                    <div className="w-full px-4 lg:absolute bottom-4">
+                      <button
+                        onClick={() => {
+                          setMakeAnnouncement(true);
+                        }}
+                        className="w-full mt-8 lg:mt-0 py-3 flex justify-center items-center space-x-3 bg-[#0530A1] rounded-[10px]"
+                      >
+                        <img src={add} alt="Add announcement" />
+                        <p className="font-Outfit text-sm text-white font-medium">
+                          Make an Announcement
+                        </p>
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ) : announcements && announcements.length > 0 ? (
+                <div className="flex flex-col space-y-3 w-full h-full max-h-[350px] scrollbar-hide p-4 overflow-y-auto">
+                  {announcements.map((item) => (
+                    <div
+                      key={item._id}
+                      className="w-full py-3 border-b border-[#EAEBF0] flex flex-row items-center justify-between"
+                    >
+                      <div className="flex flex-row space-x-3">
+                        <img src={noti} alt="Announcement icon" />
+                        <div>
+                          <p className="font-Outfit font-medium text-[#272D37] text-xs capitalize">
+                            {item.title}
+                          </p>
+                          <p className="font-Outfit text-[10px] text-[#5F6D7E] capitalize">
+                            {item.subtitle}
+                          </p>
+                        </div>
+                      </div>
+                      <span className="flex space-x-3">
+                        <img
+                          onClick={() => toggleViewModal(item._id)}
+                          src={edit}
+                          className="w-4"
+                          alt="Edit"
+                        />
+                        <img
+                          onClick={() => toggleModal(item._id)}
+                          src={trash}
+                          className="w-4"
+                          alt="Delete"
+                        />
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              ) : null}
+            </>
           </div>
 
           <div className=" w-full lg:w-[29%] border border-[#EAEBF0] rounded-[10px] p-4">

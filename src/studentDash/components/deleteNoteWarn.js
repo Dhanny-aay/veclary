@@ -20,7 +20,6 @@ const DeleteNoteWarn = ({ setDeleteComp, noteID, fetchNote }) => {
 
   const handleDelete = (e) => {
     setLoading(true);
-    const noteID = noteID;
     handleDeleteNote(noteID, onSuccess, onError);
   };
 

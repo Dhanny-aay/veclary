@@ -8,7 +8,7 @@ import { handlePublisherBookUpload } from "../../controllers/publisherController
 import load from "./assets/load.gif";
 import { handleAuthorBookUpload } from "../../controllers/authorController/generalContoller";
 
-const AddBook = ({ setUploadBook, role }) => {
+const AddBook = ({ setUploadBook, role, triggerFetch }) => {
   const [schedule, setSchedule] = useState(false);
   const [title, setTitle] = useState("");
   const [isbn, setIsbn] = useState("");
@@ -54,6 +54,7 @@ const AddBook = ({ setUploadBook, role }) => {
     setLoading(false);
     enqueueSnackbar(response.message, { variant: "success" });
     setUploadBook(false);
+    triggerFetch();
   };
 
   const onError = (error) => {

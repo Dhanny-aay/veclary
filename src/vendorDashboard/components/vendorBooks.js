@@ -12,8 +12,9 @@ import {
 
 import AddBook from "./addBook";
 import { handleGetPublisherBooks } from "../../controllers/publisherController/booksContoller";
-import LoadingTable from "../../utils/loadingTable";
 import { handleGetAuthorBooks } from "../../controllers/authorController/generalContoller";
+import InfoLoading from "../../utils/infoLoading";
+import DeleteBook from "./deleteBook";
 
 const VendorBooks = ({ role }) => {
   const { sidebarVisible, setSidebarVisible } =
@@ -27,7 +28,11 @@ const VendorBooks = ({ role }) => {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [noBooks, setNoBooks] = useState(false);
+  const [trigger, setTrigger] = useState(false);
 
+  const triggerFetch = () => {
+    setTrigger(!trigger); // Toggle trigger to true or false
+  };
   const fetchBooks = async () => {
     setLoading(true); // Start loading when fetching books
     try {
@@ -56,7 +61,7 @@ const VendorBooks = ({ role }) => {
 
   useEffect(() => {
     fetchBooks();
-  }, [role]); // Include role as a dependency to refetch books when role changes
+  }, [role, trigger]);
 
   console.log(books);
 
@@ -83,11 +88,31 @@ const VendorBooks = ({ role }) => {
   const [selectedTag, setSelectedTag] = useState("all");
   const [filteredCategories, setFilteredCategories] = useState(categories);
   const [uploadBook, setUploadBook] = useState(false);
+  const [makeDelete, setMakeDelete] = useState(false);
+  const [bookID, setBookID] = useState("");
+
+  const toggleModal = (_id) => {
+    setMakeDelete(true);
+    setBookID(_id);
+  };
 
   return (
     <>
       {/* upload book component */}
-      {uploadBook && <AddBook role={role} setUploadBook={setUploadBook} />}
+      {uploadBook && (
+        <AddBook
+          role={role}
+          triggerFetch={triggerFetch}
+          setUploadBook={setUploadBook}
+        />
+      )}
+      {makeDelete && (
+        <DeleteBook
+          bookID={bookID}
+          triggerFetch={triggerFetch}
+          setMakeDelete={setMakeDelete}
+        />
+      )}
 
       {/* Books(main) Component */}
       <div
@@ -155,11 +180,7 @@ const VendorBooks = ({ role }) => {
             <div className=" w-full border border-[#EAEBF0] rounded-[10px]">
               {loading ? (
                 // Show loading spinner while fetching data
-                <tr>
-                  <td colSpan="6">
-                    <LoadingTable />
-                  </td>
-                </tr>
+                <InfoLoading />
               ) : noBooks ? (
                 // Show "No authors found" message
 
@@ -193,7 +214,14 @@ const VendorBooks = ({ role }) => {
                       </div>
                       <span className=" flex space-x-3">
                         <img src={edit} className=" w-4" alt="" />
-                        <img src={trash} className=" w-4" alt="" />
+                        {role === "AUTHOR" && (
+                          <img
+                            src={trash}
+                            onClick={() => toggleModal(item._id)}
+                            className=" w-4"
+                            alt=""
+                          />
+                        )}
                       </span>
                     </div>
                   ))}
