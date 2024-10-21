@@ -1,29 +1,29 @@
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
-const LoadingTable = () => {
-  const rows = 6; // Number of rows you want in your loading table
-  const columns = 8; // Number of columns in your table
-
+const LoadingTable = ({ rows = 6, columns = 6 }) => {
   return (
-    <div className="min-w-full border border-[#EAEBF0] rounded-[10px] overflow-x-auto">
-      <table className="min-w-full">
+    <div className="w-full">
+      <table className="min-w-full table-auto">
         <thead>
           <tr>
             <th className="px-4 py-2 border-b text-left font-Cabin text-xs font-semibold text-black">
-              <Skeleton width={50} />
+              <Skeleton width="20%" /> {/* Adjusts to 20% of parent width */}
             </th>
             <th className="px-4 py-2 border-b text-left font-Cabin text-xs font-semibold text-black">
-              <Skeleton width={150} />
+              <Skeleton width="40%" /> {/* Adjusts to 40% of parent width */}
             </th>
             <th className="px-4 py-2 border-b text-left font-Cabin text-xs font-semibold text-black">
-              <Skeleton width={100} />
+              <Skeleton width="30%" />
             </th>
             <th className="px-4 py-2 border-b text-left font-Cabin text-xs font-semibold text-black">
-              <Skeleton width={100} />
+              <Skeleton width="30%" />
             </th>
             <th className="px-4 py-2 border-b text-left font-Cabin text-xs font-semibold text-black">
-              <Skeleton width={100} />
+              <Skeleton width="30%" />
+            </th>
+            <th className="px-4 py-2 border-b text-left font-Cabin text-xs font-semibold text-black">
+              <Skeleton width="30%" />
             </th>
           </tr>
         </thead>
@@ -39,7 +39,8 @@ const LoadingTable = () => {
                       key={colIndex}
                       className="px-4 py-3 border-b text-left font-Inter text-[#5F6D7E] text-sm font-medium"
                     >
-                      <Skeleton />
+                      {/* Skeleton takes the full width of the parent td */}
+                      <Skeleton width="100%" height={20} />
                     </td>
                   ))}
               </tr>

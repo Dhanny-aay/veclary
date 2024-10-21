@@ -1,6 +1,6 @@
 import { useState } from "react";
 import close from "./assets/clos.svg";
-import edit from "./assets/teach.svg";
+import edit from "./assets/addBlk.svg";
 import { useSnackbar } from "notistack";
 import load from "./assets/load.gif";
 import { handleAddTeacher } from "../../controllers/schoolControllers/teachersController";
@@ -21,6 +21,7 @@ const AddTeacher = ({ setAddTeach }) => {
 
   const onError = (error) => {
     setLoading(false);
+
     enqueueSnackbar("Failed. Please try again.", {
       variant: "error",
     });

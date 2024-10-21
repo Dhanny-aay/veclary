@@ -7,6 +7,8 @@ import book from "./assets/book.svg";
 import table from "./assets/table.svg";
 import bursary from "./assets/bursary.svg";
 import setting from "./assets/setting.svg";
+import calendar from "./assets/Calendar.svg";
+import classroom from "./assets/class.svg";
 import settingAc from "./assets/blueSetting.svg";
 import logout from "./assets/logout.svg";
 import clos from "./assets/clos.svg";
@@ -25,9 +27,16 @@ const ManageSidebar = () => {
     { name: "Home", img: home, activeImg: homeAc, page: "Home" },
     { name: "Students", img: studnt, activeImg: studnt, page: "Students" },
     { name: "Teachers", img: teach, activeImg: teach, page: "Teachers" },
+    { name: "Classes", img: classroom, activeImg: classroom, page: "Class" },
     { name: "Resources", img: book, activeImg: book, page: "Resources" },
     { name: "Timetable", img: table, activeImg: table, page: "Timetable" },
     { name: "Bursary", img: bursary, activeImg: bursary, page: "Bursary" },
+    {
+      name: "School Calendar",
+      img: calendar,
+      activeImg: calendar,
+      page: "Calendar",
+    },
   ];
 
   const bottom = [

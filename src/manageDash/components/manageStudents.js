@@ -8,16 +8,45 @@ import {
   ManageActivePageContext,
   ManageSidebarContext,
 } from "../contexts/ManageActivePageContext";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
+import { handleGetSchoolStudents } from "../../controllers/schoolControllers/studentController";
+import LoadingTable from "../../utils/loadingTable";
+import AddStudent from "./addStudent";
 
 const ManageStudents = () => {
   const { sidebarVisible, setSidebarVisible } =
     useContext(ManageSidebarContext);
   const { activePage, setActivePage } = useContext(ManageActivePageContext);
+  const [students, setStudents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [noStudents, setNoStudents] = useState(false);
+  const [addStudent, setAddStudent] = useState(false);
 
   const handleClick = (page) => {
     setActivePage(page);
   };
+
+  const fetchStudents = async () => {
+    setLoading(true); // Start loading when fetching Students
+    try {
+      const data = await handleGetSchoolStudents();
+      if (Array.isArray(data) && data.length === 0) {
+        setNoStudents(true); // Set noStudents to true if no Students found
+        setStudents([]); // Clear the Students array
+      } else {
+        setStudents(data); // Set the Students if data is available
+        setNoStudents(false); // Reset noStudents if Students are found
+      }
+    } catch (error) {
+      setNoStudents(true); // Set noStudents to true in case of error
+    } finally {
+      setLoading(false); // Stop loading when fetch is complete
+    }
+  };
+
+  useEffect(() => {
+    fetchStudents();
+  }, []);
 
   const testData = [
     {
@@ -59,6 +88,7 @@ const ManageStudents = () => {
 
   return (
     <>
+      {addStudent && <AddStudent setAddStudent={setAddStudent} />}
       <div
         onClick={() => {
           setSidebarVisible(false);
@@ -97,7 +127,12 @@ const ManageStudents = () => {
           </span>
 
           <span className=" flex items-start">
-            <button className=" text-center  text-sm font-Outfit font-medium text-white bg-[#0530A1] py-2 px-3 md:px-6 rounded-[10px]">
+            <button
+              onClick={() => {
+                setAddStudent(true);
+              }}
+              className=" text-center  text-sm font-Outfit font-medium text-white bg-[#0530A1] py-2 px-3 md:px-6 rounded-[10px]"
+            >
               Add New Student
             </button>
           </span>
@@ -131,33 +166,53 @@ const ManageStudents = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {testData.map((data, index) => (
-                    <tr key={index}>
-                      <td className=" font-Outfit py-4 border-t border-[#EAEBF0] text-sm text-[#5F6D7E] font-medium text-center">
-                        0{index + 1}
-                      </td>
-                      <td className=" font-Outfit py-4 border-t border-[#EAEBF0] text-[#272D37] font-medium text-sm text-center">
-                        {data.name}
-                      </td>
-                      <td className=" font-Outfit py-4 border-t border-[#EAEBF0] text-[#272D37] font-medium text-sm text-center">
-                        {data.regNo}
-                      </td>
-                      <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">
-                        {data.dob}
-                      </td>
-                      <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">
-                        {data.rate1}
-                      </td>
-                      <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">
-                        {data.rate2}
-                      </td>
-                      <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center flex space-x-3">
-                        <img className=" w-3" src={edit} alt="" />
-                        <img className=" w-3" src={vis} alt="" />
-                        <img className=" w-3" src={trash} alt="" />
+                  {loading ? (
+                    // Show loading spinner while fetching data
+                    <tr>
+                      <td colSpan="6">
+                        <LoadingTable rows={6} columns={6} />
                       </td>
                     </tr>
-                  ))}
+                  ) : noStudents ? (
+                    // Show "No Students found" message
+
+                    <tr className=" w-full">
+                      <td
+                        colSpan="6"
+                        className="px-4 py-3 text-center font-Outfit text-[#667085] text-sm w-full"
+                      >
+                        There are no Students yet.
+                      </td>
+                    </tr>
+                  ) : (
+                    testData.map((data, index) => (
+                      <tr key={index}>
+                        <td className=" font-Outfit py-4 border-t border-[#EAEBF0] text-sm text-[#5F6D7E] font-medium text-center">
+                          0{index + 1}
+                        </td>
+                        <td className=" font-Outfit py-4 border-t border-[#EAEBF0] text-[#272D37] font-medium text-sm text-center">
+                          {data.name}
+                        </td>
+                        <td className=" font-Outfit py-4 border-t border-[#EAEBF0] text-[#272D37] font-medium text-sm text-center">
+                          {data.regNo}
+                        </td>
+                        <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">
+                          {data.dob}
+                        </td>
+                        <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">
+                          {data.rate1}
+                        </td>
+                        <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">
+                          {data.rate2}
+                        </td>
+                        <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center flex space-x-3">
+                          <img className=" w-3" src={edit} alt="" />
+                          <img className=" w-3" src={vis} alt="" />
+                          <img className=" w-3" src={trash} alt="" />
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>

@@ -36,6 +36,8 @@ const Signin = () => {
       navigate("/vendorDashboard");
     } else if (userRole === "PUBLISHER") {
       navigate("/vendorDashboard");
+    } else if (userRole === "SCHOOL") {
+      navigate("/managementDashboard");
     } else {
       enqueueSnackbar("Role not recognized.", { variant: "error" });
     }

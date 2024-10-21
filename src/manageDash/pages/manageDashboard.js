@@ -15,21 +15,12 @@ import ManageBursary from "../components/manageBursary";
 import ManageAddResources from "../components/manageAddResources";
 import { handleGetSchoolDashboard } from "../../controllers/schoolControllers/schoolAUthController";
 import { refreshToken } from "../../controllers/generalController/authController";
+import ManageCalendar from "../components/manageCalendar";
 
 const ManageDashboard = () => {
-  const componentMap = {
-    Home: <ManageHome />,
-    Students: <ManageStudents />,
-    Teachers: <ManageTeachers />,
-    Timetable: <ManageTimetable />,
-    Resources: <ManageResource />,
-    Settings: <ManageSetting />,
-    Bursary: <ManageBursary />,
-    AddResources: <ManageAddResources />,
-  };
-
   const { activePage } = useContext(ManageActivePageContext);
   const { setSidebarVisible } = useContext(ManageSidebarContext);
+  const [loading, setLoading] = useState(true);
   const [dashboard, setDashboard] = useState(null);
 
   useEffect(() => {
@@ -51,6 +42,7 @@ const ManageDashboard = () => {
         //   variant: "error",
         // });
       } finally {
+        setLoading(false);
       }
     };
 
@@ -58,6 +50,18 @@ const ManageDashboard = () => {
   }, []);
 
   console.log(dashboard);
+
+  const componentMap = {
+    Home: <ManageHome dashboard={dashboard} loading={loading} />,
+    Students: <ManageStudents />,
+    Teachers: <ManageTeachers />,
+    Timetable: <ManageTimetable />,
+    Resources: <ManageResource />,
+    Settings: <ManageSetting />,
+    Bursary: <ManageBursary />,
+    Calendar: <ManageCalendar dashboard={dashboard} />,
+    AddResources: <ManageAddResources />,
+  };
 
   const ComponentToRender = componentMap[activePage] || null;
 
