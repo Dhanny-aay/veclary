@@ -24,8 +24,9 @@ const ManageCalendar = ({ dashboard }) => {
     setTrigger(!trigger); // Toggle trigger to true or false
   };
 
-  const handleClick = (page) => {
+  const handleClick = (page, sessionID) => {
     setActivePage(page);
+    localStorage.setItem("veclary_sessionID", sessionID); // Save sessionID to localStorage
   };
 
   const fetchSessions = async () => {
@@ -203,7 +204,12 @@ const ManageCalendar = ({ dashboard }) => {
                           {formatDate(item.endDate)}
                         </td>
                         <td className="px-4 py-2 border-b text-[#272D37] font-medium text-sm font-Outfit">
-                          <p href="#" className="text-[#0530A1] cursor-pointer">
+                          <p
+                            onClick={() =>
+                              handleClick("viewCalendar", item._id)
+                            }
+                            className="text-[#0530A1] cursor-pointer"
+                          >
                             View
                           </p>
                         </td>

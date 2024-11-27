@@ -16,6 +16,8 @@ import ManageAddResources from "../components/manageAddResources";
 import { handleGetSchoolDashboard } from "../../controllers/schoolControllers/schoolAUthController";
 import { refreshToken } from "../../controllers/generalController/authController";
 import ManageCalendar from "../components/manageCalendar";
+import ManageViewCalendar from "../components/manageViewCalendar";
+import ManageClasses from "../components/manageClasses";
 
 const ManageDashboard = () => {
   const { activePage } = useContext(ManageActivePageContext);
@@ -54,6 +56,7 @@ const ManageDashboard = () => {
   const componentMap = {
     Home: <ManageHome dashboard={dashboard} loading={loading} />,
     Students: <ManageStudents />,
+    Classes: <ManageClasses />,
     Teachers: <ManageTeachers />,
     Timetable: <ManageTimetable />,
     Resources: <ManageResource />,
@@ -61,6 +64,8 @@ const ManageDashboard = () => {
     Bursary: <ManageBursary />,
     Calendar: <ManageCalendar dashboard={dashboard} />,
     AddResources: <ManageAddResources />,
+    viewCalendar: <ManageViewCalendar />,
+    viewCalendar: <ManageViewCalendar />,
   };
 
   const ComponentToRender = componentMap[activePage] || null;

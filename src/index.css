@@ -260,3 +260,115 @@ input:checked + .slider:before {
 li {
   color: #676767;
 }
+
+.calendar-container {
+  margin: 0 auto;
+  width: 100%; /* Try 100% width without specifying max-width initially */
+}
+
+/* Basic Header Styling */
+.custom-calendar .react-calendar__navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.2em;
+}
+
+.custom-calendar .react-calendar__tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
+
+.custom-calendar .react-calendar__tile--now {
+  background-color: #e0f7fa;
+  color: #00796b;
+}
+
+.custom-calendar .react-calendar__tile--active {
+  background-color: #61f5ba;
+  color: white;
+  height: 48px;
+  width: 48px;
+  /* opacity: 0.5; */
+  border-radius: 50%;
+}
+
+/* Make each tile a relative container */
+.custom-calendar .react-calendar__tile {
+  position: relative; /* This allows child elements with absolute positioning to align within it */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  width: 48px;
+  transition: background-color 0.2s ease;
+}
+
+/* Highlighted event dates */
+.highlighted-date {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #2f52ff; /* Custom color for event highlights */
+  border-radius: 50%;
+  z-index: 1; /* Position it behind the date text */
+}
+
+/* Date text styling */
+.react-calendar__tile > abbr {
+  position: relative; /* Keeps date text above the highlight */
+  z-index: 2;
+  font-weight: bold;
+  color: #333; /* Adjust color to ensure visibility on blue background */
+}
+
+/* Container for the timeline */
+.timeline-container {
+  display: grid;
+  grid-template-rows: repeat(31, 1fr); /* Assuming max 31 days */
+  grid-auto-flow: row;
+  gap: 4px;
+  width: 100%;
+  position: relative;
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+
+/* Style each event */
+.timeline-event {
+  background-color: #e0f7fa;
+  border-left: 4px solid #00796b;
+  padding: 8px;
+  border-radius: 4px;
+  color: #333;
+  font-weight: bold;
+}
+
+/* Styling for event labels */
+.event-label {
+  font-size: 0.9em;
+  text-transform: capitalize;
+}
+
+/* Optional styling for event weeks */
+.timeline-event.week-event {
+  background-color: #bbdefb;
+  border-left: 4px solid #0d47a1;
+}
+
+/* Overwrite the default to keep the scrollbar always visible */
+
+::-webkit-scrollbar {
+  -webkit-appearance: none;
+  width: 7px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background-color: rgba(0, 0, 0, 0.5);
+  -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
+}
