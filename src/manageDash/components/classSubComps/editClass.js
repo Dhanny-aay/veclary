@@ -10,12 +10,14 @@ import {
 import GenericLoadingSkeleton from "../../../utils/loadingSkeleton";
 import { handleGetSchoolSessions } from "../../../controllers/schoolControllers/sessionController";
 import { handleGetSchoolTeachers } from "../../../controllers/schoolControllers/teachersController";
+import { handleGetSchoolSubjects } from "../../../controllers/schoolControllers/subjectController";
 
 const EditClass = ({ setEditClass, classID, triggerFetch }) => {
   const [classDeets, setClassDeets] = useState({
     name: "",
     sessionId: "",
-    teachers: [],
+    teacherId: "",
+    subjects: "",
   });
   const [loading, setLoading] = useState(true);
   const [loadingEdit, setLoadingEdit] = useState(false);
@@ -24,6 +26,9 @@ const EditClass = ({ setEditClass, classID, triggerFetch }) => {
   const [sessions, setSessions] = useState([]);
   const [loadingSession, setLoadingSession] = useState(true);
   const [loadingTeachers, setLoadingTeachers] = useState(true);
+  const [selectedSubjects, setSelectedSubjects] = useState([]);
+  const [subjects, setSubjects] = useState([]);
+  const [loadingSubjects, setLoadingSubjects] = useState(true);
 
   // Fetch class by ID
   const fetchClassByID = async () => {
@@ -68,9 +73,44 @@ const EditClass = ({ setEditClass, classID, triggerFetch }) => {
     }
   };
 
+  const fetchSubjects = async () => {
+    setLoadingSubjects(true);
+    try {
+      const data = await handleGetSchoolSubjects();
+      if (data) {
+        setSubjects(data[0].subjects);
+      } else {
+        // enqueueSnackbar("Failed to fetch profile data", { variant: "error" });
+      }
+    } catch (error) {
+      console.error("Error fetching subjects:", error);
+    } finally {
+      setLoadingSubjects(false);
+    }
+  };
+  // Sync selectedSubjects with classDeets.subjects initially
+  useEffect(() => {
+    setSelectedSubjects(classDeets.subjects || []);
+  }, [classDeets.subjects]);
+
+  const handleAppendSubject = (subjectId) => {
+    if (!selectedSubjects.includes(subjectId)) {
+      const updatedSubjects = [...selectedSubjects, subjectId];
+      setSelectedSubjects(updatedSubjects);
+      setClassDeets((prev) => ({ ...prev, subjects: updatedSubjects }));
+    }
+  };
+
+  const handleRemoveSubject = (subjectId) => {
+    const updatedSubjects = selectedSubjects.filter((id) => id !== subjectId);
+    setSelectedSubjects(updatedSubjects);
+    setClassDeets((prev) => ({ ...prev, subjects: updatedSubjects }));
+  };
+
   useEffect(() => {
     fetchSessions();
     fetchTeachers();
+    fetchSubjects();
   }, []);
 
   const handleChange = (e) => {
@@ -78,25 +118,6 @@ const EditClass = ({ setEditClass, classID, triggerFetch }) => {
     setClassDeets((prevClass) => ({
       ...prevClass,
       [name]: value,
-    }));
-  };
-
-  // Handle teacher-subject pair changes
-  const handleTeacherChange = (index, e) => {
-    const { name, value } = e.target;
-    const updatedTeachers = [...classDeets.teachers];
-    updatedTeachers[index] = { ...updatedTeachers[index], [name]: value };
-    setClassDeets((prevClass) => ({
-      ...prevClass,
-      teachers: updatedTeachers,
-    }));
-  };
-
-  // Add a new teacher-subject pair
-  const addTeacher = () => {
-    setClassDeets((prevClass) => ({
-      ...prevClass,
-      teachers: [...prevClass.teachers, { teacherId: "", subject: "" }],
     }));
   };
 
@@ -111,18 +132,7 @@ const EditClass = ({ setEditClass, classID, triggerFetch }) => {
         return false;
       }
     }
-    // Validate teacher-subject pairs
-    for (let teacher of classDeets.teachers) {
-      if (!teacher.teacherId || !teacher.subject) {
-        enqueueSnackbar(
-          "Please provide both teacher and subject for each teacher",
-          {
-            variant: "error",
-          }
-        );
-        return false;
-      }
-    }
+
     return true;
   };
 
@@ -150,8 +160,8 @@ const EditClass = ({ setEditClass, classID, triggerFetch }) => {
 
   return (
     <div className="w-full md:w-[120%] h-full bg-[#1212128d] z-[999] fixed top-0 md:-left-[20%] p-6 flex justify-center items-center">
-      <div className="md:ml-[20%] h-[500px] bg-[#FFFFFF] p-6 rounded-[15px] w-full md:w-[400px]">
-        <div className="w-full h-full bg-[#fff] overflow-auto">
+      <div className="md:ml-[20%] bg-[#FFFFFF] p-3 rounded-[15px] w-full md:w-[700px]">
+        <div className="w-full h-full p-3 max-h-[500px] bg-[#fff] overflow-auto">
           <span className="w-full flex items-center justify-between">
             <img src={edit} className="" alt="" />
             <img
@@ -175,8 +185,8 @@ const EditClass = ({ setEditClass, classID, triggerFetch }) => {
             />
           ) : (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <label className="w-full flex flex-col mt-4 text-[#272D37] font-Outfit font-medium text-sm">
+              <div className="grid grid-cols-1 md:grid-cols-2 mt-4 gap-3">
+                <label className="w-full flex flex-col text-[#272D37] font-Outfit font-medium text-sm">
                   Name
                   <input
                     type="text"
@@ -188,71 +198,115 @@ const EditClass = ({ setEditClass, classID, triggerFetch }) => {
                   />
                 </label>
 
-                <label className="w-full mt-3 flex flex-col text-[#272D37] font-Outfit font-medium text-sm">
+                <label className="w-full flex flex-col text-[#272D37] font-Outfit font-medium text-sm">
                   Session
+                  {loadingSession ? (
+                    <GenericLoadingSkeleton
+                      count={1}
+                      width="100%"
+                      height={40}
+                    />
+                  ) : (
+                    <select
+                      name="sessionId"
+                      value={classDeets.sessionId}
+                      onChange={handleChange}
+                      className="mt-2 border border-[#DAE0E6] p-2.5 rounded-[5px] text-sm font-Outfit font-normal bg-white"
+                    >
+                      <option value="">Select Session</option>
+                      {sessions.map((item, index) => (
+                        <option value={item._id} key={index}>
+                          {item.name}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+                </label>
+              </div>
+
+              <label className="w-full mt-4 flex flex-col text-[#272D37] font-Outfit font-medium text-sm">
+                Class Teacher
+                {loadingTeachers ? (
+                  <GenericLoadingSkeleton count={1} width="100%" height={40} />
+                ) : (
                   <select
                     name="sessionId"
-                    value={classDeets.sessionId}
+                    value={classDeets.teacherId}
                     onChange={handleChange}
                     className="mt-2 border border-[#DAE0E6] p-2.5 rounded-[5px] text-sm font-Outfit font-normal bg-white"
                   >
-                    <option value="">Select Session</option>
-                    {sessions.map((item, index) => (
+                    <option value="">Select Teacher</option>
+                    {teachers.map((item, index) => (
                       <option value={item._id} key={index}>
                         {item.name}
                       </option>
                     ))}
                   </select>
+                )}
+              </label>
+
+              <div className="  mt-4 w-full flex flex-row items-center justify-between">
+                <label
+                  htmlFor="choose"
+                  className=" font-Outfit font-medium text-sm text-[#272D37]"
+                >
+                  Class Subjects
                 </label>
               </div>
-
-              {/* Teachers section */}
-              <div className="mt-6">
-                {classDeets.teachers.map((teacher, index) => (
-                  <div
-                    key={index}
-                    className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4"
-                  >
-                    <label className="w-full flex flex-col text-[#272D37] font-Outfit font-medium text-sm">
-                      Teacher
+              <div>
+                {loadingSubjects ? (
+                  <GenericLoadingSkeleton count={1} width="100%" height={40} />
+                ) : (
+                  <>
+                    <div className="w-full border border-[#DAE0E6] mt-[6px] block px-4 py-3 rounded-[5px] bg-white">
                       <select
-                        name="teacherId"
-                        value={teacher.teacherId}
-                        onChange={(e) => handleTeacherChange(index, e)}
-                        className="mt-2 border border-[#DAE0E6] p-2.5 rounded-[5px] text-sm font-Outfit font-normal bg-white"
+                        id="subject-dropdown"
+                        onChange={(e) => {
+                          handleAppendSubject(e.target.value);
+                          e.target.value = ""; // Reset dropdown value
+                        }}
+                        className="w-full bg-transparent font-Outfit font-normal text-sm text-[]"
                       >
-                        <option value="">Select Teacher</option>
-                        {teachers.map((t) => (
-                          <option value={t._id} key={t._id}>
-                            {t.name}
+                        <option disabled selected value="">
+                          Select Subject
+                        </option>
+                        {subjects.map((subject) => (
+                          <option
+                            className="capitalize"
+                            key={subject._id}
+                            value={subject._id} // Pass only the ID
+                          >
+                            {subject.name}
                           </option>
                         ))}
                       </select>
-                    </label>
+                    </div>
+                  </>
+                )}
 
-                    <label className="w-full flex flex-col text-[#272D37] font-Outfit font-medium text-sm">
-                      Subject
-                      <input
-                        type="text"
-                        name="subject"
-                        value={teacher.subject}
-                        onChange={(e) => handleTeacherChange(index, e)}
-                        placeholder="Enter subject"
-                        className="font-Outfit text-[#919BA7] placeholder:text-[#919BA7] text-sm font-normal w-full mt-2 border border-[#DAE0E6] p-2.5 rounded-[5px]"
-                      />
-                    </label>
-                  </div>
-                ))}
-                <button
-                  type="button"
-                  onClick={addTeacher}
-                  className="mt-4 text-[#0530A1] font-medium"
-                >
-                  Add Another Teacher
-                </button>
+                <div className="flex flex-wrap gap-3 items-start justify-start mt-4 w-full">
+                  {selectedSubjects.map((subjectId) => {
+                    const subject = subjects.find(
+                      (item) => item._id === subjectId
+                    );
+                    return (
+                      <div
+                        key={subjectId}
+                        className="flex items-center bg-[#F1F1F1F1] py-1 px-3 rounded-[16px] space-x-2"
+                      >
+                        <span className="font-Outfit font-medium capitalize text-sm text-black">
+                          {subject?.name || "Unknown Subject"}
+                        </span>
+                        <button onClick={() => handleRemoveSubject(subjectId)}>
+                          <img src={close} className="w-3 h-3" alt="Remove" />
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
 
-              <div className=" w-full mt-6 grid grid-cols-2 gap-4">
+              <div className=" w-full mt-4 grid grid-cols-2 gap-4">
                 <button
                   onClick={() => {
                     setEditClass(false);

@@ -1,99 +1,86 @@
-import arrowBlue from "./assets/arrowblue.svg";
-import backArr from "./assets/backArr.svg";
-import fwdArr from "./assets/fwdArr.svg";
-import edit from "./assets/edit.svg";
-// import trash from "./assets/trash.svg";
+import { useContext, useEffect, useState } from "react";
+import LoadingTable from "../../utils/loadingTable";
 import {
   ManageActivePageContext,
   ManageSidebarContext,
 } from "../contexts/ManageActivePageContext";
-import { useContext, useEffect, useState } from "react";
-import { handleGetSchoolTeachers } from "../../controllers/schoolControllers/teachersController";
-import LoadingTable from "../../utils/loadingTable";
-import EditTeacher from "./teacherSubComps/editTeacher";
-import AddTeacher from "./teacherSubComps/addTeacher";
-// import DeleteTeacher from "./teacherSubComps/deleteTeacher";
+import arrowBlue from "./assets/arrowblue.svg";
+import backArr from "./assets/backArr.svg";
+import fwdArr from "./assets/fwdArr.svg";
+import edit from "./assets/edit.svg";
+import trash from "./assets/trash.svg";
+import { handleGetSchoolSubjects } from "../../controllers/schoolControllers/subjectController";
+import AddSubject from "./subjectSubComps/addSubject";
+import DeleteSubject from "./subjectSubComps/deleteSubject";
+import EditSubject from "./subjectSubComps/editSubject";
 
-const ManageTeachers = () => {
-  const { sidebarVisible, setSidebarVisible } =
-    useContext(ManageSidebarContext);
-  const { activePage, setActivePage } = useContext(ManageActivePageContext);
-  const [addTeach, setAddTeach] = useState(false);
-  const [teachers, setTeachers] = useState([]);
+const ManageSubjects = () => {
+  const { setSidebarVisible } = useContext(ManageSidebarContext);
+  const { setActivePage } = useContext(ManageActivePageContext);
+  const [addSubject, setAddSubject] = useState(false);
+  const [subjects, setSubjects] = useState([]);
   const [trigger, setTrigger] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [teacherID, setTeacherID] = useState("");
-  // const [deleteTeach, setDeleteTeach] = useState(false);
-  const [editTeach, setEditTeach] = useState(false);
+  const [subjectID, setSubjectID] = useState("");
+  const [deleteSubject, setDeleteSubject] = useState(false);
+  const [editSubject, setEditSubject] = useState(false);
 
   const triggerFetch = () => {
     setTrigger(!trigger); // Toggle trigger to true or false
   };
 
-  const fetchTeachers = async () => {
+  const fetchSubjects = async () => {
     setLoading(true);
     try {
-      const data = await handleGetSchoolTeachers();
+      const data = await handleGetSchoolSubjects();
       if (data) {
-        setTeachers(data);
+        setSubjects(data[0].subjects);
       } else {
         // enqueueSnackbar("Failed to fetch profile data", { variant: "error" });
       }
     } catch (error) {
-      console.error("Error fetching events:", error);
+      console.error("Error fetching subjects:", error);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchTeachers();
+    fetchSubjects();
   }, [trigger]);
 
   const handleClick = (page) => {
     setActivePage(page);
   };
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "APPROVED":
-        return "bg-[#17BD8D1A] text-[#17BD8D]";
-      case "CURRENT":
-        return "bg-[#17BD8D1A] text-[#17BD8D]";
-      case "PENDING":
-        return "bg-yellow-100 text-yellow-700";
-      case "Ended":
-        return "bg-[#FF4E3E1A] text-[#FF4E3E]";
-      default:
-        return "bg-gray-100 text-gray-700";
-    }
+  const handleDeleteIconClick = (subjectId) => {
+    setSubjectID(subjectId);
+    setDeleteSubject(true);
   };
-  // const handleDeleteIconClick = (teacherID) => {
-  //   setTeacherID(teacherID);
-  //   setDeleteTeach(true);
-  // };
 
-  const handleEditIconClick = (teacherID) => {
-    setTeacherID(teacherID);
-    setEditTeach(true);
+  const handleEditIconClick = (subjectId) => {
+    setSubjectID(subjectId);
+    setEditSubject(true);
   };
+
+  // console.log(subjects);
 
   return (
     <>
-      {addTeach && (
-        <AddTeacher setAddTeach={setAddTeach} triggerFetch={triggerFetch} />
+      {addSubject && (
+        <AddSubject setAddSubject={setAddSubject} triggerFetch={triggerFetch} />
       )}
-      {/* {deleteTeach && (
-        <DeleteTeacher
-          teacherID={teacherID}
-          setDeleteTeach={setDeleteTeach}
+      {deleteSubject && (
+        <DeleteSubject
+          setDeleteSubject={setDeleteSubject}
+          subjectID={subjectID}
           triggerFetch={triggerFetch}
         />
-      )} */}
-      {editTeach && (
-        <EditTeacher
-          teacherID={teacherID}
-          setEditTeach={setEditTeach}
+      )}
+      {editSubject && (
+        <EditSubject
+          setEditSubject={setEditSubject}
+          subjectID={subjectID}
           triggerFetch={triggerFetch}
         />
       )}
@@ -112,36 +99,21 @@ const ManageTeachers = () => {
             Back
           </p>
           <p className=" font-Outfit text-xl font-semibold mb-2 ml-3">
-            Teachers
+            Subjects
           </p>
         </span>
 
         <div className=" w-full items-end flex flex-row px-6 mt-6 justify-between">
-          <span className=" flex items-start space-x-6">
-            <label
-              htmlFor="Class Teacher"
-              className=" font-Outfit flex flex-col text-[#272D37] text-xs font-medium"
-            >
-              Filter
-              <select
-                type="text"
-                value={""}
-                className=" mt-2 text-[#272D37] text-sm w-[120px] md:w-[200px] font-normal border border-[#DAE0E6] rounded-[5px] font-Outfit p-2.5"
-              >
-                <option value="">Sort by...</option>
-                <option value="Jss1">Class</option>
-              </select>
-            </label>
-          </span>
+          <span className=" "></span>
 
           <span className=" flex items-start">
             <button
               onClick={() => {
-                setAddTeach(true);
+                setAddSubject(true);
               }}
               className=" text-center  text-sm font-Outfit font-medium text-white bg-[#0530A1] py-2 px-3 md:px-6 rounded-[10px]"
             >
-              Add New Teacher
+              Add New Subject
             </button>
           </span>
         </div>
@@ -156,19 +128,13 @@ const ManageTeachers = () => {
                       S/N
                     </th>
                     <th className="border-b font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 text-center px-4">
-                      Student Names
-                    </th>
-                    <th className="border-b font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 text-center px-4">
-                      Subject Taught
-                    </th>
-                    <th className="border-b font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 text-center px-4">
-                      Address
-                    </th>
-                    <th className="border-b font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 text-center px-4">
-                      Status
+                      Name
                     </th>
                     {/* <th className="border-b font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 text-center px-4">
-                      Class Taught
+                      Class
+                    </th> */}
+                    {/* <th className="border-b font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 text-center px-4">
+                      Class Teacher
                     </th> */}
                     <th className="border-b font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 text-center px-4"></th>
                   </tr>
@@ -180,56 +146,45 @@ const ManageTeachers = () => {
                         <LoadingTable rows={6} columns={6} />
                       </td>
                     </tr>
-                  ) : teachers.length === 0 ? (
-                    // Show if there are no teachers
+                  ) : subjects.length === 0 ? (
+                    // Show if there are no subjects
                     <tr className=" w-full">
                       <td
                         colSpan="5"
                         className="px-4 py-3 text-center font-Outfit text-[#667085] text-sm w-full"
                       >
-                        There are no teachers yet.
+                        There are no subjects yet.
                       </td>
                     </tr>
                   ) : (
-                    teachers.map((data, index) => (
+                    subjects.map((data, index) => (
                       <tr key={index}>
                         <td className=" font-Outfit py-4 border-t border-[#EAEBF0] text-sm text-[#5F6D7E] font-medium text-center">
                           0{index + 1}
                         </td>
-                        <td className=" font-Outfit py-4 border-t border-[#EAEBF0] text-[#272D37] font-medium text-sm text-center">
+                        <td className=" font-Outfit py-4 border-t border-[#EAEBF0] text-[#272D37] font-medium text-sm text-center capitalize">
                           {data.name}
                         </td>
-                        <td className=" font-Outfit py-4 border-t border-[#EAEBF0] text-[#272D37] font-medium text-sm text-center">
+                        {/* <td className=" font-Outfit py-4 border-t border-[#EAEBF0] text-[#272D37] font-medium text-sm text-center">
                           {data.subject}
-                        </td>
-                        <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">
-                          {data.address}
-                        </td>
-                        <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">
-                          <button
-                            className={`rounded-[20px] capitalize py-2 px-[10px] ${getStatusColor(
-                              data.status
-                            )}`}
-                          >
-                            {data.status}
-                          </button>
-                        </td>
-                        {/* <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">
-                          {data.class}
                         </td> */}
-                        <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center flex items-center justify-center">
-                          <img
+                        {/* <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">
+                          {data.address}
+                        </td> */}
+
+                        <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center flex items-center justify-center space-x-3">
+                          {/* <img
                             onClick={() => handleEditIconClick(data._id)}
-                            className=" w-3 mt-2"
+                            className=" w-3 mt-2 cursor-pointer"
                             src={edit}
                             alt=""
-                          />
-                          {/* <img
+                          /> */}
+                          <img
                             onClick={() => handleDeleteIconClick(data._id)}
-                            className=" w-3"
+                            className=" w-3 mt-2 cursor-pointer"
                             src={trash}
                             alt=""
-                          /> */}
+                          />
                         </td>
                       </tr>
                     ))
@@ -265,4 +220,4 @@ const ManageTeachers = () => {
   );
 };
 
-export default ManageTeachers;
+export default ManageSubjects;

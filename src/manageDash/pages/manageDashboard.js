@@ -18,6 +18,7 @@ import { refreshToken } from "../../controllers/generalController/authController
 import ManageCalendar from "../components/manageCalendar";
 import ManageViewCalendar from "../components/manageViewCalendar";
 import ManageClasses from "../components/manageClasses";
+import ManageSubjects from "../components/manageSubjects";
 
 const ManageDashboard = () => {
   const { activePage } = useContext(ManageActivePageContext);
@@ -56,6 +57,7 @@ const ManageDashboard = () => {
   const componentMap = {
     Home: <ManageHome dashboard={dashboard} loading={loading} />,
     Students: <ManageStudents />,
+    Subjects: <ManageSubjects />,
     Classes: <ManageClasses />,
     Teachers: <ManageTeachers />,
     Timetable: <ManageTimetable />,

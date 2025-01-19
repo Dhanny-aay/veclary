@@ -361,10 +361,10 @@ li {
 }
 
 /* Overwrite the default to keep the scrollbar always visible */
-
 ::-webkit-scrollbar {
   -webkit-appearance: none;
-  width: 7px;
+  width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-thumb {

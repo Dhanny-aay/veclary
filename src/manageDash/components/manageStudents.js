@@ -11,7 +11,9 @@ import {
 import { useContext, useEffect, useState } from "react";
 import { handleGetSchoolStudents } from "../../controllers/schoolControllers/studentController";
 import LoadingTable from "../../utils/loadingTable";
-import AddStudent from "./addStudent";
+import AddStudent from "./studentSubComps/addStudent";
+import EditStudent from "./studentSubComps/editStudent";
+import DeleteStudent from "./studentSubComps/deleteStudent";
 
 const ManageStudents = () => {
   const { sidebarVisible, setSidebarVisible } =
@@ -21,6 +23,14 @@ const ManageStudents = () => {
   const [loading, setLoading] = useState(true);
   const [noStudents, setNoStudents] = useState(false);
   const [addStudent, setAddStudent] = useState(false);
+  const [trigger, setTrigger] = useState(false);
+  const [editStudent, setEditStudent] = useState(false);
+  const [deleteStudent, setDeleteStudent] = useState(false);
+  const [studentID, setStudentID] = useState("");
+
+  const triggerFetch = () => {
+    setTrigger(!trigger); // Toggle trigger to true or false
+  };
 
   const handleClick = (page) => {
     setActivePage(page);
@@ -46,49 +56,37 @@ const ManageStudents = () => {
 
   useEffect(() => {
     fetchStudents();
-  }, []);
+  }, [trigger]);
 
-  const testData = [
-    {
-      regNo: "SCI-20-0102",
-      name: "Grand Rapids",
-      dob: "20/02/1990",
-      rate1: "70%",
-      rate2: "80%",
-    },
-    {
-      regNo: "SCI-20-0103",
-      name: "Bell Gardens",
-      dob: "20/02/1990",
-      rate1: "70%",
-      rate2: "80%",
-    },
-    {
-      regNo: "SCI-20-0104",
-      name: "Broomfield",
-      dob: "20/02/1990",
-      rate1: "70%",
-      rate2: "80%",
-    },
-    {
-      regNo: "SCI-20-0105",
-      name: "Springfield",
-      dob: "20/02/1990",
-      rate1: "70%",
-      rate2: "80%",
-    },
-    {
-      regNo: "SCI-20-0106",
-      name: "Kalamazoo",
-      dob: "20/02/1990",
-      rate1: "70%",
-      rate2: "80%",
-    },
-  ];
+  const handleDeleteIconClick = (studentID) => {
+    setStudentID(studentID);
+    setDeleteStudent(true);
+  };
+
+  const handleEditIconClick = (studentID) => {
+    setStudentID(studentID);
+    setEditStudent(true);
+  };
 
   return (
     <>
-      {addStudent && <AddStudent setAddStudent={setAddStudent} />}
+      {editStudent && (
+        <EditStudent
+          triggerFetch={triggerFetch}
+          setEditStudent={setEditStudent}
+          studentID={studentID}
+        />
+      )}
+      {addStudent && (
+        <AddStudent setAddStudent={setAddStudent} triggerFetch={triggerFetch} />
+      )}
+      {deleteStudent && (
+        <DeleteStudent
+          studentID={studentID}
+          triggerFetch={triggerFetch}
+          setDeleteStudent={setDeleteStudent}
+        />
+      )}
       <div
         onClick={() => {
           setSidebarVisible(false);
@@ -148,10 +146,10 @@ const ManageStudents = () => {
                       S/N
                     </th>
                     <th className="border-b font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 text-center px-4">
-                      Student Names
+                      Student Name
                     </th>
                     <th className="border-b font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 text-center px-4">
-                      Registration Number
+                      Class
                     </th>
                     <th className="border-b font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 text-center px-4">
                       Date of Birth
@@ -185,7 +183,7 @@ const ManageStudents = () => {
                       </td>
                     </tr>
                   ) : (
-                    testData.map((data, index) => (
+                    students.map((data, index) => (
                       <tr key={index}>
                         <td className=" font-Outfit py-4 border-t border-[#EAEBF0] text-sm text-[#5F6D7E] font-medium text-center">
                           0{index + 1}
@@ -194,7 +192,7 @@ const ManageStudents = () => {
                           {data.name}
                         </td>
                         <td className=" font-Outfit py-4 border-t border-[#EAEBF0] text-[#272D37] font-medium text-sm text-center">
-                          {data.regNo}
+                          {data.className}
                         </td>
                         <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">
                           {data.dob}
@@ -206,9 +204,19 @@ const ManageStudents = () => {
                           {data.rate2}
                         </td>
                         <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center flex space-x-3">
-                          <img className=" w-3" src={edit} alt="" />
-                          <img className=" w-3" src={vis} alt="" />
-                          <img className=" w-3" src={trash} alt="" />
+                          <img
+                            className=" w-3 cursor-pointer"
+                            src={edit}
+                            onClick={() => handleEditIconClick(data._id)}
+                            alt=""
+                          />
+                          {/* <img className=" w-3" src={vis} alt="" /> */}
+                          <img
+                            className=" w-3 cursor-pointer"
+                            onClick={() => handleDeleteIconClick(data._id)}
+                            src={trash}
+                            alt=""
+                          />
                         </td>
                       </tr>
                     ))

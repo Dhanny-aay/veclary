@@ -7,12 +7,44 @@ import {
   ManageActivePageContext,
   ManageSidebarContext,
 } from "../contexts/ManageActivePageContext";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
+import { handleGetSchoolResources } from "../../controllers/schoolControllers/resourcesController";
+import AddResources from "./resourcesSubComps/addResources";
 
 const ManageResource = () => {
   const { sidebarVisible, setSidebarVisible } =
     useContext(ManageSidebarContext);
   const { activePage, setActivePage } = useContext(ManageActivePageContext);
+  const [resources, setResources] = useState([]);
+  const [trigger, setTrigger] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [addResource, setAddResource] = useState(false);
+  const [editResource, setEditResource] = useState(false);
+  const [deleteResource, setDeleteResource] = useState(false);
+
+  const triggerFetch = () => {
+    setTrigger(!trigger); // Toggle trigger to true or false
+  };
+
+  const fetchResources = async () => {
+    setLoading(true);
+    try {
+      const data = await handleGetSchoolResources();
+      if (data) {
+        setResources(data);
+      } else {
+        // enqueueSnackbar("Failed to fetch profile data", { variant: "error" });
+      }
+    } catch (error) {
+      console.error("Error fetching subjects:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchResources();
+  }, [trigger]);
 
   const handleClick = (page) => {
     setActivePage(page);
@@ -58,6 +90,12 @@ const ManageResource = () => {
 
   return (
     <>
+      {addResource && (
+        <AddResources
+          setAddResource={setAddResource}
+          triggerFetch={triggerFetch}
+        />
+      )}
       <div
         onClick={() => {
           setSidebarVisible(false);
@@ -101,7 +139,9 @@ const ManageResource = () => {
             </button>
 
             <button
-              onClick={() => handleClick("AddResources")}
+              onClick={() => {
+                setAddResource(true);
+              }}
               className=" text-center  text-sm font-Outfit font-medium text-white bg-[#0530A1] py-2 px-3 md:px-6 rounded-[10px]"
             >
               Add Resource

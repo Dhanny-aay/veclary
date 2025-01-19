@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   ManageActivePageContext,
   ManageSidebarContext,
@@ -9,12 +9,25 @@ import add from "./assets/add.svg";
 import nofeed from "./assets/nofeed.svg";
 import AddAnnouncement from "./addAnnouncement";
 import Skeleton from "react-loading-skeleton";
+import ChooseSubs from "./subjectSubComps/chooseSubsModal";
+import SelectSubs from "./subjectSubComps/selectSubjects";
+import AddSubject from "./subjectSubComps/addSubject";
+import { handleGetSchoolAnnouncements } from "../../controllers/schoolControllers/annoucementController";
+import { handleGetSchoolSubjects } from "../../controllers/schoolControllers/subjectController";
 
 const ManageHome = ({ dashboard, loading }) => {
   const { sidebarVisible, setSidebarVisible } =
     useContext(ManageSidebarContext);
   const { activePage, setActivePage } = useContext(ManageActivePageContext);
+  const [subjects, setSubjects] = useState([]);
+  const [loadingSubjects, setLoadingSubjects] = useState(true);
   const [makeAnnouncement, setMakeAnnouncement] = useState(false);
+  const [announcements, setAnnouncements] = useState([]);
+  const [loadingAnnouncements, setLoadingAnnouncements] = useState(true);
+  const [annouceID, setAnnounceID] = useState("");
+  const [chooseSub, setChooseSub] = useState(true);
+  const [selectSub, setSelectSub] = useState(false);
+  const [addSubject, setAddSubject] = useState(false);
 
   const handleClick = (page) => {
     setActivePage(page);
@@ -46,11 +59,61 @@ const ManageHome = ({ dashboard, loading }) => {
     // Add more activities as needed
   ];
 
+  const fetchAnnouncements = async () => {
+    setLoadingAnnouncements(true);
+    try {
+      const data = await handleGetSchoolAnnouncements();
+      if (data) {
+        setAnnouncements(data);
+      } else {
+        // enqueueSnackbar("Failed to fetch profile data", { variant: "error" });
+      }
+    } catch (error) {
+      console.error("Error fetching announcements:", error);
+    } finally {
+      setLoadingAnnouncements(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchAnnouncements();
+  }, []);
+
+  const fetchSubjects = async () => {
+    setLoadingSubjects(true);
+    try {
+      const data = await handleGetSchoolSubjects();
+      if (data) {
+        setSubjects(data[0]?.subjects || []);
+      } else {
+        // enqueueSnackbar("Failed to fetch profile data", { variant: "error" });
+        setSubjects([]);
+      }
+    } catch (error) {
+      console.error("Error fetching subjects:", error);
+    } finally {
+      setLoadingSubjects(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchSubjects();
+  }, []);
+
   return (
     <>
       {makeAnnouncement && (
         <AddAnnouncement setMakeAnnouncement={setMakeAnnouncement} />
       )}
+
+      {!loadingSubjects && subjects.length === 0 && chooseSub && (
+        <ChooseSubs setChooseSub={setChooseSub} setSelectSub={setSelectSub} />
+      )}
+
+      {selectSub && (
+        <SelectSubs setSelectSub={setSelectSub} setAddSubject={setAddSubject} />
+      )}
+      {addSubject && <AddSubject setAddSubject={setAddSubject} />}
 
       <div
         onClick={() => {
@@ -150,6 +213,7 @@ const ManageHome = ({ dashboard, loading }) => {
               </div>
             </div>
           </div>
+
           <div className=" w-full lg:w-[39%] border border-[#EAEBF0] rounded-[10px] p-4">
             <div className=" flex flex-row justify-between items-start">
               <span className="">

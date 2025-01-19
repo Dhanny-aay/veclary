@@ -28,6 +28,12 @@ const ManageSidebar = () => {
     { name: "Students", img: studnt, activeImg: studnt, page: "Students" },
     { name: "Teachers", img: teach, activeImg: teach, page: "Teachers" },
     { name: "Classes", img: classroom, activeImg: classroom, page: "Classes" },
+    {
+      name: "Subjects",
+      img: classroom,
+      activeImg: classroom,
+      page: "Subjects",
+    },
     { name: "Resources", img: book, activeImg: book, page: "Resources" },
     { name: "Timetable", img: table, activeImg: table, page: "Timetable" },
     { name: "Bursary", img: bursary, activeImg: bursary, page: "Bursary" },

@@ -278,11 +278,7 @@ const AuthorSignup = () => {
               </label>
             </div>
 
-            <BankSelector
-              handleChange={handleChange}
-              formData={formData}
-              setBankCode={setBankCode}
-            />
+            <BankSelector />
 
             <label
               htmlFor="accountNumber"

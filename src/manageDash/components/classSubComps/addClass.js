@@ -7,21 +7,54 @@ import { handleGetSchoolSessions } from "../../../controllers/schoolControllers/
 import { handleGetSchoolTeachers } from "../../../controllers/schoolControllers/teachersController";
 import GenericLoadingSkeleton from "../../../utils/loadingSkeleton";
 import { handleAddClass } from "../../../controllers/schoolControllers/classController";
-import add from "./assets/addBlk.svg";
+import { handleGetSchoolSubjects } from "../../../controllers/schoolControllers/subjectController";
+// import add from "./assets/addBlk.svg";
+// import plus from "./assets/PlusCircle.svg";
 
 const AddClass = ({ setAddClass, triggerFetch }) => {
   const [name, setName] = useState("");
   const [sessionId, setSessionId] = useState("");
   const [teachers, setTeachers] = useState([]);
-  const [teacherSubjectPairs, setTeacherSubjectPairs] = useState([
-    { teacherId: "", subject: "" },
-  ]);
+  const [classteacher, setClassTeacher] = useState("");
   const [loading, setLoading] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
   const [errors, setErrors] = useState({});
   const [sessions, setSessions] = useState([]);
   const [loadingSession, setLoadingSession] = useState(true);
   const [loadingTeachers, setLoadingTeachers] = useState(true);
+  const [selectedSubjects, setSelectedSubjects] = useState([]);
+  const [subjects, setSubjects] = useState([]);
+  const [loadingSubjects, setLoadingSubjects] = useState(true);
+
+  const fetchSubjects = async () => {
+    setLoadingSubjects(true);
+    try {
+      const data = await handleGetSchoolSubjects();
+      if (data) {
+        setSubjects(data[0].subjects);
+      } else {
+        // enqueueSnackbar("Failed to fetch profile data", { variant: "error" });
+      }
+    } catch (error) {
+      console.error("Error fetching subjects:", error);
+    } finally {
+      setLoadingSubjects(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchSubjects();
+  }, []);
+
+  const handleAppendSubject = (subjectId) => {
+    if (!selectedSubjects.includes(subjectId)) {
+      setSelectedSubjects([...selectedSubjects, subjectId]);
+    }
+  };
+
+  const handleRemoveSubject = (subjectId) => {
+    setSelectedSubjects(selectedSubjects.filter((id) => id !== subjectId));
+  };
 
   const fetchSessions = async () => {
     setLoadingSession(true);
@@ -51,23 +84,16 @@ const AddClass = ({ setAddClass, triggerFetch }) => {
     fetchSessions();
     fetchTeachers();
   }, []);
+
   const validateFields = () => {
     let errors = {};
     // Validate the class name and session ID
     if (!name) errors.name = "Name is required";
     if (!sessionId) errors.sessionId = "Session is required";
 
-    // Initialize an empty array for teacher errors
-    const teacherErrors = teacherSubjectPairs.map((pair, index) => {
-      const pairErrors = {};
-      if (!pair.teacherId) pairErrors.teacherId = "Teacher is required";
-      if (!pair.subject) pairErrors.subject = "Subject is required";
-      return pairErrors;
-    });
-
-    // Only include teacherSubjectPairs errors if there are any
-    if (teacherErrors.some((pairError) => Object.keys(pairError).length > 0)) {
-      errors.teacherSubjectPairs = teacherErrors;
+    // Validate that at least one subject is selected
+    if (selectedSubjects.length === 0) {
+      errors.selectedSubjects = "At least one subject must be selected";
     }
 
     setErrors(errors);
@@ -96,29 +122,35 @@ const AddClass = ({ setAddClass, triggerFetch }) => {
     }
 
     setLoading(true);
-    const userData = { name, sessionId, teachers: teacherSubjectPairs };
+    const userData = {
+      name,
+      sessionId,
+      teacherId: classteacher,
+      subjects: selectedSubjects,
+    };
 
     handleAddClass(userData, onSuccess, onError);
+    // console.log(userData);
   };
 
-  const addTeacherSubjectPair = () => {
-    setTeacherSubjectPairs([
-      ...teacherSubjectPairs,
-      { teacherId: "", subject: "" },
-    ]);
-  };
+  // const addTeacherSubjectPair = () => {
+  //   setTeacherSubjectPairs([
+  //     ...teacherSubjectPairs,
+  //     { teacherId: "", subject: "" },
+  //   ]);
+  // };
 
-  const handleTeacherSubjectChange = (index, field, value) => {
-    const updatedPairs = teacherSubjectPairs.map((pair, idx) =>
-      idx === index ? { ...pair, [field]: value } : pair
-    );
-    setTeacherSubjectPairs(updatedPairs);
-  };
+  // const handleTeacherSubjectChange = (index, field, value) => {
+  //   const updatedPairs = teacherSubjectPairs.map((pair, idx) =>
+  //     idx === index ? { ...pair, [field]: value } : pair
+  //   );
+  //   setTeacherSubjectPairs(updatedPairs);
+  // };
 
   return (
     <div className="w-full md:w-[120%] h-full bg-[#1212128d] z-[999] fixed top-0 md:-left-[20%] p-6 flex justify-center items-center">
-      <div className="md:ml-[20%] h-[500px] bg-[#FFFFFF] p-6 rounded-[15px] w-full md:w-[700px]">
-        <div className="w-full h-full bg-[#fff] overflow-auto">
+      <div className="md:ml-[20%] bg-[#FFFFFF] p-3 rounded-[15px] w-full md:w-[700px]">
+        <div className="w-full h-full p-3 max-h-[500px] bg-[#fff] overflow-auto">
           <span className=" w-full flex items-center justify-between">
             <img src={edit} className="" alt="" />
             <img
@@ -133,7 +165,7 @@ const AddClass = ({ setAddClass, triggerFetch }) => {
           </p>
           {/* Form Inputs */}
           <label className="w-full flex flex-col mt-4 text-[#272D37] font-Outfit font-medium text-sm">
-            Name
+            Class Name
             <input
               type="text"
               value={name}
@@ -172,58 +204,29 @@ const AddClass = ({ setAddClass, triggerFetch }) => {
             )}
           </label>
 
-          {teacherSubjectPairs.map((pair, index) => (
-            <div className="mt-3 grid grid-cols-2 gap-3" key={index}>
-              <label className="font-Outfit w-full flex flex-col text-[#272D37] text-sm font-medium">
-                Teacher
-                {loadingTeachers ? (
-                  <GenericLoadingSkeleton count={1} width="100%" height={40} />
-                ) : (
-                  <select
-                    value={pair.teacherId}
-                    onChange={(e) =>
-                      handleTeacherSubjectChange(
-                        index,
-                        "teacherId",
-                        e.target.value
-                      )
-                    }
-                    className="mt-2 border border-[#DAE0E6] p-2.5 rounded-[5px] text-sm font-Outfit font-normal text-[#919BA7] w-full"
-                  >
-                    <option value="">Select Teacher</option>
-                    {teachers.map((item) => (
-                      <option value={item._id} key={item._id}>
-                        {item.name}
-                      </option>
-                    ))}
-                  </select>
-                )}
-                {errors.teacherSubjectPairs?.[index]?.teacherId && (
-                  <p className="text-red-500 text-xs mt-1 font-Outfit">
-                    {errors.teacherSubjectPairs[index].teacherId}
-                  </p>
-                )}
-              </label>
-              <label className="w-full flex flex-col text-[#272D37] font-Outfit font-medium text-sm">
-                Subject
-                <input
-                  type="text"
-                  value={pair.subject}
-                  onChange={(e) =>
-                    handleTeacherSubjectChange(index, "subject", e.target.value)
-                  }
-                  placeholder="Enter the teacher's subject"
-                  className="font-Outfit text-[#919BA7] placeholder:text-[#919BA7] text-sm font-normal w-full mt-2 border border-[#DAE0E6] p-2.5 rounded-[5px]"
-                />
-                {errors.teacherSubjectPairs?.[index]?.subject && (
-                  <p className="text-red-500 text-xs mt-1 font-Outfit">
-                    {errors.teacherSubjectPairs[index].subject}
-                  </p>
-                )}
-              </label>
-            </div>
-          ))}
+          <div className="mt-3 grid grid-cols-1 gap-3">
+            <label className="font-Outfit w-full flex flex-col text-[#272D37] text-sm font-medium">
+              Class Teacher(optional)
+              {loadingTeachers ? (
+                <GenericLoadingSkeleton count={1} width="100%" height={40} />
+              ) : (
+                <select
+                  value={classteacher}
+                  onChange={(e) => setClassTeacher(e.target.value)}
+                  className="mt-2 border border-[#DAE0E6] p-2.5 rounded-[5px] text-sm font-Outfit font-normal text-[#919BA7] w-full"
+                >
+                  <option value="">Select Teacher</option>
+                  {teachers.map((item) => (
+                    <option value={item._id} key={item._id}>
+                      {item.name}
+                    </option>
+                  ))}
+                </select>
+              )}
+            </label>
+          </div>
 
+          {/* 
           <button
             className="flex items-center space-x-2 mt-3"
             onClick={addTeacherSubjectPair}
@@ -232,7 +235,71 @@ const AddClass = ({ setAddClass, triggerFetch }) => {
             <p className="font-Outfit font-medium text-sm text-[#272d37]">
               Add another teacher
             </p>
-          </button>
+          </button> */}
+
+          <div className="  mt-6 w-full flex flex-row items-center justify-between">
+            <label
+              htmlFor="choose"
+              className=" font-Outfit font-medium text-sm text-[#272D37]"
+            >
+              Choose Subject
+            </label>
+          </div>
+
+          {loadingSubjects ? (
+            <GenericLoadingSkeleton count={1} width="100%" height={40} />
+          ) : (
+            <>
+              <span className=" w-full border border-[#DAE0E6] mt-[6px] block px-4 py-3 rounded-[5px] bg-white">
+                <select
+                  name=""
+                  id="subject-dropdown"
+                  onChange={(e) => {
+                    handleAppendSubject(e.target.value);
+                    e.target.value = "";
+                  }}
+                  className=" w-full bg-transparent font-Outfit font-normal text-sm text-[#919BA7]"
+                >
+                  <option disabled selected value="">
+                    Choose Subject
+                  </option>
+                  {subjects.map((subject) => (
+                    <option
+                      className="capitalize"
+                      key={subject._id}
+                      value={subject._id} // Pass only the ID
+                    >
+                      {subject.name}
+                    </option>
+                  ))}
+                </select>
+              </span>
+              {errors.selectedSubjects && (
+                <p className="text-red-500 text-xs mt-1 font-Outfit">
+                  {errors.selectedSubjects}
+                </p>
+              )}
+            </>
+          )}
+
+          <div className="flex flex-wrap gap-3 items-start justify-start mt-4 w-full">
+            {selectedSubjects.map((subjectId) => {
+              const subject = subjects.find((item) => item._id === subjectId);
+              return (
+                <div
+                  key={subjectId}
+                  className="flex items-center bg-[#F1F1F1F1] py-1 px-3 rounded-[16px] space-x-2"
+                >
+                  <span className="font-Outfit font-medium capitalize text-sm text-black">
+                    {subject?.name || "Unknown Subject"}
+                  </span>
+                  <button onClick={() => handleRemoveSubject(subjectId)}>
+                    <img src={close} className="w-3 h-3" alt="" />
+                  </button>
+                </div>
+              );
+            })}
+          </div>
 
           <div className="w-full mt-6 grid grid-cols-2 gap-4">
             <button
