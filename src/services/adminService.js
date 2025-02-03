@@ -1,4 +1,4 @@
-import api from "../../index/api";
+import api from "../index/api";
 
 // Base admin service with shared functionality
 class BaseAdminService {
@@ -17,6 +17,10 @@ export class AuthService extends BaseAdminService {
 
   static async addPersonnel(data) {
     return api("POST", `${this.BASE_PATH}/human-resource/add-personnel`, data);
+  }
+
+  static async logout() {
+    return api("POST", "users/logout");
   }
 }
 

@@ -3,7 +3,7 @@ import homeAc from "./assets/home.svg";
 import home from "./assets/hme.svg";
 import setting from "./assets/setting.svg";
 import settingAc from "./assets/blueSetting.svg";
-import logout from "./assets/logout.svg";
+import logoutIcon from "./assets/logout.svg";
 import clos from "./assets/clos.svg";
 import { useContext } from "react";
 import {
@@ -11,6 +11,7 @@ import {
   AdminActivePageContext,
   AdminSidebarContext,
 } from "../contexts/AdminActivePageContext";
+import { useAuth } from "../contexts/AuthContext";
 
 const AdminSidebar = () => {
   const { activePage, setActivePage } = useContext(AdminActivePageContext);
@@ -139,7 +140,7 @@ const AdminSidebar = () => {
 
   const bottom = [
     { name: "Setting", img: setting, activeImg: settingAc, page: "Settings" },
-    { name: "Logout", img: logout },
+    { name: "Logout", img: logoutIcon, action: "logout" },
   ];
 
   const allowedPages = {
@@ -180,6 +181,8 @@ const AdminSidebar = () => {
   const filteredSidebar = sidebar.filter((item) =>
     allowedPages[accountType]?.includes(item.page)
   );
+
+  const { logout } = useAuth();
 
   return (
     <>
@@ -251,7 +254,13 @@ const AdminSidebar = () => {
                         ? "text-[#0530A1]"
                         : "text-[#929292]"
                     }`}
-                    onClick={() => handleClick(item.page)}
+                    onClick={() => {
+                      if (item.action === "logout") {
+                        logout();
+                      } else {
+                        handleClick(item.page);
+                      }
+                    }}
                   >
                     <img
                       src={activePage === item.page ? item.activeImg : item.img}
