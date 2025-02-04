@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { AuthService } from "../../services/adminService";
 import SnackbarUtils from "../../utils/snackbarUtils";
 import logo from "./assets/logo.svg";
+import { useAuth } from "../contexts/AuthContext";
 
 const AdminLogin = () => {
   const [email, setEmail] = useState("");
@@ -11,6 +11,7 @@ const AdminLogin = () => {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const validateForm = () => {
     const newErrors = {};
@@ -27,11 +28,8 @@ const AdminLogin = () => {
 
     setIsSubmitting(true);
     try {
-      const response = await AuthService.login({ email, password });
-      if (response.accessToken) {
-        SnackbarUtils.success("Login successful!");
-        navigate("/adminDashboard");
-      }
+      await login(email, password, rememberMe);
+      navigate("/adminDashboard");
     } catch (error) {
       SnackbarUtils.error(error.message || "Login failed. Please try again.");
     } finally {

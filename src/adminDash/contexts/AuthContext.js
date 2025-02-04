@@ -8,12 +8,9 @@ import {
 import { AuthService } from "../../services/adminService";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
-import SnackbarUtils from "../../utils/snackbarUtils";
 
-// Create authentication context
 const AuthContext = createContext(null);
 
-// Custom hook for auth context
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
@@ -22,23 +19,32 @@ export const useAuth = () => {
   return context;
 };
 
-// Auth Provider Component
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  // Check initial authentication state
   useEffect(() => {
     const checkAuthStatus = async () => {
       try {
-        const token = localStorage.getItem("veclary_token");
+        const token =
+          localStorage.getItem("veclary_token") ||
+          sessionStorage.getItem("veclary_token");
+
         if (token) {
           const decoded = jwtDecode(token);
-          if (decoded.exp * 1000 < Date.now()) {
-            await AuthService.refreshToken();
+
+          // Check if token is expired
+          if (decoded.exp * 1000 > Date.now()) {
+            setUser({
+              authenticated: true,
+              role: decoded.role,
+              email: decoded.email,
+            });
+          } else {
+            localStorage.removeItem("veclary_token");
+            sessionStorage.removeItem("veclary_token");
           }
-          setUser({ authenticated: true, role: decoded.role });
         }
       } catch (error) {
         console.error("Authentication check failed:", error);
@@ -47,60 +53,50 @@ export const AuthProvider = ({ children }) => {
         setLoading(false);
       }
     };
+
     checkAuthStatus();
   }, []);
 
-  // Login method
   const login = useCallback(
     async (email, password, rememberMe) => {
       try {
         const response = await AuthService.login({ email, password });
 
-        if (response.role !== "ADMIN") {
-          throw new Error("Unauthorized access");
+        // Validate response
+        if (!response.accessToken) {
+          throw new Error("Invalid login response");
         }
 
-        setUser({
-          email: response.email,
-          role: response.role,
+        const decoded = jwtDecode(response.accessToken);
+
+        const userData = {
+          email: decoded.email,
+          role: decoded.role,
           authenticated: true,
-        });
+        };
+        setUser(userData);
 
-        // Store token only if "Remember Me" is checked
-        if (rememberMe) {
-          localStorage.setItem("veclary_token", response.access_token);
-        } else {
-          sessionStorage.setItem("veclary_token", response.access_token);
-        }
+        // Store token based on remember me
+        const tokenStorage = rememberMe ? localStorage : sessionStorage;
+        tokenStorage.setItem("veclary_token", response.accessToken);
 
-        // Ensure the navigation happens after state update
-        setTimeout(() => {
-          navigate("/adminDashboard");
-        }, 0);
+        navigate("/adminDashboard");
+
         return true;
       } catch (error) {
         console.error("Login failed:", error);
+        setUser(null);
         throw error;
       }
     },
     [navigate]
   );
 
-  // Logout method
   const logout = useCallback(async () => {
     try {
-      const response = await AuthService.logout();
-      console.log("this is theponse from AuthContext", response)
-
-      // Checking if the response contains a valid JSON message
-      if (response && response.message) {
-        SnackbarUtils.success(response.message);
-      } else {
-        SnackbarUtils.success("Logged out successfully.");
-      }
+      await AuthService.logout();
     } catch (error) {
-      console.error("Logout failed:", error);
-      SnackbarUtils.error("Logout failed. Please try again.");
+      console.error("Logout error:", error);
     } finally {
       setUser(null);
       localStorage.removeItem("veclary_token");
@@ -109,34 +105,52 @@ export const AuthProvider = ({ children }) => {
     }
   }, [navigate]);
 
-  // Token Refresh Handling
   useEffect(() => {
-    const scheduleRefresh = async () => {
+    const refreshToken = async () => {
       if (user) {
         try {
-          const token = localStorage.getItem("veclary_token");
+          const token =
+            localStorage.getItem("veclary_token") ||
+            sessionStorage.getItem("veclary_token");
+
           if (token) {
             const decoded = jwtDecode(token);
             const timeUntilExpiry = decoded.exp * 1000 - Date.now() - 60000;
-            setTimeout(async () => {
-              await AuthService.refreshToken();
-            }, timeUntilExpiry);
+
+            if (timeUntilExpiry > 0) {
+              setTimeout(async () => {
+                try {
+                  await AuthService.refreshToken();
+                } catch (error) {
+                  console.error("Token refresh failed:", error);
+                  logout();
+                }
+              }, timeUntilExpiry);
+            }
           }
         } catch (error) {
-          console.error("Token refresh failed:", error);
+          console.error("Token validation error:", error);
           logout();
         }
       }
     };
-    scheduleRefresh();
+
+    refreshToken();
   }, [user, logout]);
 
-  // Provide context value
   return (
     <AuthContext.Provider
-      value={{ user, login, logout, loading, isAuthenticated: !!user }}
+      value={{
+        user,
+        login,
+        logout,
+        loading,
+        isAuthenticated: !!user,
+      }}
     >
-      {!loading && children}
+      {children}
     </AuthContext.Provider>
   );
 };
+
+export default AuthProvider;

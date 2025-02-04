@@ -20,7 +20,7 @@ export class AuthService extends BaseAdminService {
   }
 
   static async logout() {
-    return api("POST", "users/logout");
+    return api("POST", "/users/logout");
   }
 }
 

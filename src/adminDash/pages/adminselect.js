@@ -37,7 +37,7 @@ const AdminSelect = () => {
 
   const handleLevelClick = (level) => {
     setSelectedLevel(level);
-    setSelectedPosition(""); // Reset selected position when level changes
+    setSelectedPosition("");
   };
 
   const handleBackClick = () => {
@@ -60,16 +60,12 @@ const AdminSelect = () => {
       const signupData = JSON.parse(localStorage.getItem("adminSignupData"));
       if (!signupData) throw new Error("Signup data not found");
 
-      // Combine signup data with level and position
       const finalData = {
         ...signupData,
-        department: selectedLevel.name, // Use level as department
+        department: selectedLevel.name, 
         position: selectedPosition.name,
       };
 
-      console.log("This is before backend", finalData);
-
-      // Send data to the backend
       const response = await AuthService.addPersonnel(finalData);
       if (response.message) {
         console.log("This is in backend", finalData);

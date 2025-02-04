@@ -49,7 +49,7 @@ const AdminSignup = () => {
       // Save form data to localStorage
       localStorage.setItem("adminSignupData", JSON.stringify(initialFormData));
       SnackbarUtils.success("Please select your department and position.");
-      navigate("/adminselect"); // Redirect to the level selection page
+      navigate("/adminselect");
     } catch (error) {
       SnackbarUtils.error("An error occurred. Please try again.");
     } finally {
