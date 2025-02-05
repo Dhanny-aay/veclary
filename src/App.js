@@ -32,6 +32,8 @@ import Application from "./landing/pages/application";
 import ForgotPassword from "./landing/pages/forgotPassword";
 import NewPassword from "./landing/pages/newPassword";
 import Signin from "./landing/pages/signin";
+import { AuthProvider } from "./adminDash/contexts/AuthContext";
+import ProtectedRoute from "./adminDash/components/ProtectedRoute";
 
 function App() {
   const location = useLocation();
@@ -42,6 +44,7 @@ function App() {
 
   return (
     <>
+    <AuthProvider>
       <CustomProvider theme="light">
         <Container>
           <Routes>
@@ -74,10 +77,21 @@ function App() {
             <Route path="/adminSelect" element={<AdminSelect />} />
             <Route path="/adminSignup" element={<AdminSignup />} />
             <Route path="/adminlogin" element={<AdminLogin />} />
-            <Route path="/adminDashboard" element={<AdminDashBoard />} />
+            {/* <Route path="/adminDashboard" element={<AdminDashBoard />} /> */}
+
+            {/* Protected Admin Routes */}
+            <Route path="/adminDashboard/*" element={<ProtectedRoute />}>
+              <Route index element={<AdminDashBoard />} />
+              {/* Default dashboard */}
+              {/* <Route path="users" element={<UsersPage />} /> */}
+              {/* /adminDashboard/users */}
+              {/* <Route path="settings" element={<SettingsPage />} /> */}
+              {/* /adminDashboard/settings */}
+            </Route>
           </Routes>
         </Container>
       </CustomProvider>
+      </AuthProvider>
     </>
   );
 }
