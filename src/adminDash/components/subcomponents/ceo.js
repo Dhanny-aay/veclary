@@ -5,13 +5,28 @@ import chart from "./assets/chart.svg";
 import nonoti from "./assets/nonoti.svg";
 import chart1 from "./assets/chart1.svg";
 import chart2 from "./assets/chart2.svg";
+import Modal from "../Modal";
+import { useAuth } from "../../contexts/AuthContext";
 
 const CEO = () => {
-  const [makeAnnouncement, setMakeAnnouncement] = useState(false);
+  // const [makeAnnouncement, setMakeAnnouncement] = useState(false);
   const { activePage, setActivePage } = useContext(AdminActivePageContext);
+  const { user } = useAuth();
+
+  const [filterOption, setFilterOption] = useState("Sort by Paid Salary");
 
   const handleClick = (page) => {
     setActivePage(page);
+  };
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOpenModal = () => setIsModalOpen(true);
+  const handleCloseModal = () => setIsModalOpen(false);
+
+  const handleSubmitAnnouncement = (announcement) => {
+    // submit announcement logic
+    console.log("Announcement Submitted:", announcement);
   };
 
   const performance = [
@@ -35,7 +50,7 @@ const CEO = () => {
     },
   ];
 
-  const transactions = [
+  const allTransactions = [
     {
       name: "Latoya Langosh",
       date: "April 15 2024",
@@ -65,7 +80,7 @@ const CEO = () => {
   const statusStyles = {
     Done: "text-[#2D8A39] bg-[#F0FAF0]",
     Failed: "text-[#E2341D] bg-[#FFF2F0]",
-    default: "text-gray-600 bg-gray-100", // Default style for other statuses
+    default: "text-gray-600 bg-gray-100",
   };
 
   const getStatusClass = (status) => {
@@ -78,7 +93,7 @@ const CEO = () => {
         <span className=" w-[50px] md:w-[85px] h-[45px] md:h-[85px] rounded-[50%] bg-[#EAEBF0]"></span>
         <span className=" flex flex-col">
           <p className="font-Outfit font-medium text-xl text-black md:text-3xl">
-            Welcome back, CEO/COO!
+            Welcome back, {user?.name || "CEO/COO"}
           </p>
           <p className=" font-Outfit text-base md:text-lg font-normal text-[#000000B2]">
             Stay on top of Veclary with real-time data and insights.
@@ -86,28 +101,29 @@ const CEO = () => {
         </span>
       </div>
 
-      <div className=" mt-6">
-        <p className=" font-Outfit text-lg font-semibold">Analysis</p>
-        <div className=" mt-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* Analysis Section */}
+      <div className="mt-6">
+        <p className="font-Outfit text-lg font-semibold">Analysis</p>
+        <div className="mt-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {performance.map((item, index) => (
             <div
               key={index}
-              className=" border border-[#EAEBF0] rounded-[10px] p-4"
+              className="border border-[#EAEBF0] rounded-[10px] p-4"
             >
-              <p className=" font-Outfit font-medium text-[#272D37] text-base">
+              <p className="font-Outfit font-medium text-[#272D37] text-base">
                 {item.name}
               </p>
-              <div className=" w-full flex flex-row justify-between mt-2 items-end">
-                <div className=" w-[40%]">
-                  <p className=" font-Outfit text-[#272D37] text-xl font-semibold">
+              <div className="w-full flex flex-row justify-between mt-2 items-end">
+                <div className="w-[40%]">
+                  <p className="font-Outfit text-[#272D37] text-xl font-semibold">
                     {item.percentage}
                   </p>
-                  <p className=" font-Outfit text-[#5F6D7E] text-xs mt-2 font-medium">
+                  <p className="font-Outfit text-[#5F6D7E] text-xs mt-2 font-medium">
                     {item.stat}
                   </p>
                 </div>
-                <div className=" w-[59%]">
-                  <img src={item.img} className=" w-[100%] h-full" alt="" />
+                <div className="w-[59%]">
+                  <img src={item.img} className="w-[100%] h-full" alt="" />
                 </div>
               </div>
             </div>
@@ -115,70 +131,83 @@ const CEO = () => {
         </div>
       </div>
 
-      {/* row 2 */}
-      <div className=" mt-6 flex flex-col space-y-6 lg:space-y-0 lg:flex-row justify-between w-full">
-        <div className=" w-full lg:w-[34%] border border-[#EAEBF0] rounded-[10px] p-4 relative">
-          <p className=" font-Outfit text-lg font-semibold text-[#272D37]">
+      {/* Announcements Section */}
+      <div className="mt-6 flex flex-col space-y-6 lg:space-y-0 lg:flex-row justify-between w-full">
+        <div className="w-full lg:w-[34%] border border-[#EAEBF0] rounded-[10px] p-4 relative">
+          <p className="font-Outfit text-lg font-semibold text-[#272D37]">
             Announcements
           </p>
-          <div className=" flex flex-col items-center">
-            <img src={nonoti} className=" mt-7" alt="" />
-            <p className=" font-Outfit text-center font-medium mt-3 text-base">
+          <div className="flex flex-col items-center">
+            <img src={nonoti} className="mt-7" alt="" />
+            <p className="font-Outfit text-center font-medium mt-3 text-base">
               No Announcements
             </p>
-            <p className=" font-Outfit text-xs text-[#9E9E9E] mt-2 text-center">
+            <p className="font-Outfit text-xs text-[#9E9E9E] mt-2 text-center">
               When you have an announcement you’ll see them here
             </p>
-            <div className=" w-full px-4 lg:absolute bottom-4">
+            <div className="w-full px-4 lg:absolute bottom-4">
               <button
-                onClick={() => {
-                  setMakeAnnouncement(true);
-                }}
-                className=" w-full  mt-8 lg:mt-0 py-3 flex justify-center items-center space-x-3 bg-[#0530A1] rounded-[10px]"
+                onClick={handleOpenModal}
+                className="w-full mt-8 lg:mt-0 py-3 flex justify-center items-center space-x-3 bg-[#0530A1] rounded-[10px]"
               >
                 <img src={add} alt="" />
-                <p className=" font-Outfit text-sm text-white font-medium">
+                <p className="font-Outfit text-sm text-white font-medium">
                   Make an Announcement
                 </p>
               </button>
+
+              <Modal
+                isOpen={isModalOpen}
+                onClose={handleCloseModal}
+                onSubmit={handleSubmitAnnouncement}
+              />
             </div>
           </div>
         </div>
 
-        <div className=" w-full lg:w-[64%] border border-[#EAEBF0] rounded-[10px] p-4">
-          <div className=" w-full flex justify-between items-center">
-            <p className=" font-Outfit font-semibold text-lg text-[#272D37]">
-              Recent Salary Paid
+        {/* Transactions Section */}
+        <div className="w-full lg:w-[64%] border border-[#EAEBF0] rounded-[10px] p-4">
+          <div className="w-full flex justify-between items-center">
+            <p className="font-Outfit font-semibold text-lg text-[#272D37]">
+              {filterOption === "Sort by Paid Salary"
+                ? "Recent Salary Paid"
+                : "Recent Unpaid Salary"}
             </p>
             <label
               htmlFor="Class Teacher"
               className="font-Outfit flex text-right flex-col text-[#272D37] text-xs font-medium"
             >
               Filter
-              <select className="mt-2 text-[#272D37] text-sm w-[120px] md:w-[200px] font-normal border border-[#DAE0E6] rounded-[5px] font-Outfit p-2.5">
-                <option value="">Sort by Paid Salary</option>
-                <option value="">Sort by Unpaid Salary</option>
+              <select
+                value={filterOption}
+                onChange={(e) => setFilterOption(e.target.value)}
+                className="mt-2 text-[#272D37] text-sm w-[120px] md:w-[200px] font-normal border border-[#DAE0E6] rounded-[5px] font-Outfit p-2.5"
+              >
+                <option value="Sort by Paid Salary">Sort by Paid Salary</option>
+                <option value="Sort by Unpaid Salary">
+                  Sort by Unpaid Salary
+                </option>
               </select>
             </label>
           </div>
 
-          <div className=" mt-2 grid grid-cols-1 w-full border-b border-[#EAEBF0] ">
-            {transactions.map((item, index) => (
+          <div className="mt-2 grid grid-cols-1 w-full border-b border-[#EAEBF0] ">
+            {allTransactions.map((item, index) => (
               <div
                 key={index}
-                className=" flex items-center justify-between w-full py-3"
+                className="flex items-center justify-between w-full py-3"
               >
-                <span className=" flex flex-col">
-                  <p className=" font-Outfit font-medium text-[#272D37] text-[15px]">
+                <span className="flex flex-col">
+                  <p className="font-Outfit font-medium text-[#272D37] text-[15px]">
                     {item.name}
                   </p>
-                  <p className=" font-Outfit text-[#5F6D7E] text-sm font-medium">
+                  <p className="font-Outfit text-[#5F6D7E] text-sm font-medium">
                     {item.date}
                   </p>
                 </span>
 
-                <span className=" flex flex-row items-center space-x-3">
-                  <p className=" font-Outfit text-[#000000] font-semibold text-base">
+                <span className="flex flex-row items-center space-x-3">
+                  <p className="font-Outfit text-[#000000] font-semibold text-base">
                     {item.price}
                   </p>
                   <p
@@ -197,9 +226,9 @@ const CEO = () => {
             onClick={() => {
               handleClick("PaidSalaryCEO");
             }}
-            className=" w-full  mt-8 lg:mt-6 py-3 flex justify-center items-center bg-[#0530A1] rounded-[10px]"
+            className="w-full mt-8 lg:mt-6 py-3 flex justify-center items-center bg-[#0530A1] rounded-[10px]"
           >
-            <p className=" font-Outfit text-sm text-white font-medium">
+            <p className="font-Outfit text-sm text-white font-medium">
               View All
             </p>
           </button>

@@ -4,8 +4,9 @@ import {
   AdminSidebarContext,
 } from "../contexts/AdminActivePageContext";
 import arrowBlue from "./assets/arrowblue.svg";
-import backArr from "./assets/backArr.svg";
-import fwdArr from "./assets/fwdArr.svg";
+import Pagination from "./Pagination";
+// import backArr from "./assets/backArr.svg";
+// import fwdArr from "./assets/fwdArr.svg";
 import edit from "./assets/edit.svg";
 import trash from "./assets/trash.svg";
 import down from "./assets/download.svg";
@@ -14,6 +15,9 @@ const PaidSalaryCEO = () => {
   const { sidebarVisible, setSidebarVisible } = useContext(AdminSidebarContext);
   const { activePage, setActivePage } = useContext(AdminActivePageContext);
   const [selectedOption, setSelectedOption] = useState("schData");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 3;
+  const [modalData, setModalData] = useState(null);
 
   const handleClick = (page) => {
     setActivePage(page);
@@ -129,12 +133,16 @@ const PaidSalaryCEO = () => {
   const statusStyles = {
     Done: "text-[#2D8A39] bg-[#F0FAF0]",
     Pending: "text-[#E2341D] bg-[#FFF2F0]",
-    default: "text-gray-600 bg-gray-100", // Default style for other statuses
+    default: "text-gray-600 bg-gray-100",
   };
 
   const getStatusClass = (status) => {
     return statusStyles[status] || statusStyles.default;
   };
+
+  const handleReviewClick = (data) => setModalData(data);
+
+  const closeModal = () => setModalData(null);
 
   const dataToRender =
     selectedOption === "schData"
@@ -142,6 +150,19 @@ const PaidSalaryCEO = () => {
       : selectedOption === "bookData"
       ? bookData
       : subData;
+
+  const totalItems = dataToRender.length;
+
+  // Slice the data for the current page
+  const currentData = dataToRender.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  // Handle page change
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
 
   return (
     <>
@@ -180,7 +201,7 @@ const PaidSalaryCEO = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {dataToRender.map((data, index) => (
+                  {currentData.map((data, index) => (
                     <tr key={index}>
                       <td className="font-Outfit py-4 border-t border-[#EAEBF0] text-sm text-[#5F6D7E] font-medium text-center">
                         0{index + 1}
@@ -250,7 +271,10 @@ const PaidSalaryCEO = () => {
                         </>
                       )}
                       <td className="font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] items-center justify-center h-full text-center flex">
-                        <button className=" py-2 px-3 rounded-[10px] bg-[#0530A1] text-[#FFFFFF] font-Outfit font-medium text-xs">
+                        <button
+                          onClick={() => handleReviewClick(data)}
+                          className=" py-2 px-3 rounded-[10px] bg-[#0530A1] text-[#FFFFFF] font-Outfit font-medium text-xs"
+                        >
                           Review
                         </button>
                       </td>
@@ -259,30 +283,42 @@ const PaidSalaryCEO = () => {
                 </tbody>
               </table>
             </div>
-            <div className="w-full py-3 px-3 flex justify-between items-center">
-              <span className="flex space-x-1">
-                <img src={backArr} alt="Previous" />
-                <p className="font-Outfit font-medium text-[#5F6D7E] text-sm">
-                  Prev
-                </p>
-              </span>
-              <span className="flex items-end space-x-4">
-                <p className="font-Outfit text-sm text-[#0530A1]">1</p>
-                <p className="font-Outfit text-sm">2</p>
-                <p className="font-Outfit text-sm">...</p>
-                <p className="font-Outfit text-sm">5</p>
-                <p className="font-Outfit text-sm">6</p>
-              </span>
-              <span className="flex space-x-1">
-                <p className="font-Outfit font-medium text-[#5F6D7E] text-sm">
-                  Next
-                </p>
-                <img src={fwdArr} alt="Next" />
-              </span>
-            </div>
+            {/* Pagination Component */}
+            <Pagination
+              currentPage={currentPage}
+              itemsPerPage={itemsPerPage}
+              totalItems={totalItems}
+              onPageChange={handlePageChange}
+            />
           </div>
         </div>
       </div>
+
+      {modalData && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white rounded-lg p-6 w-[90%] max-w-md">
+            <h2 className="text-xl font-semibold mb-4">Details</h2>
+            <p>
+              <strong>Name:</strong> {modalData.name}
+            </p>
+            <p>
+              <strong>Amount:</strong> {modalData.amount}
+            </p>
+            <p>
+              <strong>Reg No:</strong> {modalData.regNo}
+            </p>
+            <p>
+              <strong>Status:</strong> {modalData.status}
+            </p>
+            <button
+              onClick={closeModal}
+              className="mt-4 bg-[#0530A1] text-white py-2 px-4 rounded-lg"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 };

@@ -9,11 +9,14 @@ import fwdArr from "./assets/fwdArr.svg";
 import edit from "./assets/edit.svg";
 import trash from "./assets/trash.svg";
 import down from "./assets/download.svg";
+import Pagination from "./Pagination";
 
 const PendingSalaryCEO = () => {
   const { sidebarVisible, setSidebarVisible } = useContext(AdminSidebarContext);
   const { activePage, setActivePage } = useContext(AdminActivePageContext);
   const [selectedOption, setSelectedOption] = useState("schData");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 3;
 
   const handleClick = (page) => {
     setActivePage(page);
@@ -143,6 +146,19 @@ const PendingSalaryCEO = () => {
       ? bookData
       : subData;
 
+  const totalItems = dataToRender.length;
+
+  // Slice the data for the current page
+  const currentData = dataToRender.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  // Handle page change
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
   return (
     <>
       <div
@@ -180,7 +196,7 @@ const PendingSalaryCEO = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {dataToRender.map((data, index) => (
+                  {currentData.map((data, index) => (
                     <tr key={index}>
                       <td className="font-Outfit py-4 border-t border-[#EAEBF0] text-sm text-[#5F6D7E] font-medium text-center">
                         0{index + 1}
@@ -262,27 +278,13 @@ const PendingSalaryCEO = () => {
                 </tbody>
               </table>
             </div>
-            <div className="w-full py-3 px-3 flex justify-between items-center">
-              <span className="flex space-x-1">
-                <img src={backArr} alt="Previous" />
-                <p className="font-Outfit font-medium text-[#5F6D7E] text-sm">
-                  Prev
-                </p>
-              </span>
-              <span className="flex items-end space-x-4">
-                <p className="font-Outfit text-sm text-[#0530A1]">1</p>
-                <p className="font-Outfit text-sm">2</p>
-                <p className="font-Outfit text-sm">...</p>
-                <p className="font-Outfit text-sm">5</p>
-                <p className="font-Outfit text-sm">6</p>
-              </span>
-              <span className="flex space-x-1">
-                <p className="font-Outfit font-medium text-[#5F6D7E] text-sm">
-                  Next
-                </p>
-                <img src={fwdArr} alt="Next" />
-              </span>
-            </div>
+            {/* Pagination Component */}
+            <Pagination
+              currentPage={currentPage}
+              itemsPerPage={itemsPerPage}
+              totalItems={totalItems}
+              onPageChange={handlePageChange}
+            />
           </div>
         </div>
       </div>
