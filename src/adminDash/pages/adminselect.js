@@ -62,16 +62,15 @@ const AdminSelect = () => {
 
       const finalData = {
         ...signupData,
-        department: selectedLevel.name, 
+        department: selectedLevel.name,
         position: selectedPosition.name,
       };
 
       const response = await AuthService.addPersonnel(finalData);
       if (response.message) {
-        console.log("This is in backend", finalData);
         SnackbarUtils.success("Registration successful!");
         localStorage.removeItem("adminSignupData"); // Clear temporary data
-        navigate("/adminLogin"); // Redirect to login page
+        navigate("/adminLogin");
       }
     } catch (error) {
       SnackbarUtils.error(

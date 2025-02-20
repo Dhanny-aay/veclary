@@ -3,6 +3,7 @@ import {
   AdminActivePageContext,
   AdminSidebarContext,
 } from "../contexts/AdminActivePageContext";
+import Pagination from "./Pagination";
 import right from "./assets/right.svg";
 import arrowBlue from "./assets/arrowblue.svg";
 import backArr from "./assets/backArr.svg";
@@ -11,11 +12,22 @@ import edit from "./assets/edit.svg";
 import trash from "./assets/trash.svg";
 import file from "./assets/file.svg";
 import down from "./assets/download.svg";
+import AddNewSchoolModal from "./AddNewSchoolModal";
+import SnackbarUtils from "../../utils/snackbarUtils";
+import { SchoolService } from "../../services/adminService";
 
 const OnboardedCustomers = () => {
   const { sidebarVisible, setSidebarVisible } = useContext(AdminSidebarContext);
   const { activePage, setActivePage } = useContext(AdminActivePageContext);
   const [selectedOption, setSelectedOption] = useState("schData");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleOpenModal = () => setIsModalOpen(true);
+  const handleCloseModal = () => setIsModalOpen(false);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 3;
 
   const handleClick = (page) => {
     setActivePage(page);
@@ -23,6 +35,24 @@ const OnboardedCustomers = () => {
 
   const handleSelectChange = (event) => {
     setSelectedOption(event.target.value);
+  };
+
+  const handleAddNewSchool = async (newSchool) => {
+    setIsSubmitting(true);
+    try {
+      if (!newSchool) throw new Error("New School data not found");
+
+      const response = await SchoolService.registerSchool(newSchool);
+      if (response.message) {
+        SnackbarUtils.success("New School Registered Successful!");
+      }
+    } catch (error) {
+      SnackbarUtils.error(
+        error.message || "Registration failed. Please try again."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const schData = [
@@ -177,6 +207,19 @@ const OnboardedCustomers = () => {
       ? tchData
       : stuData;
 
+  const totalItems = dataToRender.length;
+
+  // Slice the data for the current page
+  const currentData = dataToRender.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  // Handle page change
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
   return (
     <>
       <div
@@ -185,12 +228,19 @@ const OnboardedCustomers = () => {
         }}
         className="absolute lg:left-[20%] top-[56px] p-6 w-full lg:w-[80%]"
       >
-        <span
-          onClick={() => handleClick("Home")}
-          className="cursor-pointer mt-6 flex flex-row items-center"
-        >
-          <img src={arrowBlue} alt="Back Arrow" />
-          <p className="font-Outfit text-[#0530A1] text-sm font-medium">Back</p>
+        <span className="mt-6 flex flex-row items-center">
+          <img
+            className="cursor-pointer "
+            onClick={() => handleClick("Home")}
+            src={arrowBlue}
+            alt="Back Arrow"
+          />
+          <p
+            onClick={() => handleClick("Home")}
+            className="cursor-pointer font-Outfit text-[#0530A1] text-sm font-medium"
+          >
+            Back
+          </p>
           <p className="font-Outfit text-xl font-semibold mb-2 ml-3">
             Onboarded Customers
           </p>
@@ -216,9 +266,19 @@ const OnboardedCustomers = () => {
           </span>
 
           <span className="flex items-start">
-            <button className="text-center text-sm font-Outfit font-medium text-white bg-[#0530A1] py-2 px-3 md:px-6 rounded-[10px]">
+            <button
+              onClick={handleOpenModal}
+              className="text-center text-sm font-Outfit font-medium text-white bg-[#0530A1] py-2 px-3 md:px-6 rounded-[10px]"
+            >
               Add New School
             </button>
+
+            <AddNewSchoolModal
+              isOpen={isModalOpen}
+              onClose={handleCloseModal}
+              onSubmit={handleAddNewSchool}
+              isSubmitting={isSubmitting}
+            />
           </span>
         </div>
 
@@ -240,7 +300,7 @@ const OnboardedCustomers = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {dataToRender.map((data, index) => (
+                  {currentData.map((data, index) => (
                     <tr key={index}>
                       <td className="font-Outfit py-4 border-t border-[#EAEBF0] text-sm text-[#5F6D7E] font-medium text-center">
                         0{index + 1}
@@ -314,27 +374,13 @@ const OnboardedCustomers = () => {
                 </tbody>
               </table>
             </div>
-            <div className="w-full py-3 px-3 flex justify-between items-center">
-              <span className="flex space-x-1">
-                <img src={backArr} alt="Previous" />
-                <p className="font-Outfit font-medium text-[#5F6D7E] text-sm">
-                  Prev
-                </p>
-              </span>
-              <span className="flex items-end space-x-4">
-                <p className="font-Outfit text-sm text-[#0530A1]">1</p>
-                <p className="font-Outfit text-sm">2</p>
-                <p className="font-Outfit text-sm">...</p>
-                <p className="font-Outfit text-sm">5</p>
-                <p className="font-Outfit text-sm">6</p>
-              </span>
-              <span className="flex space-x-1">
-                <p className="font-Outfit font-medium text-[#5F6D7E] text-sm">
-                  Next
-                </p>
-                <img src={fwdArr} alt="Next" />
-              </span>
-            </div>
+            {/* Pagination Component */}
+            <Pagination
+              currentPage={currentPage}
+              itemsPerPage={itemsPerPage}
+              totalItems={totalItems}
+              onPageChange={handlePageChange}
+            />
           </div>
         </div>
       </div>

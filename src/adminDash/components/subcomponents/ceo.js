@@ -7,6 +7,7 @@ import chart1 from "./assets/chart1.svg";
 import chart2 from "./assets/chart2.svg";
 import Modal from "../Modal";
 import { useAuth } from "../../contexts/AuthContext";
+import SnackbarUtils from "../../../utils/snackbarUtils";
 
 const CEO = () => {
   // const [makeAnnouncement, setMakeAnnouncement] = useState(false);
@@ -26,7 +27,7 @@ const CEO = () => {
 
   const handleSubmitAnnouncement = (announcement) => {
     // submit announcement logic
-    console.log("Announcement Submitted:", announcement);
+    SnackbarUtils.success("Announcement Submitted");
   };
 
   const performance = [
@@ -224,7 +225,9 @@ const CEO = () => {
 
           <button
             onClick={() => {
-              handleClick("PaidSalaryCEO");
+              filterOption === "Sort by Unpaid Salary"
+                ? handleClick("UnPaidSalaryCEO")
+                : handleClick("PaidSalaryCEO");
             }}
             className="w-full mt-8 lg:mt-6 py-3 flex justify-center items-center bg-[#0530A1] rounded-[10px]"
           >

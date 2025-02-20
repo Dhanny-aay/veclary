@@ -6,14 +6,27 @@ import chart1 from "./assets/chart1.svg";
 import chart2 from "./assets/chart2.svg";
 import pload from "./assets/pload.svg";
 import { AdminActivePageContext } from "../../contexts/AdminActivePageContext";
+import SnackbarUtils from "../../../utils/snackbarUtils";
+import Modal from "../Modal";
 
 const SalesOfficer = () => {
-  const [makeAnnouncement, setMakeAnnouncement] = useState(false);
+  // const [makeAnnouncement, setMakeAnnouncement] = useState(false);
   const [formData, setFormData] = useState({
     schoolName: "",
     schoolId: "",
     document: null,
   });
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOpenModal = () => setIsModalOpen(true);
+  const handleCloseModal = () => setIsModalOpen(false);
+
+  const handleSubmitAnnouncement = (announcement) => {
+    // submit announcement logic
+    SnackbarUtils.success("Announcement Submitted");
+  };
+
   const [dragActive, setDragActive] = useState(false);
 
   const { activePage, setActivePage } = useContext(AdminActivePageContext);
@@ -56,7 +69,7 @@ const SalesOfficer = () => {
 
   const handleUpload = async () => {
     if (!formData.schoolName || !formData.schoolId || !formData.document) {
-      alert("Please fill in all fields and upload a document.");
+      SnackbarUtils.error("Please fill in all fields and upload a document.");
       return;
     }
 
@@ -77,10 +90,9 @@ const SalesOfficer = () => {
       }
 
       const data = await response.json();
-      alert("Upload successful!");
-      console.log(data);
+      SnackbarUtils.success("Upload successful!");
     } catch (error) {
-      alert(`Upload failed: ${error.message}`);
+      SnackbarUtils.error(`Upload failed: ${error.message}`);
     }
   };
 
@@ -161,9 +173,7 @@ const SalesOfficer = () => {
             </p>
             <div className="w-full px-4 lg:absolute bottom-4">
               <button
-                onClick={() => {
-                  setMakeAnnouncement(true);
-                }}
+                onClick={handleOpenModal}
                 className="w-full mt-8 lg:mt-0 py-3 flex justify-center items-center space-x-3 bg-[#0530A1] rounded-[10px]"
               >
                 <img src={add} alt="" />
@@ -171,6 +181,12 @@ const SalesOfficer = () => {
                   Make an Announcement
                 </p>
               </button>
+
+              <Modal
+                isOpen={isModalOpen}
+                onClose={handleCloseModal}
+                onSubmit={handleSubmitAnnouncement}
+              />
             </div>
           </div>
         </div>
