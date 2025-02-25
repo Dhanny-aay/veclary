@@ -178,7 +178,7 @@ const AdminSignup = () => {
             {isSubmitting ? "Signing up..." : "Signup"}
           </button>
 
-          <Link to="/admin/login">
+          <Link to="/adminLogin">
             <p className="mt-[19px] font-Outfit font-medium text-sm text-[#12121266] text-center">
               Already have an Account?{" "}
               <span className="text-[#0530A1] hover:underline cursor-pointer">

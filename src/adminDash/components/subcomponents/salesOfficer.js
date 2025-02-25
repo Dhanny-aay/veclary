@@ -6,17 +6,23 @@ import chart1 from "./assets/chart1.svg";
 import chart2 from "./assets/chart2.svg";
 import pload from "./assets/pload.svg";
 import { AdminActivePageContext } from "../../contexts/AdminActivePageContext";
+import { useAuth } from "../../contexts/AuthContext";
 import SnackbarUtils from "../../../utils/snackbarUtils";
 import Modal from "../Modal";
+import AdminDashMiniHeader from "../AdminDashMiniHeader";
 
 const SalesOfficer = () => {
   // const [makeAnnouncement, setMakeAnnouncement] = useState(false);
+  const { user } = useAuth();
+
   const [formData, setFormData] = useState({
     schoolName: "",
     schoolId: "",
     document: null,
   });
 
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleOpenModal = () => setIsModalOpen(true);
@@ -43,6 +49,17 @@ const SalesOfficer = () => {
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files[0]) {
       setFormData({ ...formData, document: e.target.files[0] });
+      setUploadProgress(0);
+
+      // Simulate file loading progress
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += 20; // Increase progress gradually
+        setUploadProgress(progress);
+        if (progress >= 100) {
+          clearInterval(interval);
+        }
+      }, 300);
     }
   };
 
@@ -65,6 +82,7 @@ const SalesOfficer = () => {
 
   const handleRemoveFile = () => {
     setFormData({ ...formData, document: null });
+    setUploadProgress(0);
   };
 
   const handleUpload = async () => {
@@ -72,6 +90,8 @@ const SalesOfficer = () => {
       SnackbarUtils.error("Please fill in all fields and upload a document.");
       return;
     }
+
+    setLoading(true);
 
     const uploadEndpoint = "https://veclary-backend-endpoint.com/api/upload"; // Replace later with API endpoint from adminServices
     const form = new FormData();
@@ -88,8 +108,8 @@ const SalesOfficer = () => {
       if (!response.ok) {
         throw new Error("Failed to upload document");
       }
+      setUploadProgress(100);
 
-      const data = await response.json();
       SnackbarUtils.success("Upload successful!");
     } catch (error) {
       SnackbarUtils.error(`Upload failed: ${error.message}`);
@@ -119,17 +139,12 @@ const SalesOfficer = () => {
 
   return (
     <>
-      <div className="flex border-b border-[#EAEBF0] pb-6 flex-row md:items-center space-x-4 md:space-x-3">
-        <span className="w-[50px] md:w-[85px] h-[45px] md:h-[85px] rounded-[50%] bg-[#EAEBF0]"></span>
-        <span className="flex flex-col">
-          <p className="font-Outfit font-medium text-xl text-black md:text-3xl">
-            Welcome back, Sales Officer!
-          </p>
-          <p className="font-Outfit text-base md:text-lg font-normal text-[#000000B2]">
-            Take the first steps to Get a clear view of customer interactions.
-          </p>
-        </span>
-      </div>
+      <AdminDashMiniHeader
+        name={user?.name}
+        bodyText={
+          "Take the first steps to Get a clear view of customer interactions."
+        }
+      />
 
       <div className="mt-6">
         <p className="font-Outfit text-lg font-semibold">Analysis</p>
@@ -233,18 +248,30 @@ const SalesOfficer = () => {
               </label>
             </div>
 
+            {/* Upload section */}
             <div className="mt-6">
               {formData.document ? (
-                <div className="flex items-center justify-between p-3 border border-[#DAE0E6] rounded-[5px] bg-gray-50">
-                  <span className="text-sm font-Outfit">
-                    {formData.document.name}
-                  </span>
-                  <button
-                    onClick={handleRemoveFile}
-                    className="text-red-500 font-bold text-sm"
-                  >
-                    X
-                  </button>
+                <div className=" bg-gray-50">
+                  {uploadProgress < 100 ? (
+                    <div className="w-full bg-gray-200 rounded-full mt-3">
+                      <div
+                        className="bg-[#0530A1] rounded-[10px] text-xs font-medium text-white text-center p-0.5 leading-none"
+                        style={{ width: `${uploadProgress}%` }}
+                      ></div>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-between p-3 border border-[#DAE0E6] rounded-[5px] bg-gray-50">
+                      <span className="text-sm font-Outfit">
+                        {formData.document.name}
+                      </span>
+                      <button
+                        onClick={handleRemoveFile}
+                        className="text-red-500 font-bold text-sm"
+                      >
+                        X
+                      </button>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div
@@ -262,7 +289,10 @@ const SalesOfficer = () => {
                     className="hidden"
                     id="fileInput"
                   />
-                  <label htmlFor="fileInput" className="cursor-pointer">
+                  <label
+                    htmlFor="fileInput"
+                    className="cursor-pointer flex flex-col items-center"
+                  >
                     <img src={pload} alt="Upload" />
                     <p className="mt-3 text-sm font-normal font-Outfit text-[#667085]">
                       <span className="font-semibold text-[#0530A1] mr-1">

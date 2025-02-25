@@ -222,7 +222,7 @@ const AdminSidebar = () => {
               onClick={() => {
                 setSidebarVisible(false);
               }}
-              className=" lg:hidden w-5"
+              className=" lg:hidden w-5 cursor-pointer"
               alt=""
             />
           </div>

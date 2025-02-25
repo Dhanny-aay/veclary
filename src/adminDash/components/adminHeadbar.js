@@ -21,7 +21,7 @@ const AdminHeadbar = () => {
   return (
     <>
       <div className=" w-full lg:w-[80%] fixed top-0 lg:left-[20%] h-[56px] px-8 py-3 z-[99] border-b bg-[#fff] border-[#EAEBF0] flex flex-row justify-between items-center ">
-        <div>
+        <div className="cursor-pointer">
           <img
             src={burger}
             className=" w-6 z-[9999] lg:hidden"

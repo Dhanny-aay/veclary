@@ -48,7 +48,7 @@ const Modal = ({ isOpen, onClose, onSubmit }) => {
               name="message"
               rows="4"
               required
-              className="w-full p-2 border border-gray-300 rounded-lg mt-1 focus:outline-none focus:ring-[#0530A1] focus:border-[#0530A1]"
+              className="w-full p-2 border border-gray-300 rounded-lg mt-1 focus:outline-none focus:ring-[#0530A1] focus:border-[#0530A1] resize-none"
             ></textarea>
           </div>
           <div className="flex justify-end space-x-4">

@@ -5,10 +5,13 @@ import chart from "./assets/chart.svg";
 import nonoti from "./assets/nonoti.svg";
 import chart1 from "./assets/chart1.svg";
 import chart2 from "./assets/chart2.svg";
+import { useAuth } from "../../contexts/AuthContext";
+import AdminDashMiniHeader from "../AdminDashMiniHeader";
 
 const FinanceLead = () => {
   const [makeAnnouncement, setMakeAnnouncement] = useState(false);
   const { activePage, setActivePage } = useContext(AdminActivePageContext);
+  const { user } = useAuth();
 
   const handleClick = (page) => {
     setActivePage(page);
@@ -74,17 +77,10 @@ const FinanceLead = () => {
 
   return (
     <>
-      <div className="flex border-b border-[#EAEBF0] pb-6 flex-row md:items-center space-x-4 md:space-x-3">
-        <span className=" w-[50px] md:w-[85px] h-[45px] md:h-[85px] rounded-[50%] bg-[#EAEBF0]"></span>
-        <span className=" flex flex-col">
-          <p className="font-Outfit font-medium text-xl text-black md:text-3xl">
-            Welcome back, Finance Lead!
-          </p>
-          <p className=" font-Outfit text-base md:text-lg font-normal text-[#000000B2]">
-            Stay on top of Veclary with real-time data and insights.
-          </p>
-        </span>
-      </div>
+      <AdminDashMiniHeader
+        name={user?.name}
+        bodyText={"Stay on top of Veclary with real-time data and insights."}
+      />
 
       <div className=" mt-6">
         <p className=" font-Outfit text-lg font-semibold">Analysis</p>

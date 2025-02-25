@@ -8,6 +8,7 @@ import chart2 from "./assets/chart2.svg";
 import Modal from "../Modal";
 import { useAuth } from "../../contexts/AuthContext";
 import SnackbarUtils from "../../../utils/snackbarUtils";
+import AdminDashMiniHeader from "../AdminDashMiniHeader";
 
 const CEO = () => {
   // const [makeAnnouncement, setMakeAnnouncement] = useState(false);
@@ -90,17 +91,10 @@ const CEO = () => {
 
   return (
     <>
-      <div className="flex border-b border-[#EAEBF0] pb-6 flex-row md:items-center space-x-4 md:space-x-3">
-        <span className=" w-[50px] md:w-[85px] h-[45px] md:h-[85px] rounded-[50%] bg-[#EAEBF0]"></span>
-        <span className=" flex flex-col">
-          <p className="font-Outfit font-medium text-xl text-black md:text-3xl">
-            Welcome back, {user?.name || "CEO/COO"}
-          </p>
-          <p className=" font-Outfit text-base md:text-lg font-normal text-[#000000B2]">
-            Stay on top of Veclary with real-time data and insights.
-          </p>
-        </span>
-      </div>
+      <AdminDashMiniHeader
+        name={user?.name}
+        bodyText={"Stay on top of Veclary with real-time data and insights."}
+      />
 
       {/* Analysis Section */}
       <div className="mt-6">

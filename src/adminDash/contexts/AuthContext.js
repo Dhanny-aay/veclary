@@ -40,6 +40,7 @@ export const AuthProvider = ({ children }) => {
               authenticated: true,
               role: decoded.role,
               email: decoded.email,
+              name: decoded?.name
             });
           } else {
             localStorage.removeItem("veclary_token");
@@ -70,9 +71,10 @@ export const AuthProvider = ({ children }) => {
         const decoded = jwtDecode(response.accessToken);
 
         const userData = {
-          email: decoded.email,
-          role: decoded.role,
           authenticated: true,
+          role: decoded.role,
+          email: decoded.email,
+          name: decoded?.name
         };
         setUser(userData);
 

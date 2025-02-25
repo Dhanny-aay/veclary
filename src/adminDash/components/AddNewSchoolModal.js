@@ -53,17 +53,17 @@ const AddNewSchoolModal = ({ isOpen, onClose, onSubmit, isSubmitting }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-      <div className="bg-white w-[90%] max-w-md p-6 rounded-lg shadow-lg">
+      <div className="bg-white w-[90%] max-w-md p-6 rounded-lg shadow-lg max-h-[60vh] overflow-y-auto" >
         <h2 className="text-xl font-bold mb-4 text-[#0530A1]">
           Add New School
         </h2>
         <form onSubmit={handleSubmit}>
-          <div className="mb-4">
+          <div className="mb-4 ">
             {Object.keys(AddNewSchoolSchema).map((key) => (
-              <span key={key}>
+              <span key={key} >
                 <label
                   htmlFor={key}
-                  className="block text-sm font-medium text-gray-700"
+                  className="block text-sm font-medium text-gray-700 mt-4"
                 >
                   {labels[key]}
                 </label>

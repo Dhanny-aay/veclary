@@ -1,8 +1,11 @@
 import { useState } from "react";
 import LandingPage from "./ContentManagerComponents/Landingpage";
+import { useAuth } from "../../contexts/AuthContext";
+import AdminDashMiniHeader from "../AdminDashMiniHeader";
 
 const ContentManager = () => {
   const [activeButton, setActiveButton] = useState("Landingpage");
+  const { user } = useAuth();
 
   const buttons = [
     {
@@ -38,17 +41,10 @@ const ContentManager = () => {
   };
   return (
     <>
-      <div className="flex border-b border-[#EAEBF0] pb-6 flex-row md:items-center space-x-4 md:space-x-3">
-        <span className=" w-[50px] md:w-[85px] h-[45px] md:h-[85px] rounded-[50%] bg-[#EAEBF0]"></span>
-        <span className=" flex flex-col">
-          <p className="font-Outfit font-medium text-xl text-black md:text-3xl">
-            Welcome back,Content Manager!
-          </p>
-          <p className=" font-Outfit text-base md:text-lg font-normal text-[#000000B2]">
-            Stay on top of Veclary with real-time data and insights.
-          </p>
-        </span>
-      </div>
+      <AdminDashMiniHeader
+        name={user?.name}
+        bodyText={"Stay on top of Veclary with real-time data and insights."}
+      />
 
       <div className=" mt-6 font-Outfit">
         <div className="w-full border-b border-[#EAECF0] h-full">
