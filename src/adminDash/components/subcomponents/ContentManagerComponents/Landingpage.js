@@ -18,7 +18,7 @@ const LandingPage = () => {
                 Heading
                 <textarea
                   name=""
-                  className=" border border-[#DAE0E6] rounded-[6px] mt-2"
+                  className=" border border-[#DAE0E6] rounded-[6px] mt-2 resize-none"
                   id=""
                 ></textarea>
               </label>
@@ -29,7 +29,7 @@ const LandingPage = () => {
                 Sub-Heading
                 <textarea
                   name=""
-                  className=" border border-[#DAE0E6] rounded-[6px] mt-2 h-[100px]"
+                  className=" border border-[#DAE0E6] rounded-[6px] mt-2 h-[100px] resize-none"
                   id=""
                 ></textarea>
               </label>
@@ -67,7 +67,7 @@ const LandingPage = () => {
                 Heading
                 <textarea
                   name=""
-                  className=" border border-[#DAE0E6] rounded-[6px] mt-2"
+                  className=" border border-[#DAE0E6] rounded-[6px] mt-2 resize-none"
                   id=""
                 ></textarea>
               </label>
@@ -78,7 +78,7 @@ const LandingPage = () => {
                 Sub-Heading
                 <textarea
                   name=""
-                  className=" border border-[#DAE0E6] rounded-[6px] mt-2 h-[100px]"
+                  className=" border border-[#DAE0E6] rounded-[6px] mt-2 h-[100px] resize-none"
                   id=""
                 ></textarea>
               </label>
@@ -116,7 +116,7 @@ const LandingPage = () => {
                 Heading
                 <textarea
                   name=""
-                  className=" border border-[#DAE0E6] rounded-[6px] mt-2"
+                  className=" border border-[#DAE0E6] rounded-[6px] mt-2 resize-none"
                   id=""
                 ></textarea>
               </label>
@@ -127,7 +127,7 @@ const LandingPage = () => {
                 Sub-Heading
                 <textarea
                   name=""
-                  className=" border border-[#DAE0E6] rounded-[6px] mt-2 h-[100px]"
+                  className=" border border-[#DAE0E6] rounded-[6px] mt-2 h-[100px] resize-none"
                   id=""
                 ></textarea>
               </label>
@@ -165,7 +165,7 @@ const LandingPage = () => {
                 Heading
                 <textarea
                   name=""
-                  className=" border border-[#DAE0E6] rounded-[6px] mt-2"
+                  className=" border border-[#DAE0E6] rounded-[6px] mt-2 resize-none"
                   id=""
                 ></textarea>
               </label>
@@ -176,7 +176,7 @@ const LandingPage = () => {
                 Sub-Heading
                 <textarea
                   name=""
-                  className=" border border-[#DAE0E6] rounded-[6px] mt-2 h-[100px]"
+                  className=" border border-[#DAE0E6] rounded-[6px] mt-2 h-[100px] resize-none"
                   id=""
                 ></textarea>
               </label>
@@ -214,7 +214,7 @@ const LandingPage = () => {
               Heading
               <textarea
                 name=""
-                className=" border border-[#DAE0E6] rounded-[6px] mt-2"
+                className=" border border-[#DAE0E6] rounded-[6px] mt-2 resize-none"
                 id=""
               ></textarea>
             </label>
@@ -225,7 +225,7 @@ const LandingPage = () => {
               Sub-Heading
               <textarea
                 name=""
-                className=" border border-[#DAE0E6] rounded-[6px] mt-2 h-[100px]"
+                className=" border border-[#DAE0E6] rounded-[6px] mt-2 h-[100px] resize-none"
                 id=""
               ></textarea>
             </label>
@@ -246,7 +246,7 @@ const LandingPage = () => {
                 Heading 1
                 <textarea
                   name=""
-                  className=" border border-[#DAE0E6] rounded-[6px] mt-2"
+                  className=" border border-[#DAE0E6] rounded-[6px] mt-2 resize-none"
                   id=""
                 ></textarea>
               </label>
@@ -257,7 +257,7 @@ const LandingPage = () => {
                 Sub-Heading 1
                 <textarea
                   name=""
-                  className=" border border-[#DAE0E6] rounded-[6px] mt-2 h-[100px]"
+                  className=" border border-[#DAE0E6] rounded-[6px] mt-2 h-[100px] resize-none"
                   id=""
                 ></textarea>
               </label>
@@ -270,7 +270,7 @@ const LandingPage = () => {
                 Heading 2
                 <textarea
                   name=""
-                  className=" border border-[#DAE0E6] rounded-[6px] mt-2"
+                  className=" border border-[#DAE0E6] rounded-[6px] mt-2 resize-none"
                   id=""
                 ></textarea>
               </label>
@@ -281,7 +281,7 @@ const LandingPage = () => {
                 Sub-Heading 2
                 <textarea
                   name=""
-                  className=" border border-[#DAE0E6] rounded-[6px] mt-2 h-[100px]"
+                  className=" border border-[#DAE0E6] rounded-[6px] mt-2 h-[100px] resize-none"
                   id=""
                 ></textarea>
               </label>
@@ -302,7 +302,7 @@ const LandingPage = () => {
               Heading
               <textarea
                 name=""
-                className=" border border-[#DAE0E6] rounded-[6px] mt-2"
+                className=" border border-[#DAE0E6] rounded-[6px] mt-2 resize-none"
                 id=""
               ></textarea>
             </label>
@@ -313,7 +313,7 @@ const LandingPage = () => {
               Sub-Heading
               <textarea
                 name=""
-                className=" border border-[#DAE0E6] rounded-[6px] mt-2 h-[100px]"
+                className=" border border-[#DAE0E6] rounded-[6px] mt-2 h-[100px] resize-none"
                 id=""
               ></textarea>
             </label>
@@ -328,7 +328,7 @@ const LandingPage = () => {
                 Heading for section 1
                 <textarea
                   name=""
-                  className=" border border-[#DAE0E6] rounded-[6px] mt-2"
+                  className=" border border-[#DAE0E6] rounded-[6px] mt-2 resize-none"
                   id=""
                 ></textarea>
               </label>
@@ -339,7 +339,7 @@ const LandingPage = () => {
                 Sub-Heading 1
                 <textarea
                   name=""
-                  className=" border border-[#DAE0E6] rounded-[6px] mt-2 h-[100px]"
+                  className=" border border-[#DAE0E6] rounded-[6px] mt-2 h-[100px] resize-none"
                   id=""
                 ></textarea>
               </label>
@@ -372,7 +372,7 @@ const LandingPage = () => {
                 Heading for section 2
                 <textarea
                   name=""
-                  className=" border border-[#DAE0E6] rounded-[6px] mt-2"
+                  className=" border border-[#DAE0E6] rounded-[6px] mt-2 resize-none"
                   id=""
                 ></textarea>
               </label>
@@ -383,7 +383,7 @@ const LandingPage = () => {
                 Sub-Heading 2
                 <textarea
                   name=""
-                  className=" border border-[#DAE0E6] rounded-[6px] mt-2 h-[100px]"
+                  className=" border border-[#DAE0E6] rounded-[6px] mt-2 h-[100px] resize-none"
                   id=""
                 ></textarea>
               </label>
@@ -416,7 +416,7 @@ const LandingPage = () => {
                 Heading for section 3
                 <textarea
                   name=""
-                  className=" border border-[#DAE0E6] rounded-[6px] mt-2"
+                  className=" border border-[#DAE0E6] rounded-[6px] mt-2 resize-none"
                   id=""
                 ></textarea>
               </label>
@@ -427,7 +427,7 @@ const LandingPage = () => {
                 Sub-Heading 3
                 <textarea
                   name=""
-                  className=" border border-[#DAE0E6] rounded-[6px] mt-2 h-[100px]"
+                  className=" border border-[#DAE0E6] rounded-[6px] mt-2 h-[100px] resize-none"
                   id=""
                 ></textarea>
               </label>
@@ -460,7 +460,7 @@ const LandingPage = () => {
                 Heading for section 4
                 <textarea
                   name=""
-                  className=" border border-[#DAE0E6] rounded-[6px] mt-2"
+                  className=" border border-[#DAE0E6] rounded-[6px] mt-2 resize-none"
                   id=""
                 ></textarea>
               </label>
@@ -471,7 +471,7 @@ const LandingPage = () => {
                 Sub-Heading 4
                 <textarea
                   name=""
-                  className=" border border-[#DAE0E6] rounded-[6px] mt-2 h-[100px]"
+                  className=" border border-[#DAE0E6] rounded-[6px] mt-2 h-[100px] resize-none"
                   id=""
                 ></textarea>
               </label>
@@ -504,7 +504,7 @@ const LandingPage = () => {
                 Heading for section 5
                 <textarea
                   name=""
-                  className=" border border-[#DAE0E6] rounded-[6px] mt-2"
+                  className=" border border-[#DAE0E6] rounded-[6px] mt-2 resize-none"
                   id=""
                 ></textarea>
               </label>
@@ -515,7 +515,7 @@ const LandingPage = () => {
                 Sub-Heading 5
                 <textarea
                   name=""
-                  className=" border border-[#DAE0E6] rounded-[6px] mt-2 h-[100px]"
+                  className=" border border-[#DAE0E6] rounded-[6px] mt-2 h-[100px] resize-none"
                   id=""
                 ></textarea>
               </label>
@@ -548,7 +548,7 @@ const LandingPage = () => {
                 Heading for section 6
                 <textarea
                   name=""
-                  className=" border border-[#DAE0E6] rounded-[6px] mt-2"
+                  className=" border border-[#DAE0E6] rounded-[6px] mt-2 resize-none"
                   id=""
                 ></textarea>
               </label>
@@ -559,7 +559,7 @@ const LandingPage = () => {
                 Sub-Heading 6
                 <textarea
                   name=""
-                  className=" border border-[#DAE0E6] rounded-[6px] mt-2 h-[100px]"
+                  className=" border border-[#DAE0E6] rounded-[6px] mt-2 h-[100px] resize-none"
                   id=""
                 ></textarea>
               </label>
@@ -598,7 +598,7 @@ const LandingPage = () => {
               Footer Heading
               <textarea
                 name=""
-                className=" border border-[#DAE0E6] rounded-[6px] mt-2"
+                className=" border border-[#DAE0E6] rounded-[6px] mt-2 resize-none"
                 id=""
               ></textarea>
             </label>
@@ -609,7 +609,7 @@ const LandingPage = () => {
               Footer Sub-Heading
               <textarea
                 name=""
-                className=" border border-[#DAE0E6] rounded-[6px] mt-2 h-[100px]"
+                className=" border border-[#DAE0E6] rounded-[6px] mt-2 h-[100px] resize-none"
                 id=""
               ></textarea>
             </label>
@@ -617,7 +617,7 @@ const LandingPage = () => {
         </div>
       </div>
     </>
-  );
+  ); 
 };
 
 export default LandingPage;

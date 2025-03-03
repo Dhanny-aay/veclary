@@ -7,6 +7,8 @@ import chart1 from "./assets/chart1.svg";
 import chart2 from "./assets/chart2.svg";
 import { useAuth } from "../../contexts/AuthContext";
 import AdminDashMiniHeader from "../AdminDashMiniHeader";
+import AnnouncementModal from "../AnnouncementModal";
+import SnackbarUtils from "../../../utils/snackbarUtils";
 
 const FinanceLead = () => {
   const [makeAnnouncement, setMakeAnnouncement] = useState(false);
@@ -15,6 +17,16 @@ const FinanceLead = () => {
 
   const handleClick = (page) => {
     setActivePage(page);
+  };
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOpenModal = () => setIsModalOpen(true);
+  const handleCloseModal = () => setIsModalOpen(false);
+
+  const handleSubmitAnnouncement = (announcement) => {
+    // submit announcement logic
+    SnackbarUtils.success("Announcement Submitted");
   };
 
   const performance = [
@@ -75,6 +87,7 @@ const FinanceLead = () => {
     return statusStyles[status] || statusStyles.default;
   };
 
+
   return (
     <>
       <AdminDashMiniHeader
@@ -127,9 +140,7 @@ const FinanceLead = () => {
             </p>
             <div className=" w-full px-4 lg:absolute bottom-4">
               <button
-                onClick={() => {
-                  setMakeAnnouncement(true);
-                }}
+                onClick={handleOpenModal}
                 className=" w-full  mt-8 lg:mt-0 py-3 flex justify-center items-center space-x-3 bg-[#0530A1] rounded-[10px]"
               >
                 <img src={add} alt="" />
@@ -137,6 +148,12 @@ const FinanceLead = () => {
                   Make an Announcement
                 </p>
               </button>
+
+              <AnnouncementModal
+                isOpen={isModalOpen}
+                onClose={handleCloseModal}
+                onSubmit={handleSubmitAnnouncement}
+              />
             </div>
           </div>
         </div>
@@ -177,7 +194,7 @@ const FinanceLead = () => {
             ))}
           </div>
 
-          <button className=" w-full  mt-8 lg:mt-6 py-3 flex justify-center items-center bg-[#0530A1] rounded-[10px]">
+          <button onClick={() => handleClick("Transaction")} className=" w-full  mt-8 lg:mt-6 py-3 flex justify-center items-center bg-[#0530A1] rounded-[10px]">
             <p className=" font-Outfit text-sm text-white font-medium">
               View All
             </p>

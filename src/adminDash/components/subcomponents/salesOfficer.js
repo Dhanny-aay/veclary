@@ -8,7 +8,7 @@ import pload from "./assets/pload.svg";
 import { AdminActivePageContext } from "../../contexts/AdminActivePageContext";
 import { useAuth } from "../../contexts/AuthContext";
 import SnackbarUtils from "../../../utils/snackbarUtils";
-import Modal from "../Modal";
+import AnnouncementModal from "../AnnouncementModal";
 import AdminDashMiniHeader from "../AdminDashMiniHeader";
 
 const SalesOfficer = () => {
@@ -197,7 +197,7 @@ const SalesOfficer = () => {
                 </p>
               </button>
 
-              <Modal
+              <AnnouncementModal
                 isOpen={isModalOpen}
                 onClose={handleCloseModal}
                 onSubmit={handleSubmitAnnouncement}

@@ -1,6 +1,6 @@
 import React from "react";
 
-const Modal = ({ isOpen, onClose, onSubmit }) => {
+const AnnouncementModal = ({ isOpen, onClose, onSubmit }) => {
   if (!isOpen) return null;
 
   const handleSubmit = (event) => {
@@ -72,4 +72,4 @@ const Modal = ({ isOpen, onClose, onSubmit }) => {
   );
 };
 
-export default Modal;
+export default AnnouncementModal;

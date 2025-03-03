@@ -5,7 +5,7 @@ import chart from "./assets/chart.svg";
 import nonoti from "./assets/nonoti.svg";
 import chart1 from "./assets/chart1.svg";
 import chart2 from "./assets/chart2.svg";
-import Modal from "../Modal";
+import AnnouncementModal from "../AnnouncementModal";
 import { useAuth } from "../../contexts/AuthContext";
 import SnackbarUtils from "../../../utils/snackbarUtils";
 import AdminDashMiniHeader from "../AdminDashMiniHeader";
@@ -151,7 +151,7 @@ const CEO = () => {
                 </p>
               </button>
 
-              <Modal
+              <AnnouncementModal
                 isOpen={isModalOpen}
                 onClose={handleCloseModal}
                 onSubmit={handleSubmitAnnouncement}

@@ -11,31 +11,34 @@ import VendorActivePageProvider from "./vendorDashboard/contexts/VendorActivePag
 import AdminActivePageProvider from "./adminDash/contexts/AdminActivePageContext";
 import { SnackbarProvider } from "notistack";
 import { SnackbarUtilsConfigurator } from "./utils/snackbarUtils";
+import AuthProvider from "./adminDash/contexts/AuthContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <Router>
-      <AdminActivePageProvider>
-        <VendorActivePageProvider>
-          <ManageActivePageProvider>
-            <TeacherActivePageProvider>
-              <ActivePageProvider>
-                <SnackbarProvider
-                  maxSnack={3}
-                  anchorOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                >
-                  <SnackbarUtilsConfigurator />
-                  <App />
-                </SnackbarProvider>
-              </ActivePageProvider>
-            </TeacherActivePageProvider>
-          </ManageActivePageProvider>
-        </VendorActivePageProvider>
-      </AdminActivePageProvider>
+      <AuthProvider>
+        <AdminActivePageProvider>
+          <VendorActivePageProvider>
+            <ManageActivePageProvider>
+              <TeacherActivePageProvider>
+                <ActivePageProvider>
+                  <SnackbarProvider
+                    maxSnack={3}
+                    anchorOrigin={{
+                      vertical: "top",
+                      horizontal: "right",
+                    }}
+                  >
+                    <SnackbarUtilsConfigurator />
+                    <App />
+                  </SnackbarProvider>
+                </ActivePageProvider>
+              </TeacherActivePageProvider>
+            </ManageActivePageProvider>
+          </VendorActivePageProvider>
+        </AdminActivePageProvider>
+      </AuthProvider>
     </Router>
   </React.StrictMode>
 );
