@@ -8,6 +8,7 @@ import chart2 from "./assets/chart2.svg";
 import { useAuth } from "../../contexts/AuthContext";
 import AdminDashMiniHeader from "../AdminDashMiniHeader";
 import AnnouncementModal from "../AnnouncementModal";
+import StatsCard from "../StatsCard";
 import SnackbarUtils from "../../../utils/snackbarUtils";
 
 const FinanceLead = () => {
@@ -95,9 +96,11 @@ const FinanceLead = () => {
         bodyText={"Stay on top of Veclary with real-time data and insights."}
       />
 
+
       <div className=" mt-6">
         <p className=" font-Outfit text-lg font-semibold">Analysis</p>
         <div className=" mt-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <StatsCard/>
           {performance.map((item, index) => (
             <div
               key={index}
