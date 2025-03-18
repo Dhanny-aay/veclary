@@ -8,8 +8,10 @@ import chart2 from "./assets/chart2.svg";
 import { useAuth } from "../../contexts/AuthContext";
 import AdminDashMiniHeader from "../AdminDashMiniHeader";
 import AnnouncementModal from "../AnnouncementModal";
-import StatsCard from "../StatsCard";
 import SnackbarUtils from "../../../utils/snackbarUtils";
+import RevenueStatsCard from "../RevenueStatsCard";
+import IncomeStatsCard from "../IncomeStatsCard";
+import PaidStatsCard from "../PaidStatsCard";
 
 const FinanceLead = () => {
   const [makeAnnouncement, setMakeAnnouncement] = useState(false);
@@ -88,7 +90,6 @@ const FinanceLead = () => {
     return statusStyles[status] || statusStyles.default;
   };
 
-
   return (
     <>
       <AdminDashMiniHeader
@@ -96,34 +97,12 @@ const FinanceLead = () => {
         bodyText={"Stay on top of Veclary with real-time data and insights."}
       />
 
-
       <div className=" mt-6">
         <p className=" font-Outfit text-lg font-semibold">Analysis</p>
         <div className=" mt-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <StatsCard/>
-          {performance.map((item, index) => (
-            <div
-              key={index}
-              className=" border border-[#EAEBF0] rounded-[10px] p-4"
-            >
-              <p className=" font-Outfit font-medium text-[#272D37] text-base">
-                {item.name}
-              </p>
-              <div className=" w-full flex flex-row justify-between mt-2 items-end">
-                <div className=" w-[40%]">
-                  <p className=" font-Outfit text-[#272D37] text-xl font-semibold">
-                    {item.percentage}
-                  </p>
-                  <p className=" font-Outfit text-[#5F6D7E] text-xs mt-2 font-medium">
-                    {item.stat}
-                  </p>
-                </div>
-                <div className=" w-[59%]">
-                  <img src={item.img} className=" w-[100%] h-full" alt="" />
-                </div>
-              </div>
-            </div>
-          ))}
+          <RevenueStatsCard />
+          <IncomeStatsCard />
+          <PaidStatsCard />
         </div>
       </div>
 
@@ -197,7 +176,10 @@ const FinanceLead = () => {
             ))}
           </div>
 
-          <button onClick={() => handleClick("Transaction")} className=" w-full  mt-8 lg:mt-6 py-3 flex justify-center items-center bg-[#0530A1] rounded-[10px]">
+          <button
+            onClick={() => handleClick("Transaction")}
+            className=" w-full  mt-8 lg:mt-6 py-3 flex justify-center items-center bg-[#0530A1] rounded-[10px]"
+          >
             <p className=" font-Outfit text-sm text-white font-medium">
               View All
             </p>

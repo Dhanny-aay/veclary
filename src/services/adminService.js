@@ -308,3 +308,33 @@ export class JobService extends BaseAdminService {
     );
   }
 }
+// Announcement Service
+export class AnnouncementService extends BaseAdminService {
+  static async createAnnouncement(announcement) {
+    return api(
+      "POST",
+      `${this.BASE_PATH}/announcements
+`,
+      announcement
+    );
+  }
+
+  static async getAnnouncement() {
+    return api("GET", `${this.BASE_PATH}/announcements`);
+  }
+  static async getAnnouncementById(announcementId) {
+    return api("GET", `${this.BASE_PATH}/announcements/${announcementId}`);
+  }
+
+  static async updateAnnouncement(announcementId, announcement) {
+    return api(
+      "PATCH",
+      `${this.BASE_PATH}/announcements/${announcementId}`,
+      announcement
+    );
+  }
+
+  static async deleteAnnouncementById(announcementId) {
+    return api("DELETE", `${this.BASE_PATH}/announcements/${announcementId}`);
+  }
+}

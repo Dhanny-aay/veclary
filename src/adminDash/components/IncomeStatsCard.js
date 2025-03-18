@@ -9,30 +9,30 @@ import {
 
 const data = [
   { value: 5 },
-  { value: 75 },
-  { value: 70 },
+  { value: 25 },
+  { value: 35 },
   { value: 80 },
-  { value: 100 },
+  { value: 70 },
   { value: 85 },
-  { value: 80 },
+  { value: 30 },
   { value: 70 },
-  { value: 60 },
+  { value: 90 },
 ];
 
-const StatsCard = () => {
+const IncomeStatsCard = () => {
   return (
     <div className="">
       <Card className="border border-[#EAEBF0] rounded-[10px] p-4">
         <CardHeader className="space-y-2 p-0">
           <CardTitle className="font-Outfit font-medium text-[#272D37] text-base">
-            Revenue
+            Income
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0">
           <div className="h-20 w-full flex flex-row justify-between mt-2 items-end">
             <div className=" w-[40%]">
               <p className=" font-Outfit text-[#272D37] text-xl font-semibold">
-                $300
+                $680
               </p>
               <p className=" font-Outfit text-[#5F6D7E] text-xs mt-2 font-medium">
                 Weekly stats
@@ -47,21 +47,21 @@ const StatsCard = () => {
                 <Area
                   type="natural"
                   dataKey="value"
-                  stroke="#2196F3"
+                  stroke="#f04438"
                   strokeWidth={3}
-                  fill="url(#colorGradient)"
+                  fill="url(#incomeColorGradient)"
                   fillOpacity={0.5}
                 />
                 <defs>
                   <linearGradient
-                    id="colorGradient"
+                    id="incomeColorGradient"
                     x1="0"
                     y1="0"
                     x2="0"
                     y2="1"
                   >
-                    <stop offset="20%" stopColor="#2196F3" stopOpacity={0.3} />
-                    <stop offset="100%" stopColor="#2196F3" stopOpacity={0} />
+                    <stop offset="20%" stopColor="#f04438" stopOpacity={0.3} />
+                    <stop offset="100%" stopColor="#f04438" stopOpacity={0} />
                   </linearGradient>
                 </defs>
               </AreaChart>
@@ -73,4 +73,4 @@ const StatsCard = () => {
   );
 };
 
-export default StatsCard;
+export default IncomeStatsCard;
