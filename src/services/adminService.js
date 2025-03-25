@@ -203,7 +203,10 @@ export class TransactionService extends BaseAdminService {
       data
     );
   }
+}
 
+// Salaries Service
+export class SalaryService extends BaseAdminService {
   static async getSalaryTransactions() {
     return api("GET", `${this.BASE_PATH}/transactions/salaries`);
   }
@@ -218,6 +221,34 @@ export class TransactionService extends BaseAdminService {
       `${this.BASE_PATH}/transactions/salaries/${salaryId}`,
       data
     );
+  }
+
+  static async getSalaries() {
+    return api("GET", `${this.BASE_PATH}/salaries`);
+  }
+
+  static async createSalary(data) {
+    return api("POST", `${this.BASE_PATH}/salaries`, data);
+  }
+
+  static async getRecentSalaries() {
+    return api("GET", `${this.BASE_PATH}/salaries/recent`);
+  }
+
+  static async getSalaryStats() {
+    return api("GET", `${this.BASE_PATH}/salaries/stats`);
+  }
+
+  static async getSalaryById(salaryId) {
+    return api("GET", `${this.BASE_PATH}/salaries/${salaryId}`);
+  }
+
+  static async updateSalary(salaryId, data) {
+    return api("PATCH", `${this.BASE_PATH}/salaries/${salaryId}`, data);
+  }
+
+  static async rejectSalaryPayment(salaryId, data) {
+    return api("PATCH", `${this.BASE_PATH}/salaries/${salaryId}/reject`, data);
   }
 }
 
@@ -252,6 +283,9 @@ export class ContentService extends BaseAdminService {
 export class SchoolService extends BaseAdminService {
   static async registerSchool(schoolData) {
     return api("POST", `${this.BASE_PATH}/schools/register`, schoolData);
+  }
+  static async addTeacher(teacherData) {
+    return api("POST", `${this.BASE_PATH}/schools/add-teacher`, teacherData);
   }
 
   static async getSchools() {

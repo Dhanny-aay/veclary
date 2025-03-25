@@ -1,10 +1,8 @@
 import { useContext, useState } from "react";
 import { AdminActivePageContext } from "../../contexts/AdminActivePageContext";
 import add from "./assets/add.svg";
-import chart from "./assets/chart.svg";
 import nonoti from "./assets/nonoti.svg";
-import chart1 from "./assets/chart1.svg";
-import chart2 from "./assets/chart2.svg";
+import creditCardIcon from "../assets/credit-card icon.png";
 import { useAuth } from "../../contexts/AuthContext";
 import AdminDashMiniHeader from "../AdminDashMiniHeader";
 import AnnouncementModal from "../AnnouncementModal";
@@ -12,6 +10,7 @@ import SnackbarUtils from "../../../utils/snackbarUtils";
 import RevenueStatsCard from "../RevenueStatsCard";
 import IncomeStatsCard from "../IncomeStatsCard";
 import PaidStatsCard from "../PaidStatsCard";
+import { AnnouncementService } from "../../../services/adminService";
 
 const FinanceLead = () => {
   const [makeAnnouncement, setMakeAnnouncement] = useState(false);
@@ -27,31 +26,13 @@ const FinanceLead = () => {
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
 
-  const handleSubmitAnnouncement = (announcement) => {
+  const handleSubmitAnnouncement = async (announcement) => {
     // submit announcement logic
+    const response = await AnnouncementService.createAnnouncement(announcement);
+    console.log(response);
+
     SnackbarUtils.success("Announcement Submitted");
   };
-
-  const performance = [
-    {
-      name: "Revenue",
-      percentage: "$390",
-      stat: "Daily Stats",
-      img: chart,
-    },
-    {
-      name: "Income",
-      percentage: "$680",
-      stat: "Daily Stats",
-      img: chart1,
-    },
-    {
-      name: "Paid",
-      percentage: "$680",
-      stat: "Daily Stats",
-      img: chart2,
-    },
-  ];
 
   const transactions = [
     {
@@ -113,6 +94,7 @@ const FinanceLead = () => {
             Announcements
           </p>
           <div className=" flex flex-col items-center">
+            {/* <img src={creditCardIcon} className=" mt-7" alt="" /> */}
             <img src={nonoti} className=" mt-7" alt="" />
             <p className=" font-Outfit text-center font-medium mt-3 text-base">
               No Announcements
