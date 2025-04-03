@@ -8,15 +8,13 @@ import {
 } from "../../components/ui/card";
 
 const data = [
-  { value: 5 },
-  { value: 25 },
-  { value: 35 },
-  { value: 80 },
-  { value: 50 },
-  { value: 85 },
-  { value: 30 },
-  { value: 70 },
-  { value: 90 },
+  { value: 0 },
+  { value: 0 },
+  { value: 0 },
+  { value: 0 },
+  { value: 0 },
+  { value: 0 },
+  { value: 0 },
 ];
 
 const PaidStatsCard = () => {
@@ -42,10 +40,10 @@ const PaidStatsCard = () => {
             <ResponsiveContainer width="59%" height="100%">
               <AreaChart
                 data={data}
-                margin={{ top: 5, right: 0, left: 0, bottom: 0 }}
+                margin={{ top: 5, right: 0, left: 0, bottom: 8 }}
               >
                 <Area
-                  type="natural"
+                  type="monotone"
                   dataKey="value"
                   stroke="#5dc264"
                   strokeWidth={3}

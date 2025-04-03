@@ -4,8 +4,6 @@ import {
   AdminSidebarContext,
 } from "../contexts/AdminActivePageContext";
 import arrowBlue from "./assets/arrowblue.svg";
-import backArr from "./assets/backArr.svg";
-import fwdArr from "./assets/fwdArr.svg";
 import edit from "./assets/edit.svg";
 import trash from "./assets/trash.svg";
 import down from "./assets/download.svg";

@@ -131,13 +131,17 @@ const AdminSelect = () => {
                   key={index}
                   className={`w-full border mt-3 border-[#EAEBF0] rounded-[15px] p-4 cursor-pointer ${
                     selectedPosition.name === item.name
-                      ? "bg-[#0530A1]  !text-white"
+                      ? "bg-[#0530A1]"
                       : ""
                   }`}
                   onClick={() => handlePositionClick(item)}
                 >
                   <p className="font-Outfit text-base font-normal">
-                    <span className="text-inherit">{item.name}</span>
+                    <span className={`text-inherit ${
+                    selectedPosition.name === item.name
+                      ? "text-white"
+                      : ""
+                  }`}>{item.name}</span>
                   </p>
                 </div>
               ))}

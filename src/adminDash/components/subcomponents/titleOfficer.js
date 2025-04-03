@@ -1,8 +1,5 @@
 import pie from "./assets/pie.svg";
-import nonoti from "./assets/nonoti.svg";
-import add from "./assets/add.svg";
 import pload from "./assets/pload.svg";
-import right from "./assets/right.svg";
 import { useContext, useState } from "react";
 import { AdminActivePageContext } from "../../contexts/AdminActivePageContext";
 import x from "./assets/x.svg";

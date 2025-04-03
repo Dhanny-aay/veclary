@@ -1,15 +1,14 @@
 import { useContext, useState } from "react";
-import add from "./assets/add.svg";
 import chart from "./assets/chart.svg";
-import nonoti from "./assets/nonoti.svg";
 import chart1 from "./assets/chart1.svg";
 import chart2 from "./assets/chart2.svg";
 import pload from "./assets/pload.svg";
 import { AdminActivePageContext } from "../../contexts/AdminActivePageContext";
 import { useAuth } from "../../contexts/AuthContext";
 import SnackbarUtils from "../../../utils/snackbarUtils";
-import AnnouncementModal from "../AnnouncementModal";
 import AdminDashMiniHeader from "../AdminDashMiniHeader";
+import AnnouncementSection from "../AnnouncementSection";
+import { AnnouncementService } from "../../../services/adminService";
 
 const SalesOfficer = () => {
   // const [makeAnnouncement, setMakeAnnouncement] = useState(false);
@@ -23,10 +22,6 @@ const SalesOfficer = () => {
 
   const [uploadProgress, setUploadProgress] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const handleOpenModal = () => setIsModalOpen(true);
-  const handleCloseModal = () => setIsModalOpen(false);
 
   const handleSubmitAnnouncement = (announcement) => {
     // submit announcement logic
@@ -176,35 +171,7 @@ const SalesOfficer = () => {
       </div>
 
       <div className="mt-6 flex flex-col space-y-6 lg:space-y-0 lg:flex-row justify-between w-full">
-        <div className="w-full lg:w-[34%] border border-[#EAEBF0] rounded-[10px] p-4 relative">
-          <p className="font-Outfit text-lg font-semibold">Announcements</p>
-          <div className="flex flex-col items-center">
-            <img src={nonoti} className="mt-7" alt="" />
-            <p className="font-Outfit text-center font-medium mt-3 text-base">
-              No Announcements
-            </p>
-            <p className="font-Outfit text-xs text-[#9E9E9E] mt-2 text-center">
-              When you have an announcement you’ll see them here
-            </p>
-            <div className="w-full px-4 lg:absolute bottom-4">
-              <button
-                onClick={handleOpenModal}
-                className="w-full mt-8 lg:mt-0 py-3 flex justify-center items-center space-x-3 bg-[#0530A1] rounded-[10px]"
-              >
-                <img src={add} alt="" />
-                <p className="font-Outfit text-sm text-white font-medium">
-                  Make an Announcement
-                </p>
-              </button>
-
-              <AnnouncementModal
-                isOpen={isModalOpen}
-                onClose={handleCloseModal}
-                onSubmit={handleSubmitAnnouncement}
-              />
-            </div>
-          </div>
-        </div>
+        <AnnouncementSection submitAnnouncement={handleSubmitAnnouncement} />
 
         <div className="w-full lg:w-[64%] border border-[#EAEBF0] rounded-[10px] p-4">
           <div className="w-full flex flex-row items-center justify-between">

@@ -168,6 +168,10 @@ export class FinancialService extends BaseAdminService {
   static async getEarningById(earningId) {
     return api("GET", `${this.BASE_PATH}/earnings/${earningId}`);
   }
+
+  static async getRevenue() {
+    return api("GET", `${this.BASE_PATH}/revenue`);
+  }
 }
 
 // Transactions Service
