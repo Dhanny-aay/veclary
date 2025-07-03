@@ -259,6 +259,7 @@ const AddTeacher = ({ setAddTeach, triggerFetch }) => {
               </button>
               <button
                 onClick={handleSubmit}
+                disabled={loading}
                 className=" w-full py-3 font-Outfit rounded-md text-[#fff] bg-[#0530A1] font-semibold flex justify-center items-center text-base"
               >
                 {loading ? <img src={load} className=" w-6" alt="" /> : "Save"}

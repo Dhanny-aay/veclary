@@ -112,14 +112,14 @@ const AddResources = ({ triggerFetch, setAddResource }) => {
 
   const onSuccess = (response) => {
     setLoading(false);
-    enqueueSnackbar(response.message, { variant: "success" });
+    enqueueSnackbar("Resource created", { variant: "success" });
     setAddResource(false);
     triggerFetch();
   };
 
   const onError = (error) => {
     setLoading(false);
-    enqueueSnackbar(error.message, { variant: "error" });
+    enqueueSnackbar("Failed to create resource", { variant: "error" });
     setAddResource(false);
   };
 

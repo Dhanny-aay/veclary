@@ -60,7 +60,7 @@ const ManageDashboard = () => {
     Subjects: <ManageSubjects />,
     Classes: <ManageClasses />,
     Teachers: <ManageTeachers />,
-    Timetable: <ManageTimetable />,
+    Timetable: <ManageTimetable dashboard={dashboard} />,
     Resources: <ManageResource />,
     Settings: <ManageSetting />,
     Bursary: <ManageBursary />,

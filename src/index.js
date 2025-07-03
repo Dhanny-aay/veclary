@@ -9,8 +9,7 @@ import TeacherActivePageProvider from "./teacherDash/contexts/TeacherActivePageC
 import ManageActivePageProvider from "./manageDash/contexts/ManageActivePageContext";
 import VendorActivePageProvider from "./vendorDashboard/contexts/VendorActivePageContext";
 import AdminActivePageProvider from "./adminDash/contexts/AdminActivePageContext";
-import { SnackbarProvider } from "notistack";
-import { SnackbarUtilsConfigurator } from "./utils/snackbarUtils";
+import { Toaster } from "sonner";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -21,16 +20,9 @@ root.render(
           <ManageActivePageProvider>
             <TeacherActivePageProvider>
               <ActivePageProvider>
-                <SnackbarProvider
-                  maxSnack={3}
-                  anchorOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                >
-                  <SnackbarUtilsConfigurator />
-                  <App />
-                </SnackbarProvider>
+                <Toaster position="top-right" richColors closeButton />
+
+                <App />
               </ActivePageProvider>
             </TeacherActivePageProvider>
           </ManageActivePageProvider>

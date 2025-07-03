@@ -2,13 +2,45 @@ import {
   ManageActivePageContext,
   ManageSidebarContext,
 } from "../contexts/ManageActivePageContext";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import arrowBlue from "./assets/arrowblue.svg";
+import { handleGetSchoolTimetable } from "../../controllers/schoolControllers/timetableController";
+import AddTimetable from "./timetableSubComps/addTimetable";
 
-const ManageTimetable = () => {
+const ManageTimetable = ({ dashboard }) => {
   const { sidebarVisible, setSidebarVisible } =
     useContext(ManageSidebarContext);
   const { activePage, setActivePage } = useContext(ManageActivePageContext);
+  const [timetable, setTimetable] = useState([]);
+  const [trigger, setTrigger] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [addTimetable, setAddTimetable] = useState(false);
+  const [editTimetable, setEditTimetable] = useState(false);
+  const [deleteTimetable, setDeleteTimetable] = useState(false);
+
+  const triggerFetch = () => {
+    setTrigger(!trigger); // Toggle trigger to true or false
+  };
+
+  const fetchTimetable = async () => {
+    setLoading(true);
+    try {
+      const data = await handleGetSchoolTimetable();
+      if (data) {
+        setTimetable(data);
+      } else {
+        // enqueueSnackbar("Failed to fetch profile data", { variant: "error" });
+      }
+    } catch (error) {
+      console.error("Error fetching timetable:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchTimetable();
+  }, [trigger]);
 
   const handleClick = (page) => {
     setActivePage(page);
@@ -34,6 +66,13 @@ const ManageTimetable = () => {
 
   return (
     <>
+      {addTimetable && (
+        <AddTimetable
+          setAddTimetable={setAddTimetable}
+          triggerFetch={triggerFetch}
+          dashboard={dashboard}
+        />
+      )}
       <div
         onClick={() => {
           setSidebarVisible(false);
@@ -115,7 +154,10 @@ const ManageTimetable = () => {
           </label>
 
           <span className=" flex mt-6 md:mt-0 items-start">
-            <button className=" text-center  text-sm font-Outfit font-medium text-white bg-[#0530A1] py-2 px-3 md:px-6 rounded-[10px]">
+            <button
+              onClick={setAddTimetable}
+              className=" text-center  text-sm font-Outfit font-medium text-white bg-[#0530A1] py-2 px-3 md:px-6 rounded-[10px]"
+            >
               Edit Timetable
             </button>
           </span>

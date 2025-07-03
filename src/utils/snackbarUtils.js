@@ -1,27 +1,32 @@
-import { useSnackbar } from "notistack";
-
-// notificationHelper.js
-let useSnackbarRef;
-export const SnackbarUtilsConfigurator = () => {
-  useSnackbarRef = useSnackbar();
-  return null;
-};
+import { toast } from "sonner";
 
 const SnackbarUtils = {
-  success(msg) {
-    this.toast(msg, "success");
+  success(msg, options = {}) {
+    toast.success(msg, {
+      description: options.description,
+      ...options,
+    });
   },
-  error(msg) {
-    this.toast(msg, "error");
+  error(msg, options = {}) {
+    toast.error(msg, {
+      description: options.description,
+      ...options,
+    });
   },
-  info(msg) {
-    this.toast(msg, "info");
+  info(msg, options = {}) {
+    toast.info(msg, {
+      description: options.description,
+      ...options,
+    });
   },
-  warning(msg) {
-    this.toast(msg, "warning");
+  warning(msg, options = {}) {
+    toast.warning(msg, {
+      description: options.description,
+      ...options,
+    });
   },
-  toast(msg, variant = "default") {
-    useSnackbarRef.enqueueSnackbar(msg, { variant });
+  toast(msg, options = {}) {
+    toast(msg, options);
   },
 };
 

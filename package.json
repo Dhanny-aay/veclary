@@ -26,6 +26,7 @@
     "react-scripts": "5.0.1",
     "react-tooltip": "^5.28.0",
     "rsuite": "^5.73.1",
+    "sonner": "^2.0.5",
     "styled-components": "^6.1.13",
     "web-vitals": "^2.1.4"
   },

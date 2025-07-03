@@ -1,6 +1,5 @@
 // api.js
 import config from "../config";
-import SnackbarUtils from "../utils/snackbarUtils";
 
 const api = async (method, uri, body = null) => {
   const url = `${config.baseURL}${uri}`;
@@ -29,7 +28,7 @@ const api = async (method, uri, body = null) => {
       handleError(response, data);
     }
   } catch (err) {
-    handleFetchError(err);
+    throw err;
   }
 };
 
@@ -39,9 +38,6 @@ const handleSuccess = (data) => {
   }
   if (data.refreshToken) {
     localStorage.setItem("veclary_refresh_token", data.refreshToken);
-  }
-  if (data.message) {
-    SnackbarUtils.success(data.message);
   }
 };
 
@@ -63,20 +59,12 @@ const handleError = (response, data) => {
         errorMessage === "Email Address already Exists"
           ? "This email is already in use. Please use a different email."
           : errorMessage;
-      SnackbarUtils.error(message);
       throw new Error(message);
     case 422:
-      SnackbarUtils.error(errorMessage);
       throw new Error(errorMessage);
     default:
-      SnackbarUtils.error(errorMessage);
       throw new Error(errorMessage);
   }
-};
-
-const handleFetchError = (err) => {
-  SnackbarUtils.error(`Fetch error: ${err.message}`);
-  throw err;
 };
 
 export default api;
