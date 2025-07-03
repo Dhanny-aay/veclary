@@ -15,19 +15,21 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <Router>
-      <AdminActivePageProvider>
-        <VendorActivePageProvider>
-          <ManageActivePageProvider>
-            <TeacherActivePageProvider>
-              <ActivePageProvider>
-                <Toaster position="top-right" richColors closeButton />
+      <AuthProvider>
+        <AdminActivePageProvider>
+          <VendorActivePageProvider>
+            <ManageActivePageProvider>
+              <TeacherActivePageProvider>
+                <ActivePageProvider>
+                  <Toaster position="top-right" richColors closeButton />
 
-                <App />
-              </ActivePageProvider>
-            </TeacherActivePageProvider>
-          </ManageActivePageProvider>
-        </VendorActivePageProvider>
-      </AdminActivePageProvider>
+                  <App />
+                </ActivePageProvider>
+              </TeacherActivePageProvider>
+            </ManageActivePageProvider>
+          </VendorActivePageProvider>
+        </AdminActivePageProvider>
+      </AuthProvider>
     </Router>
   </React.StrictMode>
 );

@@ -4,19 +4,20 @@ import {
   AdminSidebarContext,
 } from "../contexts/AdminActivePageContext";
 import arrowBlue from "./assets/arrowblue.svg";
+import Pagination from "./Pagination";
+// import backArr from "./assets/backArr.svg";
+// import fwdArr from "./assets/fwdArr.svg";
 import edit from "./assets/edit.svg";
 import trash from "./assets/trash.svg";
 import down from "./assets/download.svg";
-import Pagination from "./Pagination";
 
-const AdminTransactions = () => {
+const UnPaidSalaryCEO = () => {
   const { sidebarVisible, setSidebarVisible } = useContext(AdminSidebarContext);
   const { activePage, setActivePage } = useContext(AdminActivePageContext);
   const [selectedOption, setSelectedOption] = useState("schData");
-  
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 3;
-
+  const [modalData, setModalData] = useState(null);
 
   const handleClick = (page) => {
     setActivePage(page);
@@ -31,26 +32,31 @@ const AdminTransactions = () => {
       regNo: "SCI-20-0102",
       name: "Grand Rapids",
       amount: "$2000",
+      status: "Done",
     },
     {
       regNo: "SCI-20-0103",
       name: "Grand Rapids",
       amount: "$2000",
+      status: "Done",
     },
     {
       regNo: "SCI-20-0104",
       name: "Grand Rapids",
       amount: "$2000",
+      status: "Done",
     },
     {
       regNo: "SCI-20-0105",
       name: "Grand Rapids",
       amount: "$2000",
+      status: "Done",
     },
     {
       regNo: "SCI-20-0106",
       name: "Grand Rapids",
       amount: "$2000",
+      status: "Done",
     },
   ];
   const bookData = [
@@ -58,26 +64,31 @@ const AdminTransactions = () => {
       regNo: "SCI-20-0102",
       name: "Broomfield",
       amount: "$2000",
+      status: "Done",
     },
     {
       regNo: "SCI-20-0103",
       name: "Grand Rapids",
       amount: "$2000",
+      status: "Done",
     },
     {
       regNo: "SCI-20-0104",
       name: "Grand Rapids",
       amount: "$2000",
+      status: "Done",
     },
     {
       regNo: "SCI-20-0105",
       name: "Grand Rapids",
       amount: "$2000",
+      status: "Done",
     },
     {
       regNo: "SCI-20-0106",
       name: "Grand Rapids",
       amount: "$2000",
+      status: "Done",
     },
   ];
   const subData = [
@@ -85,34 +96,53 @@ const AdminTransactions = () => {
       regNo: "SCI-20-0102",
       name: "Rapids",
       amount: "$2000",
+      status: "Done",
     },
     {
       regNo: "SCI-20-0103",
       name: "Grand Rapids",
       amount: "$2000",
+      status: "Done",
     },
     {
       regNo: "SCI-20-0104",
       name: "Grand Rapids",
       amount: "$2000",
+      status: "Done",
     },
     {
       regNo: "SCI-20-0105",
       name: "Grand Rapids",
       amount: "$2000",
+      status: "Done",
     },
     {
       regNo: "SCI-20-0106",
       name: "Grand Rapids",
       amount: "$2000",
+      status: "Done",
     },
   ];
 
   const columns = {
-    schData: ["S/N", "Name", "Amount", "Transaction ID"],
-    bookData: ["S/N", "Name", "Amount", "Transaction ID"],
-    subData: ["S/N", "Name", "Amount", "Transaction ID"],
+    schData: ["S/N", "Name", "Amount", "Transaction ID", "Status"],
+    bookData: ["S/N", "Name", "Amount", "Transaction ID", "Status"],
+    subData: ["S/N", "Name", "Amount", "Transaction ID", "Status"],
   };
+
+  const statusStyles = {
+    Done: "text-[#2D8A39] bg-[#F0FAF0]",
+    Pending: "text-[#E2341D] bg-[#FFF2F0]",
+    default: "text-gray-600 bg-gray-100",
+  };
+
+  const getStatusClass = (status) => {
+    return statusStyles[status] || statusStyles.default;
+  };
+
+  const handleReviewClick = (data) => setModalData(data);
+
+  const closeModal = () => setModalData(null);
 
   const dataToRender =
     selectedOption === "schData"
@@ -125,14 +155,14 @@ const AdminTransactions = () => {
 
   // Slice the data for the current page
   const currentData = dataToRender.slice(
-        (currentPage - 1) * itemsPerPage,
-        currentPage * itemsPerPage
-      );
-    
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
   // Handle page change
   const handlePageChange = (page) => {
-        setCurrentPage(page);
-      };
+    setCurrentPage(page);
+  };
 
   return (
     <>
@@ -149,29 +179,9 @@ const AdminTransactions = () => {
           <img src={arrowBlue} alt="Back Arrow" />
           <p className="font-Outfit text-[#0530A1] text-sm font-medium">Back</p>
           <p className="font-Outfit text-xl font-semibold mb-2 ml-3">
-            Transactions
+            Unpaid Salary
           </p>
         </span>
-
-        <div className="w-full items-end flex flex-row mt-6 justify-between">
-          <span className="flex items-start space-x-6">
-            <label
-              htmlFor="Class Teacher"
-              className="font-Outfit flex flex-col text-[#272D37] text-xs font-medium"
-            >
-              Filter
-              <select
-                value={selectedOption}
-                onChange={handleSelectChange}
-                className="mt-2 text-[#272D37] text-sm w-[120px] md:w-[200px] font-normal border border-[#DAE0E6] rounded-[5px] font-Outfit p-2.5"
-              >
-                <option value="schData">Sort by School fee</option>
-                <option value="bookData">Sort by Books sold</option>
-                <option value="subData">Sort by Subscription fee</option>
-              </select>
-            </label>
-          </span>
-        </div>
 
         <div className="mt-6">
           <div className="border border-[#EAEBF0] px-3 rounded-[10px]">
@@ -201,43 +211,79 @@ const AdminTransactions = () => {
                       </td>
                       {selectedOption === "schData" ? (
                         <>
-                          <td className="font-Outfit py-4 border-t border-[#EAEBF0] text-[#272D37] font-medium text-sm text-center">
+                          <td className="font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">
                             {data.amount}
                           </td>
                           <td className="font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">
                             {data.regNo}
+                          </td>
+                          <td
+                            className={`font-Outfit text-sm text-[#5F6D7E] py-4 border-t  border-[#EAEBF0] text-center`}
+                          >
+                            <p
+                              className={`-mt-0 font-Outfit font-medium text-[13px] rounded-[5px]  w-[67px] mx-auto py-[2px] ${getStatusClass(
+                                data.status
+                              )}`}
+                            >
+                              {data.status}
+                            </p>
                           </td>
                         </>
                       ) : selectedOption === "bookData" ? (
                         <>
-                          <td className="font-Outfit py-4 border-t border-[#EAEBF0] text-[#272D37] font-medium text-sm text-center">
+                          <td className="font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">
                             {data.amount}
                           </td>
                           <td className="font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">
                             {data.regNo}
+                          </td>
+                          <td
+                            className={`font-Outfit text-sm text-[#5F6D7E] py-4 border-t  border-[#EAEBF0] text-center`}
+                          >
+                            <p
+                              className={`-mt-0 font-Outfit font-medium text-[13px] rounded-[5px]  w-[67px] mx-auto py-[2px] ${getStatusClass(
+                                data.status
+                              )}`}
+                            >
+                              {data.status}
+                            </p>
                           </td>
                         </>
                       ) : (
                         <>
-                          <td className="font-Outfit py-4 border-t border-[#EAEBF0] text-[#272D37] font-medium text-sm text-center">
+                          <td className="font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">
                             {data.amount}
                           </td>
                           <td className="font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">
                             {data.regNo}
                           </td>
+                          <td
+                            className={`font-Outfit text-sm text-[#5F6D7E] py-4 border-t  border-[#EAEBF0] text-center`}
+                          >
+                            <p
+                              className={`-mt-0 font-Outfit font-medium text-[13px] rounded-[5px]  w-[67px] mx-auto py-[2px] ${getStatusClass(
+                                data.status
+                              )}`}
+                            >
+                              {data.status}
+                            </p>
+                          </td>
                         </>
                       )}
-                      <td className="font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] items-center justify-center h-full text-center flex space-x-3">
-                        <img className="w-3 mt-3" src={down} alt="Download" />
-                        <img className="w-3 mt-3" src={edit} alt="Edit" />
-                        <img className="w-3 mt-3" src={trash} alt="Trash" />
+                      <td className="font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] items-center justify-center h-full text-center flex">
+                        <button
+                          onClick={() => handleReviewClick(data)}
+                          className=" py-2 px-3 rounded-[10px] bg-[#0530A1] text-[#FFFFFF] font-Outfit font-medium text-xs"
+                        >
+                          Review
+                        </button>
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
-
+            {/* Pagination Component */}
             <Pagination
               currentPage={currentPage}
               itemsPerPage={itemsPerPage}
@@ -247,8 +293,34 @@ const AdminTransactions = () => {
           </div>
         </div>
       </div>
+
+      {modalData && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white rounded-lg p-6 w-[90%] max-w-md">
+            <h2 className="text-xl font-semibold mb-4">Details</h2>
+            <p>
+              <strong>Name:</strong> {modalData.name}
+            </p>
+            <p>
+              <strong>Amount:</strong> {modalData.amount}
+            </p>
+            <p>
+              <strong>Reg No:</strong> {modalData.regNo}
+            </p>
+            <p>
+              <strong>Status:</strong> {modalData.status}
+            </p>
+            <button
+              onClick={closeModal}
+              className="mt-4 bg-[#0530A1] text-white py-2 px-4 rounded-lg"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 };
 
-export default AdminTransactions;
+export default UnPaidSalaryCEO;

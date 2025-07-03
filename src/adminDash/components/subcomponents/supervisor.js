@@ -1,16 +1,26 @@
 import pie from "./assets/pie.svg";
-import nonoti from "./assets/nonoti.svg";
-import add from "./assets/add.svg";
 import right from "./assets/right.svg";
 import { useContext, useState } from "react";
 import { AdminActivePageContext } from "../../contexts/AdminActivePageContext";
+import { useAuth } from "../../contexts/AuthContext";
+import AdminDashMiniHeader from "../AdminDashMiniHeader";
+import SnackbarUtils from "../../../utils/snackbarUtils";
+import AnnouncementSection from "../AnnouncementSection";
+import { AnnouncementService } from "../../../services/adminService";
 
 const Supervisor = () => {
-  const [makeAnnouncement, setMakeAnnouncement] = useState(false);
   const { activePage, setActivePage } = useContext(AdminActivePageContext);
+  const { user } = useAuth();
 
   const handleClick = (page) => {
     setActivePage(page);
+  };
+
+  const handleSubmitAnnouncement = async (announcement) => {
+    // submit announcement logic
+    const response = await AnnouncementService.createAnnouncement(announcement);
+
+    SnackbarUtils.success("Announcement Submitted");
   };
 
   const analysis = [
@@ -45,17 +55,12 @@ const Supervisor = () => {
 
   return (
     <>
-      <div className="flex border-b border-[#EAEBF0] pb-6 flex-row md:items-center space-x-4 md:space-x-3">
-        <span className=" w-[50px] md:w-[85px] h-[45px] md:h-[85px] rounded-[50%] bg-[#EAEBF0]"></span>
-        <span className=" flex flex-col">
-          <p className="font-Outfit font-medium text-xl text-black md:text-3xl">
-            Welcome back, Account Manager!
-          </p>
-          <p className=" font-Outfit text-base md:text-lg font-normal text-[#000000B2]">
-            Take the first steps to Get a clear view of customer interactions.
-          </p>
-        </span>
-      </div>
+      <AdminDashMiniHeader
+        name={user?.name}
+        bodyText={
+          "Take the first steps to Get a clear view of customer interactions."
+        }
+      />
 
       <div className=" mt-6">
         <p className=" font-Outfit text-lg font-semibold">Analysis</p>
@@ -101,31 +106,7 @@ const Supervisor = () => {
       </div>
       {/* row 2 */}
       <div className=" mt-6 flex flex-col space-y-6 lg:space-y-0 lg:flex-row justify-between w-full">
-        <div className=" w-full lg:w-[34%] border border-[#EAEBF0] rounded-[10px] p-4 relative">
-          <p className=" font-Outfit text-lg font-semibold">Announcements</p>
-          <div className=" flex flex-col items-center">
-            <img src={nonoti} className=" mt-7" alt="" />
-            <p className=" font-Outfit text-center font-medium mt-3 text-base">
-              No Announcements
-            </p>
-            <p className=" font-Outfit text-xs text-[#9E9E9E] mt-2 text-center">
-              When you have an announcement you’ll see them here
-            </p>
-            <div className=" w-full px-4 lg:absolute bottom-4">
-              <button
-                onClick={() => {
-                  setMakeAnnouncement(true);
-                }}
-                className=" w-full  mt-8 lg:mt-0 py-3 flex justify-center items-center space-x-3 bg-[#0530A1] rounded-[10px]"
-              >
-                <img src={add} alt="" />
-                <p className=" font-Outfit text-sm text-white font-medium">
-                  Make an Announcement
-                </p>
-              </button>
-            </div>
-          </div>
-        </div>
+        <AnnouncementSection submitAnnouncement={handleSubmitAnnouncement} />
 
         <div className=" w-full lg:w-[64%] border border-[#EAEBF0] rounded-[10px] p-4">
           <div className=" w-full flex flex-row items-center justify-between">

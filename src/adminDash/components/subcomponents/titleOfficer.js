@@ -1,20 +1,109 @@
 import pie from "./assets/pie.svg";
-import nonoti from "./assets/nonoti.svg";
-import add from "./assets/add.svg";
 import pload from "./assets/pload.svg";
-import right from "./assets/right.svg";
 import { useContext, useState } from "react";
 import { AdminActivePageContext } from "../../contexts/AdminActivePageContext";
 import x from "./assets/x.svg";
 import x1 from "./assets/x (1).svg";
 import x2 from "./assets/x (2).svg";
+import { useAuth } from "../../contexts/AuthContext";
+import AdminDashMiniHeader from "../AdminDashMiniHeader";
+import SnackbarUtils from "../../../utils/snackbarUtils";
 
 const TitleOfficer = () => {
-  const [makeAnnouncement, setMakeAnnouncement] = useState(false);
   const { activePage, setActivePage } = useContext(AdminActivePageContext);
+  const { user } = useAuth();
+  const [loading, setLoading] = useState(false);
+
+  const [formData, setFormData] = useState({
+    bookTitle: "",
+    bookIsbn: "",
+    bookDescription: "",
+    bookLabel: "",
+    pubAndAuthorName: "",
+    document: null,
+  });
+
+  const [uploadProgress, setUploadProgress] = useState(0);
+
+  const [dragActive, setDragActive] = useState(false);
 
   const handleClick = (page) => {
     setActivePage(page);
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleFileChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      setFormData({ ...formData, document: e.target.files[0] });
+      setUploadProgress(0);
+
+      // Simulate file loading progress
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += 20; // Increase progress gradually
+        setUploadProgress(progress);
+        if (progress >= 100) {
+          clearInterval(interval);
+        }
+      }, 300);
+    }
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setDragActive(true);
+  };
+
+  const handleDragLeave = () => {
+    setDragActive(false);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setDragActive(false);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      setFormData({ ...formData, document: e.dataTransfer.files[0] });
+    }
+  };
+
+  const handleRemoveFile = () => {
+    setFormData({ ...formData, document: null });
+    setUploadProgress(0);
+  };
+
+  const handleUpload = async () => {
+    if (!formData.schoolName || !formData.schoolId || !formData.document) {
+      SnackbarUtils.error("Please fill in all fields and upload a document.");
+      return;
+    }
+
+    setLoading(true);
+
+    const uploadEndpoint = "https://veclary-backend-endpoint.com/api/upload"; // Replace later with API endpoint from adminServices
+    const form = new FormData();
+    form.append("schoolName", formData.schoolName);
+    form.append("schoolId", formData.schoolId);
+    form.append("document", formData.document);
+
+    try {
+      const response = await fetch(uploadEndpoint, {
+        method: "POST",
+        body: form,
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to upload document");
+      }
+      setUploadProgress(100);
+
+      SnackbarUtils.success("Upload successful!");
+    } catch (error) {
+      SnackbarUtils.error(`Upload failed: ${error.message}`);
+    }
   };
 
   const analysis = [
@@ -40,17 +129,12 @@ const TitleOfficer = () => {
 
   return (
     <>
-      <div className="flex border-b border-[#EAEBF0] pb-6 flex-row md:items-center space-x-4 md:space-x-3">
-        <span className=" w-[50px] md:w-[85px] h-[45px] md:h-[85px] rounded-[50%] bg-[#EAEBF0]"></span>
-        <span className=" flex flex-col">
-          <p className="font-Outfit font-medium text-xl text-black md:text-3xl">
-            Welcome back, Title Officer!
-          </p>
-          <p className=" font-Outfit text-base md:text-lg font-normal text-[#000000B2]">
-            Take the first steps to Get a clear view of customer interactions.
-          </p>
-        </span>
-      </div>
+      <AdminDashMiniHeader
+        name={user?.name}
+        bodyText={
+          "Take the first steps to Get a clear view of customer interactions."
+        }
+      />
 
       <div className=" mt-6">
         <p className=" font-Outfit text-lg font-semibold">Analysis</p>
@@ -103,43 +187,55 @@ const TitleOfficer = () => {
           <div className=" w-full md:w-[64%] flex flex-col">
             <div className=" flex flex-col md:flex-row justify-between space-y-3 md:space-y-0">
               <label
-                htmlFor=""
+                htmlFor="bookTitle"
                 className=" w-full md:w-[49%] flex flex-col text-[#272D37] font-medium font-Outfit text-sm"
               >
                 Book Title
                 <input
                   type="text"
+                  name="bookTitle"
+                  value={formData.bookTitle}
+                  onChange={handleInputChange}
                   className=" w-full p-2.5 h-[40px] rounded-[5px] border border-[#DAE0E6] mt-2"
                 />
               </label>
               <label
-                htmlFor=""
+                htmlFor="bookIsbn"
                 className=" w-full md:w-[49%] flex flex-col text-[#272D37] font-medium font-Outfit text-sm"
               >
                 Book ISBN
                 <input
                   type="text"
+                  name="bookIsbn"
+                  value={formData.bookIsbn}
+                  onChange={handleInputChange}
                   className=" w-full p-2.5 h-[40px] rounded-[5px] border border-[#DAE0E6] mt-2"
                 />
               </label>
             </div>
             <label
-              htmlFor=""
+              htmlFor="bookDescription"
               className=" w-full mt-3 flex flex-col text-[#272D37] font-medium font-Outfit text-sm"
             >
               Book Description
               <input
                 type="text"
+                name="bookDescription"
+                value={formData.bookDescription}
+                onChange={handleInputChange}
                 className=" w-full p-2.5 h-[40px] rounded-[5px] border border-[#DAE0E6] mt-2"
               />
             </label>
             <label
-              htmlFor=""
+              htmlFor="bookLabel"
               className=" w-full mt-3 flex flex-col text-[#272D37] font-medium font-Outfit text-sm"
             >
               Add book label
               <input
                 type="text"
+                name="bookLabel"
+                value={formData.bookLabel}
+                onChange={handleInputChange}
                 className=" w-full p-2.5 h-[40px] rounded-[5px] border border-[#DAE0E6] mt-2"
               />
             </label>
@@ -170,21 +266,72 @@ const TitleOfficer = () => {
                 className=" w-full p-2.5 h-[40px] rounded-[5px] border border-[#DAE0E6] mt-2"
               />
             </label>
-            <div className=" mt-3 w-full border border-[#DAE0E6] rounded-[5px] flex items-center justify-center flex-col p-6">
-              <img src={pload} alt="" />
-              <p className=" mt-3 text-sm font-normal font-Outfit text-[#667085]">
-                <span className=" font-semibold text-[#0530A1] mr-1">
-                  Click to upload
-                </span>
-                or drag and drop
-              </p>
-              <p className=" mt-1 text-xs font-normal font-Outfit text-[#667085]">
-                 PDF, EPUB, or MOBI. (max. 200mb)
-              </p>
+
+            {/* Upload section */}
+            <div className="mt-6">
+              {formData.document ? (
+                <div className=" bg-gray-50">
+                  {uploadProgress < 100 ? (
+                    <div className="w-full bg-gray-200 rounded-full mt-3">
+                      <div
+                        className="bg-[#0530A1] rounded-[10px] text-xs font-medium text-white text-center p-0.5 leading-none"
+                        style={{ width: `${uploadProgress}%` }}
+                      ></div>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-between p-3 border border-[#DAE0E6] rounded-[5px] bg-gray-50">
+                      <span className="text-sm font-Outfit">
+                        {formData.document.name}
+                      </span>
+                      <button
+                        onClick={handleRemoveFile}
+                        className="text-red-500 font-bold text-sm"
+                      >
+                        X
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div
+                  className={`w-full border border-[#DAE0E6] rounded-[5px] flex items-center justify-center flex-col p-3 ${
+                    dragActive ? "bg-gray-100" : ""
+                  }`}
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                >
+                  <input
+                    type="file"
+                    accept=".pdf,.epub,.mobi"
+                    onChange={handleFileChange}
+                    className="hidden"
+                    id="fileInput"
+                  />
+                  <label
+                    htmlFor="fileInput"
+                    className="cursor-pointer flex flex-col items-center"
+                  >
+                    <img src={pload} alt="Upload" />
+                    <p className="mt-3 text-sm font-normal font-Outfit text-[#667085]">
+                      <span className="font-semibold text-[#0530A1] mr-1">
+                        Click to upload
+                      </span>
+                      or drag and drop
+                    </p>
+                    <p className="mt-1 text-xs font-normal font-Outfit text-[#667085]">
+                      PDF, EPUB, or MOBI. (max. 200mb)
+                    </p>
+                  </label>
+                </div>
+              )}
             </div>
           </div>
         </div>
-        <button className=" w-full  mt-6  py-3 flex justify-center items-center space-x-3 bg-[#0530A1] rounded-[10px]">
+        <button
+          onClick={handleUpload}
+          className=" w-full  mt-6  py-3 flex justify-center items-center space-x-3 bg-[#0530A1] rounded-[10px]"
+        >
           <p className=" font-Outfit text-sm text-white font-medium">Upload</p>
         </button>
       </div>

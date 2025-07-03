@@ -168,6 +168,10 @@ export class FinancialService extends BaseAdminService {
   static async getEarningById(earningId) {
     return api("GET", `${this.BASE_PATH}/earnings/${earningId}`);
   }
+
+  static async getRevenue() {
+    return api("GET", `${this.BASE_PATH}/revenue`);
+  }
 }
 
 // Transactions Service
@@ -203,7 +207,10 @@ export class TransactionService extends BaseAdminService {
       data
     );
   }
+}
 
+// Salaries Service
+export class SalaryService extends BaseAdminService {
   static async getSalaryTransactions() {
     return api("GET", `${this.BASE_PATH}/transactions/salaries`);
   }
@@ -218,6 +225,34 @@ export class TransactionService extends BaseAdminService {
       `${this.BASE_PATH}/transactions/salaries/${salaryId}`,
       data
     );
+  }
+
+  static async getSalaries() {
+    return api("GET", `${this.BASE_PATH}/salaries`);
+  }
+
+  static async createSalary(data) {
+    return api("POST", `${this.BASE_PATH}/salaries`, data);
+  }
+
+  static async getRecentSalaries() {
+    return api("GET", `${this.BASE_PATH}/salaries/recent`);
+  }
+
+  static async getSalaryStats() {
+    return api("GET", `${this.BASE_PATH}/salaries/stats`);
+  }
+
+  static async getSalaryById(salaryId) {
+    return api("GET", `${this.BASE_PATH}/salaries/${salaryId}`);
+  }
+
+  static async updateSalary(salaryId, data) {
+    return api("PATCH", `${this.BASE_PATH}/salaries/${salaryId}`, data);
+  }
+
+  static async rejectSalaryPayment(salaryId, data) {
+    return api("PATCH", `${this.BASE_PATH}/salaries/${salaryId}/reject`, data);
   }
 }
 
@@ -252,6 +287,9 @@ export class ContentService extends BaseAdminService {
 export class SchoolService extends BaseAdminService {
   static async registerSchool(schoolData) {
     return api("POST", `${this.BASE_PATH}/schools/register`, schoolData);
+  }
+  static async addTeacher(teacherData) {
+    return api("POST", `${this.BASE_PATH}/schools/add-teacher`, teacherData);
   }
 
   static async getSchools() {
@@ -306,5 +344,35 @@ export class JobService extends BaseAdminService {
       "DELETE",
       `${this.BASE_PATH}/Jobs/applications/${applicationId}`
     );
+  }
+}
+// Announcement Service
+export class AnnouncementService extends BaseAdminService {
+  static async createAnnouncement(announcement) {
+    return api(
+      "POST",
+      `${this.BASE_PATH}/announcements
+`,
+      announcement
+    );
+  }
+
+  static async getAnnouncement() {
+    return api("GET", `${this.BASE_PATH}/announcements`);
+  }
+  static async getAnnouncementById(announcementId) {
+    return api("GET", `${this.BASE_PATH}/announcements/${announcementId}`);
+  }
+
+  static async updateAnnouncement(announcementId, announcement) {
+    return api(
+      "PATCH",
+      `${this.BASE_PATH}/announcements/${announcementId}`,
+      announcement
+    );
+  }
+
+  static async deleteAnnouncementById(announcementId) {
+    return api("DELETE", `${this.BASE_PATH}/announcements/${announcementId}`);
   }
 }

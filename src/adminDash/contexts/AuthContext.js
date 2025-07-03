@@ -31,16 +31,21 @@ export const AuthProvider = ({ children }) => {
           localStorage.getItem("veclary_token") ||
           sessionStorage.getItem("veclary_token");
 
+        const storedPosition = localStorage.getItem("user_position");
+
         if (token) {
           const decoded = jwtDecode(token);
 
           // Check if token is expired
           if (decoded.exp * 1000 > Date.now()) {
-            setUser({
+            setUser((prev) => ({
+              ...prev,
               authenticated: true,
               role: decoded.role,
               email: decoded.email,
-            });
+              name: decoded?.name,
+              position: storedPosition,
+            }));
           } else {
             localStorage.removeItem("veclary_token");
             sessionStorage.removeItem("veclary_token");
@@ -69,10 +74,14 @@ export const AuthProvider = ({ children }) => {
 
         const decoded = jwtDecode(response.accessToken);
 
+        localStorage.setItem("user_position", response?.user?.position);
+
         const userData = {
-          email: decoded.email,
-          role: decoded.role,
           authenticated: true,
+          role: decoded.role,
+          email: decoded.email,
+          name: decoded?.name,
+          position: response?.user?.position,
         };
         setUser(userData);
 

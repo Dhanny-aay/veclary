@@ -88,6 +88,7 @@ const AdminSignup = () => {
             className={`mt-3 w-full h-[55px] border ${
               errors.name ? "border-red-500" : "border-[#EAEBF0]"
             } p-2.5 rounded-[15px]`}
+            placeholder="Enter your full name"
           />
           {errors.name && (
             <span className="text-red-500 text-sm mt-1">{errors.name}</span>
@@ -106,6 +107,7 @@ const AdminSignup = () => {
             className={`mt-3 w-full h-[55px] border ${
               errors.email ? "border-red-500" : "border-[#EAEBF0]"
             } p-2.5 rounded-[15px]`}
+                        placeholder="Enter your email address"
           />
           {errors.email && (
             <span className="text-red-500 text-sm mt-1">{errors.email}</span>
@@ -178,7 +180,7 @@ const AdminSignup = () => {
             {isSubmitting ? "Signing up..." : "Signup"}
           </button>
 
-          <Link to="/admin/login">
+          <Link to="/adminLogin">
             <p className="mt-[19px] font-Outfit font-medium text-sm text-[#12121266] text-center">
               Already have an Account?{" "}
               <span className="text-[#0530A1] hover:underline cursor-pointer">

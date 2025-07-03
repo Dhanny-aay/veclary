@@ -29,6 +29,7 @@ import BookDetailsPC from "../components/bookDetailsPC";
 import PaidSalary from "../components/paidSalary";
 import PendingSalary from "../components/pendingSalary";
 import PaidSalaryCEO from "../components/PaidSalaryCEO";
+import UnPaidSalaryCEO from "../components/UnPaidSalaryCEO";
 import PendingSalaryCEO from "../components/PendingSalaryCEO";
 
 const AdminDashBoard = () => {
@@ -59,6 +60,7 @@ const AdminDashBoard = () => {
     PaidSalary: <PaidSalary />,
     PendingSalary: <PendingSalary />,
     PaidSalaryCEO: <PaidSalaryCEO />,
+    UnPaidSalaryCEO: <UnPaidSalaryCEO />,
     PendingSalaryCEO: <PendingSalaryCEO />,
   };
 

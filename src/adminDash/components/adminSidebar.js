@@ -58,6 +58,12 @@ const AdminSidebar = () => {
       page: "PaidSalaryCEO",
     },
     {
+      name: "Unpaid Salary",
+      img: home,
+      activeImg: homeAc,
+      page: "UnPaidSalaryCEO",
+    },
+    {
       name: "Pending Salary",
       img: home,
       activeImg: homeAc,
@@ -164,7 +170,13 @@ const AdminSidebar = () => {
     FinLead: ["Home", "Transaction"],
     Technical: ["Home", "Complaints"],
     PCOfficer: ["Home", "bookApprovalsPC", "schoolApprovalsPC"],
-    CEO: ["Home", "PaidSalaryCEO", "PendingSalaryCEO", "PublisherFee"],
+    CEO: [
+      "Home",
+      "PaidSalaryCEO",
+      "UnPaidSalaryCEO",
+      "PendingSalaryCEO",
+      "PublisherFee",
+    ],
     RemunerationManager: [
       "Home",
       "PaidSalary",
@@ -210,7 +222,7 @@ const AdminSidebar = () => {
               onClick={() => {
                 setSidebarVisible(false);
               }}
-              className=" lg:hidden w-5"
+              className=" lg:hidden w-5 cursor-pointer"
               alt=""
             />
           </div>
