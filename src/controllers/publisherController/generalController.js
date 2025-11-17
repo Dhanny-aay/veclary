@@ -1,3 +1,4 @@
+import silentApi from "../../index/silent";
 import api from "../../index/api";
 
 // Function to handle publisher profile update
@@ -25,11 +26,20 @@ export const handleGetPublisherAnalysis = async () => {
     console.log(error);
   }
 };
+// Function to get marketing data
+export const handleGetPublisherEarnings = async () => {
+  try {
+    const response = await api("GET", "/publishers/earnings");
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 // Function to get annoumcements
 export const handleGetPublisherAnnounce = async () => {
   try {
-    const response = await api("GET", "/publishers/announcements");
+    const response = await silentApi("GET", "/publishers/announcements");
     return response;
   } catch (error) {
     console.log(error);

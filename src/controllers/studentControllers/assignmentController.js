@@ -9,3 +9,15 @@ export const handleGetAssignment = async () => {
     console.log(error);
   }
 };
+
+// Function to handle assignmnet submission
+export const handleSubmitAssignments = async (userData, onSuccess, onError) => {
+  try {
+    const response = await api("POST", "/students/assignments", userData);
+    onSuccess(response);
+  } catch (error) {
+    if (onError) {
+      onError(error);
+    }
+  }
+};

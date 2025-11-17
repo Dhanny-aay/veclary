@@ -1,22 +1,76 @@
 import { useEffect, useState } from "react";
 import progress1 from "../assets/progress1.svg";
+import { handleGetGeneralSubjects } from "../../../controllers/generalController/generalController";
 
 const AcademicStudent = ({ formData, setFormData }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedSubjects, setSelectedSubjects] = useState(
     formData.interstedSubject ? formData.interstedSubject.split(", ") : []
   );
+  const [schoolSuggestions, setSchoolSuggestions] = useState([]);
+  const [showSchoolIdInput, setShowSchoolIdInput] = useState(
+    !!formData.schoolName // Initialize based on existing formData
+  );
+  const [subjects, setSubjects] = useState([]);
+  const [loadingSubjects, setLoadingSubjects] = useState(true);
+
+  const fetchSubjects = async () => {
+    setLoadingSubjects(true);
+    try {
+      const data = await handleGetGeneralSubjects();
+      if (data) {
+        setSubjects(data);
+      } else {
+        // enqueueSnackbar("Failed to fetch profile data", { variant: "error" });
+      }
+    } catch (error) {
+      console.error("Error fetching subjects:", error);
+    } finally {
+      setLoadingSubjects(false);
+    }
+  };
 
   useEffect(() => {
-    // Update local state when formData changes
+    fetchSubjects();
+  }, []);
+
+  // Dummy list of schools for demonstration
+  const allSchools = [
+    "Springfield High School",
+    "Riverside Academy",
+    "Northwood Preparatory",
+    "Central Community College",
+    "Eastside Technical Institute",
+    "Westwood University",
+    "Maplewood Elementary",
+    "Oakridge Middle School",
+    "Pinecrest High School",
+    "Green Valley School",
+  ];
+
+  useEffect(() => {
     setSelectedSubjects(
       formData.interstedSubject ? formData.interstedSubject.split(", ") : []
     );
-  }, [formData.interstedSubject]);
+    // Update visibility of school ID input when schoolName changes
+    setShowSchoolIdInput(!!formData.schoolName);
+  }, [formData.interstedSubject, formData.schoolName]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
+
+    if (name === "schoolName") {
+      if (value.length > 0) {
+        const filteredSuggestions = allSchools.filter((school) =>
+          school.toLowerCase().includes(value.toLowerCase())
+        );
+        setSchoolSuggestions(filteredSuggestions);
+      } else {
+        setSchoolSuggestions([]);
+      }
+      setShowSchoolIdInput(!!value); // Show/hide based on input value
+    }
   };
 
   const handleSubjectChange = (event) => {
@@ -28,7 +82,9 @@ const AcademicStudent = ({ formData, setFormData }) => {
         updatedSubjects = [...selectedSubjects, subject];
         setSelectedSubjects(updatedSubjects);
       } else {
-        alert("You can only select up to 5 subjects.");
+        // Using a custom modal/message box instead of alert()
+        console.warn("You can only select up to 5 subjects.");
+        // You would show a custom modal here
         event.target.checked = false;
         return;
       }
@@ -46,6 +102,12 @@ const AcademicStudent = ({ formData, setFormData }) => {
   const handleLearningPreferenceChange = (event) => {
     const { value } = event.target;
     setFormData((prevData) => ({ ...prevData, bestLearningModel: value }));
+  };
+
+  const handleSchoolSuggestionClick = (school) => {
+    setFormData((prevData) => ({ ...prevData, schoolName: school }));
+    setSchoolSuggestions([]); // Clear suggestions
+    setShowSchoolIdInput(true); // Ensure ID input is shown when a suggestion is selected
   };
 
   return (
@@ -79,31 +141,49 @@ const AcademicStudent = ({ formData, setFormData }) => {
             htmlFor="schoolName"
             className="flex flex-col w-full font-Outfit text-sm font-medium mt-4"
           >
-            School Name (Optional)
-            <input
-              type="text"
-              id="schoolName"
-              name="schoolName"
-              value={formData.schoolName || ""}
-              onChange={handleChange}
-              className="border border-[#EAEBF0] h-[40px] p-2.5 font-Outfit text-sm rounded-[15px] mt-2"
-            />
+            For registered schools only. Leave blank if not applicable.
+            <div className="relative w-full">
+              <input
+                type="text"
+                id="schoolName"
+                name="schoolName"
+                value={formData.schoolName || ""}
+                onChange={handleChange}
+                className="border border-[#EAEBF0] h-[40px] p-2.5 font-Outfit text-sm rounded-[15px] mt-2 w-full"
+                placeholder="Start typing school name..."
+              />
+              {schoolSuggestions.length > 0 && (
+                <ul className="absolute z-10 bg-white w-full border border-gray-300 rounded-lg mt-1 shadow-md max-h-48 overflow-y-auto">
+                  {schoolSuggestions.map((school) => (
+                    <li
+                      key={school}
+                      className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                      onClick={() => handleSchoolSuggestionClick(school)}
+                    >
+                      {school}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           </label>
 
-          <label
-            htmlFor="schoolIdentification"
-            className="flex flex-col w-full font-Outfit text-sm font-medium mt-4"
-          >
-            School Identification
-            <input
-              type="text"
-              id="schoolIdentification"
-              name="schoolIdentification"
-              value={formData.schoolIdentification || ""}
-              onChange={handleChange}
-              className="border border-[#EAEBF0] h-[40px] p-2.5 font-Outfit text-sm rounded-[15px] mt-2"
-            />
-          </label>
+          {showSchoolIdInput && (
+            <label
+              htmlFor="schoolIdentification"
+              className="flex flex-col w-full font-Outfit text-sm font-medium mt-4"
+            >
+              School Identification
+              <input
+                type="text"
+                id="schoolIdentification"
+                name="schoolIdentification"
+                value={formData.schoolIdentification || ""}
+                onChange={handleChange}
+                className="border border-[#EAEBF0] h-[40px] p-2.5 font-Outfit text-sm rounded-[15px] mt-2"
+              />
+            </label>
+          )}
 
           <label
             htmlFor="subjects"
@@ -120,25 +200,22 @@ const AcademicStudent = ({ formData, setFormData }) => {
                 onClick={() => setIsOpen(!isOpen)}
               />
               {isOpen && (
-                <div className="absolute z-10 bg-white w-full border border-gray-300 rounded-lg mt-1 shadow-md">
-                  <div className="p-2 space-x-3">
-                    {["Biology", "Chemistry", "Physics", "English"].map(
-                      (subject) => (
-                        <label
-                          key={subject}
-                          className="inline-flex items-center space-x-2 mt-2"
-                        >
-                          <input
-                            type="checkbox"
-                            value={subject}
-                            onChange={handleSubjectChange}
-                            checked={selectedSubjects.includes(subject)}
-                          />
-                          {subject}
-                        </label>
-                      )
-                    )}
-                    {/* Add more subjects as needed */}
+                <div className="absolute z-10 bg-white w-full border border-gray-300 rounded-lg mt-1 shadow-lg max-h-60 overflow-y-auto">
+                  <div className="p-4 grid grid-cols-2 gap-x-4 gap-y-2">
+                    {subjects?.map((subject) => (
+                      <label
+                        key={subject.id}
+                        className="flex items-center space-x-2 capitalize cursor-pointer"
+                      >
+                        <input
+                          type="checkbox"
+                          value={subject.name}
+                          onChange={handleSubjectChange}
+                          checked={selectedSubjects.includes(subject.name)}
+                        />
+                        <span>{subject.name}</span>
+                      </label>
+                    ))}
                   </div>
                 </div>
               )}

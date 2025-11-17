@@ -10,11 +10,21 @@ import plus from "./assets/plus.svg";
 import file from "./assets/file.svg";
 import download from "./assets/download.svg";
 import { useContext } from "react";
-import { SidebarContext } from "../contexts/ActivePageContext";
+import {
+  ActivePageContext,
+  SidebarContext,
+} from "../contexts/ActivePageContext";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
-const StudentHome = ({ profile, loading }) => {
+const StudentHome = ({
+  profile,
+  loading,
+  loadingDashboard,
+  dashboard,
+  streaks,
+  loadingStreak,
+}) => {
   const { sidebarVisible, setSidebarVisible } = useContext(SidebarContext);
 
   const streak = [
@@ -48,12 +58,26 @@ const StudentHome = ({ profile, loading }) => {
     },
   ];
 
+  const subjectImages = [mts, bio, chem];
+
+  // Function to get a random image
+  const getRandomImage = () => {
+    const randomIndex = Math.floor(Math.random() * subjectImages.length);
+    return subjectImages[randomIndex];
+  };
+
   const resource = [
     { name: "Veclary Resources", size: "80.69 mb" },
     { name: "Veclary Updates", size: "320.69 mb" },
     { name: "Veclary Guides", size: "100.69 mb" },
     { name: "Veclary Guides", size: "100.69 mb" },
   ];
+
+  const { activePage, setActivePage } = useContext(ActivePageContext);
+
+  const handleClick = (page) => {
+    setActivePage(page);
+  };
 
   return (
     <>
@@ -122,68 +146,137 @@ const StudentHome = ({ profile, loading }) => {
             <p className=" font-Outfit text-[#000000B2] text-xs font-normal">
               Complete any lesson, assessment or challenge to start a streak.
             </p>
-            <button className=" bg-[#0530A1] px-2 py-1 rounded-[5px] shadow font-medium text-xs font-Outfit text-center text-white mt-3">
+            <button
+              onClick={() => handleClick("Assignment")}
+              className=" bg-[#0530A1] px-2 py-1 rounded-[5px] shadow font-medium text-xs font-Outfit text-center text-white mt-3"
+            >
               Get started
             </button>
           </span>
           <img src={book} className=" w-[70px]" alt="" />
         </div>
 
-        <div className=" mt-6 w-full">
-          <p className=" font-Outfit text-xl font-semibold">My Subjects</p>
-          <div className=" w-full mt-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-            {subjects.map((item, index) => (
-              <div
-                key={index}
-                className=" w-full bg-[#F8F8F8] rounded-[10px] flex flex-row justify-between items-center p-3"
-              >
-                <div className=" w-[65%]">
-                  <p className=" font-Outfit text-base font-semibold">
-                    {item.name}
-                  </p>
-                  <p className=" font-Outfit text-[8px] font-normal text-[#000000B2]">
-                    {item.cta}
-                  </p>
-                  <span className=" flex flex-row space-x-1">
-                    <img src={item.progress} alt="" />
-                    <p className=" font-Outfit text-[8px] text-[#272D37] font-medium">
-                      50%
-                    </p>
-                  </span>
-                </div>
-                <div className=" w-[25%] bg-[#C9E4FC] flex items-center justify-center rounded-[6px] h-full">
-                  <img src={item.img} className=" w-10 h-10" alt="" />
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className=" w-full mt-6 flex flex-col lg:flex-row justify-between space-y-6 lg:space-y-0">
-          <div className="  w-full lg:w-[38%] rounded-[10px] lg:h-[320px] p-6 bg-[#F8F8F8]">
-            <p className=" font-Outfit text-xl font-semibold">
-              Popular Resources
-            </p>
-            <div className=" flex flex-col space-y-3 mt-4">
-              {resource.map((item, index) => (
-                <div
-                  key={index}
-                  className=" w-full bg-white rounded-[10px] p-3 flex flex-row items-center justify-between"
-                >
-                  <div className=" flex flex-row space-x-3">
-                    <img src={file} alt="" />
-                    <div className="">
-                      <p className=" font-Outfit font-medium text-[#272D37] text-xs">
-                        {item.name}
-                      </p>
-                      <p className=" font-Outfit text-[8px] text-[#5F6D7E]">
-                        {item.size}
-                      </p>
+        {loadingDashboard ? (
+          <div className="mt-6 w-full">
+            <p className="font-Outfit text-xl font-semibold">My Subjects</p>
+            <div className="w-full mt-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+              {Array(3)
+                .fill()
+                .map((_, index) => (
+                  <div
+                    key={index}
+                    className="w-full bg-[#F8F8F8] rounded-[10px] p-3"
+                  >
+                    <Skeleton height={40} />
+                    <div className="mt-2 flex justify-between items-center">
+                      <div className="w-[65%]">
+                        <Skeleton height={20} width="60%" />
+                        <Skeleton height={10} width="40%" className="mt-1" />
+                      </div>
+                      <div className="w-[25%] bg-[#C9E4FC] rounded-[6px] h-[40px] flex items-center justify-center">
+                        <Skeleton circle={true} height={30} width={30} />
+                      </div>
                     </div>
                   </div>
-                  <img src={download} alt="" />
+                ))}
+            </div>
+          </div>
+        ) : !dashboard?.subjects.length ? (
+          <div className="mt-6 w-full">
+            <p className="font-Outfit text-xl font-semibold">My Subjects</p>
+            <p className="font-Outfit text-base text-[#000000B2] mt-4">
+              There are no subjects yet.
+            </p>
+          </div>
+        ) : (
+          <div className="mt-6 w-full">
+            <p className="font-Outfit text-xl font-semibold">My Subjects</p>
+            <div className="w-full mt-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+              {dashboard?.subjects.map((item) => (
+                <div
+                  key={item._id}
+                  className="w-full bg-[#F8F8F8] rounded-[10px] flex flex-row justify-between items-center p-3"
+                >
+                  <div className="w-[65%]">
+                    <p className="font-Outfit text-base font-semibold capitalize">
+                      {item.name}
+                    </p>
+                    <p className="font-Outfit text-[8px] font-normal text-[#000000B2]">
+                      {item.cta || "No description available"}
+                    </p>
+                    {/* <span className="flex flex-row space-x-1">
+                      <img src={getRandomImage()} alt="" />
+                      <p className="font-Outfit text-[8px] text-[#272D37] font-medium">
+                        50%
+                      </p>
+                    </span> */}
+                  </div>
+                  <div className="w-[25%] bg-[#C9E4FC] flex items-center justify-center rounded-[6px] h-full">
+                    <img src={getRandomImage()} className="w-10 h-10" alt="" />
+                  </div>
                 </div>
               ))}
+            </div>
+          </div>
+        )}
+
+        <div className=" w-full mt-6 flex flex-col lg:flex-row justify-between space-y-6 lg:space-y-0">
+          <div className="w-full lg:w-[38%] rounded-[10px] lg:h-[320px] p-6 bg-[#F8F8F8]">
+            <p className="font-Outfit text-xl font-semibold">
+              Popular Resources
+            </p>
+            <div className="flex flex-col space-y-3 mt-4">
+              {loadingDashboard ? (
+                <>
+                  {Array(3)
+                    .fill()
+                    .map((_, index) => (
+                      <div
+                        key={index}
+                        className="w-full bg-white rounded-[10px] p-3 flex flex-row items-center justify-between"
+                      >
+                        <div className="flex flex-row space-x-3">
+                          <Skeleton circle={true} height={20} width={20} />
+                          <div>
+                            <Skeleton height={10} width="60%" />
+                            <Skeleton height={8} width="40%" className="mt-1" />
+                          </div>
+                        </div>
+                        <Skeleton circle={true} height={20} width={20} />
+                      </div>
+                    ))}
+                </>
+              ) : !dashboard?.resources.length ? (
+                <div className="flex flex-col items-center justify-center h-full">
+                  <img src={nonoti} className="mt-7" alt="" />
+                  <p className="font-Outfit text-center font-medium mt-3 text-base">
+                    No Resources Available
+                  </p>
+                  <p className="font-Outfit text-xs text-[#9E9E9E] mt-2 text-center">
+                    When you have resources you’ll see them here
+                  </p>
+                </div>
+              ) : (
+                dashboard?.resources.map((item, index) => (
+                  <div
+                    key={index}
+                    className="w-full bg-white rounded-[10px] p-3 flex flex-row items-center justify-between"
+                  >
+                    <div className="flex flex-row space-x-3">
+                      <img src={file} alt="" />
+                      <div>
+                        <p className="font-Outfit font-medium text-[#272D37] text-xs">
+                          {item.name}
+                        </p>
+                        <p className="font-Outfit text-[8px] text-[#5F6D7E]">
+                          {item.size}
+                        </p>
+                      </div>
+                    </div>
+                    <img src={download} alt="" />
+                  </div>
+                ))
+              )}
             </div>
           </div>
 

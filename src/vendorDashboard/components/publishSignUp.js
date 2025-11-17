@@ -10,9 +10,9 @@ import load from "./assets/load.gif";
 import { handlePublisherRegister } from "../../controllers/publisherController/authController";
 import { handleBankVerify } from "../../controllers/generalController/generalController";
 import BankSelector from "../../utils/bankSelector";
+import SnackbarUtils from "../../utils/snackbarUtils";
 
 const PublishSignup = () => {
-  const { enqueueSnackbar } = useSnackbar();
   const req = [
     { name: "Characters", example: "8+" },
     { name: "Uppercase", example: "AA" },
@@ -82,19 +82,17 @@ const PublishSignup = () => {
       setCompanyInfo(false);
       setAddInfo(true);
     } else {
-      enqueueSnackbar("Please fill in all the fields before proceeding.", {
-        variant: "error",
-      });
+      SnackbarUtils.error("Please fill in all the fields before proceeding.");
     }
   };
 
   const onSuccess = () => {
     setLoading(false);
-    navigate("/vendorlogin");
+    navigate("/vendor-login");
   };
   const onError = () => {
     setLoading(false);
-    // navigate("/studentlogin");
+    // navigate("/student-login");
   };
 
   const handleSubmit = (e) => {
@@ -117,7 +115,7 @@ const PublishSignup = () => {
 
   const onErrorBank = () => {
     setLoadingBank(false);
-    // navigate("/studentlogin");
+    // navigate("/student-login");
   };
   const handleVerifyBank = () => {
     setLoadingBank(true);
@@ -321,7 +319,7 @@ const PublishSignup = () => {
             >
               Proceed
             </button>
-            <Link to="/vendorlogin">
+            <Link to="/vendor-login">
               <p className=" mt-[19px] font-Outfit font-medium text-xs text-[#12121266] text-center">
                 Already have an Account?{" "}
                 <span className=" text-[#0530A1]">Login</span>
@@ -398,7 +396,7 @@ const PublishSignup = () => {
               {loading ? <img src={load} className=" w-6" alt="" /> : "Proceed"}
             </button>
 
-            <Link to="/vendorlogin">
+            <Link to="/vendor-login">
               <p className=" mt-[19px] font-Outfit font-medium text-xs text-[#12121266] text-center">
                 Already have an Account?{" "}
                 <span className=" text-[#0530A1]">Login</span>

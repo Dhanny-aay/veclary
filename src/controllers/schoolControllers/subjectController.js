@@ -1,9 +1,10 @@
+import silentApi from "../../index/silent";
 import api from "../../index/api";
 
 // Function to get School subjectssubject
 export const handleGetSchoolSubjects = async () => {
   try {
-    const response = await api("GET", "/schools/subjects");
+    const response = await silentApi("GET", "/schools/subjects");
     return response;
   } catch (error) {
     console.log(error);
@@ -13,7 +14,7 @@ export const handleGetSchoolSubjects = async () => {
 // Function to get all subjectssubject
 export const handleGetAllSubjects = async () => {
   try {
-    const response = await api("GET", "/schools/all-subjects");
+    const response = await silentApi("GET", "/schools/all-subjects");
     return response;
   } catch (error) {
     console.log(error);

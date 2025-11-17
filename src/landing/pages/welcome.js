@@ -10,10 +10,10 @@ import { Link } from "react-router-dom";
 
 const Welcome = () => {
   const place = [
-    { image: student, name: "Student", link: "/studentlogin" },
-    { image: teacher, name: "Teacher", link: "/teacherslogin" },
-    { image: school, name: "School", link: "/managementlogin" },
-    { image: vendor, name: "Authors/Publishers", link: "/vendorlogin" },
+    { image: student, name: "Student", link: "/student-login" },
+    { image: teacher, name: "Teacher", link: "/teachers-login" },
+    { image: school, name: "School", link: "/management-login" },
+    { image: vendor, name: "Authors/Publishers", link: "/vendor-login" },
   ];
   return (
     <>

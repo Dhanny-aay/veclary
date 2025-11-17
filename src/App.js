@@ -56,22 +56,22 @@ function App() {
             <Route path="/application" element={<Application />} />
             <Route path="/DetailedCareer" element={<DetailedCareer />} />
             <Route path="/detailedBlog" element={<DetailedBlog />} />
-            <Route path="/getStarted" element={<Welcome />} />
+            <Route path="/get-started" element={<Welcome />} />
             <Route path="/login" element={<Signin />} />
             <Route path="/forgotpassword" element={<ForgotPassword />} />
             <Route path="/newpassword" element={<NewPassword />} />
-            <Route path="/studentlogin" element={<Login />} />
-            <Route path="/studentSignup" element={<StudentSignup />} />
-            <Route path="/studentDashboard" element={<Dashboard />} />
-            <Route path="/teacherslogin" element={<TeacherLogin />} />
-            <Route path="/teachersSignup" element={<TeacherSignup />} />
-            <Route path="/teachersDashboard" element={<TeacherDashboard />} />
-            <Route path="/managementlogin" element={<ManageLogin />} />
-            <Route path="/managementSignup" element={<ManageSignup />} />
-            <Route path="/managementDashboard" element={<ManageDashboard />} />
-            <Route path="/vendorlogin" element={<VendorLogin />} />
-            <Route path="/vendorSignup" element={<VendorSignup />} />
-            <Route path="/vendorDashboard" element={<VendorDashboard />} />
+            <Route path="/student-login" element={<Login />} />
+            <Route path="/student-signup" element={<StudentSignup />} />
+            <Route path="/student-dashboard" element={<Dashboard />} />
+            <Route path="/teachers-login" element={<TeacherLogin />} />
+            {/* <Route path="/teachers-signup" element={<TeacherSignup />} /> */}
+            <Route path="/teachers-dashboard" element={<TeacherDashboard />} />
+            <Route path="/management-login" element={<ManageLogin />} />
+            <Route path="/management-signup" element={<ManageSignup />} />
+            <Route path="/management-dashboard" element={<ManageDashboard />} />
+            <Route path="/vendor-login" element={<VendorLogin />} />
+            <Route path="/vendor-signup" element={<VendorSignup />} />
+            <Route path="/vendor-dashboard" element={<VendorDashboard />} />
             <Route path="/adminSelect" element={<AdminSelect />} />
             <Route path="/adminSignup" element={<AdminSignup />} />
             <Route path="/adminlogin" element={<AdminLogin />} />

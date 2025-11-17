@@ -13,6 +13,7 @@ import { handlePublisherProfileUpdate } from "../../controllers/publisherControl
 import { handleAuthorProfileUpdate } from "../../controllers/authorController/generalContoller";
 import { useSnackbar } from "notistack";
 import { handleAvatarUpload } from "../../controllers/generalController/authController";
+import SnackbarUtils from "../../utils/snackbarUtils";
 
 const VendorProfile = ({ profile, loading, role }) => {
   const { sidebarVisible, setSidebarVisible } =
@@ -20,7 +21,6 @@ const VendorProfile = ({ profile, loading, role }) => {
   const { activePage, setActivePage } = useContext(VendorActivePageContext);
   const [selectedImage, setSelectedImage] = useState(null);
   const [loading1, setLoading1] = useState(false);
-  const { enqueueSnackbar } = useSnackbar();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -73,7 +73,7 @@ const VendorProfile = ({ profile, loading, role }) => {
     if (file && (file.type === "image/png" || file.type === "image/jpeg")) {
       setSelectedImage(URL.createObjectURL(file));
 
-      enqueueSnackbar("Uploading image...", { variant: "info" });
+      SnackbarUtils.info("Uploading image...");
 
       const userData = new FormData();
       userData.append("avatar", file);
@@ -82,23 +82,17 @@ const VendorProfile = ({ profile, loading, role }) => {
         await handleAvatarUpload(
           userData,
           () => {
-            enqueueSnackbar("Upload successful!", { variant: "success" });
+            SnackbarUtils.success("Upload successful!");
           },
           (error) => {
-            enqueueSnackbar("Upload failed. Please try again.", {
-              variant: "error",
-            });
+            SnackbarUtils.error("Upload failed. Please try again.");
           }
         );
       } catch (error) {
-        enqueueSnackbar("Upload failed. Please try again.", {
-          variant: "error",
-        });
+        SnackbarUtils.error("Upload failed. Please try again.");
       }
     } else {
-      enqueueSnackbar("Please upload a valid PNG or JPG file.", {
-        variant: "error",
-      });
+      SnackbarUtils.error("Please upload a valid PNG or JPG file.");
     }
   };
 
@@ -107,7 +101,7 @@ const VendorProfile = ({ profile, loading, role }) => {
   };
   const onError = () => {
     setLoading1(false);
-    // navigate("/studentlogin");
+    // navigate("/student-login");
   };
 
   const handleSubmit = (e) => {

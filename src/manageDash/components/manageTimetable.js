@@ -158,7 +158,7 @@ const ManageTimetable = ({ dashboard }) => {
               onClick={setAddTimetable}
               className=" text-center  text-sm font-Outfit font-medium text-white bg-[#0530A1] py-2 px-3 md:px-6 rounded-[10px]"
             >
-              Edit Timetable
+              Add Timetable
             </button>
           </span>
         </div>

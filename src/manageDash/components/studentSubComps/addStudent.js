@@ -7,13 +7,13 @@ import load from "./assets/load.gif";
 import GenericLoadingSkeleton from "../../../utils/loadingSkeleton";
 import { handleGetSchoolClasses } from "../../../controllers/schoolControllers/classController";
 import { handleSchoolAddStudent } from "../../../controllers/schoolControllers/studentController";
+import SnackbarUtils from "../../../utils/snackbarUtils";
 
 const AddStudent = ({ setAddStudent, triggerFetch }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const { enqueueSnackbar } = useSnackbar();
   const [errors, setErrors] = useState({});
   const [classes, setClasses] = useState([]);
   const [loadingClasses, setLoadingClasses] = useState(true);
@@ -39,12 +39,20 @@ const AddStudent = ({ setAddStudent, triggerFetch }) => {
     fetchClasses();
   }, []);
 
+  useEffect(() => {
+    // Automatically select the first class if classes are available
+    if (classes.length > 0) {
+      setClassID(classes[0]._id);
+    }
+  }, [classes]);
+
   const validateFields = () => {
     let errors = {};
 
     if (!name) errors.name = "Name is required";
-
     if (!email) errors.email = "Email is required";
+    if (!password) errors.password = "Password is required";
+    if (!classId) errors.classId = "Class is required";
     setErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -53,15 +61,12 @@ const AddStudent = ({ setAddStudent, triggerFetch }) => {
     setLoading(false);
     setAddStudent(false);
     triggerFetch();
-    enqueueSnackbar("Student added successfully!", { variant: "success" });
+    SnackbarUtils.success("Student added successfully!");
   };
 
   const onError = (error) => {
     setLoading(false);
-
-    enqueueSnackbar("Failed. Please try again.", {
-      variant: "error",
-    });
+    SnackbarUtils.error("Failed. Please try again.");
   };
 
   const handleSubmit = (e) => {
@@ -121,6 +126,10 @@ const AddStudent = ({ setAddStudent, triggerFetch }) => {
               Class
               {loadingClasses ? (
                 <GenericLoadingSkeleton count={1} width="100%" height={40} />
+              ) : classes.length === 0 ? (
+                <p className="font-Outfit text-red-500 text-sm mt-2">
+                  No classes found. Please go to the classes menu to create one.
+                </p>
               ) : (
                 <select
                   value={classId}
@@ -172,6 +181,11 @@ const AddStudent = ({ setAddStudent, triggerFetch }) => {
                 className=" font-Outfit text-[#919BA7] placeholder:text-[#919BA7] text-sm font-normal w-full mt-2 border border-[#DAE0E6] p-2.5 rounded-[5px]"
                 id=""
               />
+              {errors.password && (
+                <p className="text-red-500 text-xs mt-1 font-Outfit">
+                  {errors.password}
+                </p>
+              )}
             </label>
 
             <div className=" w-full mt-6 grid grid-cols-2 gap-4">
@@ -186,6 +200,7 @@ const AddStudent = ({ setAddStudent, triggerFetch }) => {
               <button
                 onClick={handleSubmit}
                 className=" w-full py-3 font-Outfit rounded-md text-[#fff] bg-[#0530A1] font-semibold flex justify-center items-center text-base"
+                disabled={loading || classes.length === 0}
               >
                 {loading ? <img src={load} className=" w-6" alt="" /> : "Save"}
               </button>

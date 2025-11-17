@@ -11,7 +11,7 @@ const PlanStudent = () => {
   const plan = [
     { name: "Individual", price: "₦900/mon", image: individual },
     { name: "Pro", price: "₦2500/mon", image: pro },
-    { name: "Enterprise", price: "Custom price/mon", image: ent },
+    // { name: "Enterprise", price: "Custom price/mon", image: ent },
   ];
 
   const handlePlanSelect = (index) => {

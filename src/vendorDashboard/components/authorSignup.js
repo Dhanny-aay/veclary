@@ -10,6 +10,7 @@ import load from "./assets/load.gif";
 import loadblk from "./assets/blackload.gif";
 import { handleBankVerify } from "../../controllers/generalController/generalController";
 import BankSelector from "../../utils/bankSelector";
+import SnackbarUtils from "../../utils/snackbarUtils";
 
 const AuthorSignup = () => {
   const req = [
@@ -26,7 +27,7 @@ const AuthorSignup = () => {
   const [affiliate, setAffiliate] = useState("");
   const [bankCode, setBankCode] = useState("");
   const navigate = useNavigate();
-  const { enqueueSnackbar } = useSnackbar();
+
   const [loadingBank, setLoadingBank] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -71,19 +72,17 @@ const AuthorSignup = () => {
       setCompanyInfo(true);
       setAddInfo(false);
     } else {
-      enqueueSnackbar("Please fill in all the fields before proceeding.", {
-        variant: "error",
-      });
+      SnackbarUtils.error("Please fill in all the fields before proceeding.");
     }
   };
 
   const onSuccess = () => {
     setLoading(false);
-    navigate("/vendorlogin");
+    navigate("/vendor-login");
   };
   const onError = () => {
     setLoading(false);
-    // navigate("/studentlogin");
+    // navigate("/student-login");
   };
 
   const handleSubmit = (e) => {
@@ -106,7 +105,7 @@ const AuthorSignup = () => {
 
   const onErrorBank = () => {
     setLoadingBank(false);
-    // navigate("/studentlogin");
+    // navigate("/student-login");
   };
 
   const handleVerifyBank = () => {
@@ -195,7 +194,7 @@ const AuthorSignup = () => {
               {loading ? <img src={load} className=" w-6" alt="" /> : "Proceed"}
             </button>
 
-            <Link to="/vendorlogin">
+            <Link to="/vendor-login">
               <p className=" mt-[19px] font-Outfit font-medium text-xs text-[#12121266] text-center">
                 Already have an Account?{" "}
                 <span className=" text-[#0530A1]">Login</span>
@@ -353,7 +352,7 @@ const AuthorSignup = () => {
             >
               Proceed
             </button>
-            <Link to="/vendorlogin">
+            <Link to="/vendor-login">
               <p className=" mt-[19px] font-Outfit font-medium text-xs text-[#12121266] text-center">
                 Already have an Account?{" "}
                 <span className=" text-[#0530A1]">Login</span>

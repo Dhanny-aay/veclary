@@ -7,6 +7,10 @@ import {
   SidebarContext,
 } from "../contexts/ActivePageContext";
 import { handleGetLibary } from "../../controllers/studentControllers/eLibaryController";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+import nonoti from "./assets/nonoti.svg";
+import { Book, Download } from "lucide-react";
 
 const StudentLib = () => {
   const { activePage, setActivePage } = useContext(ActivePageContext);
@@ -164,8 +168,6 @@ const StudentLib = () => {
     fetchLibary();
   }, []);
 
-  console.log(libary);
-
   return (
     <>
       <div
@@ -248,31 +250,80 @@ const StudentLib = () => {
               </button>
             ))}
           </div>
-          <div className=" grid grid-cols-3 md:grid-cols-5 lg:grid-cols-7 gap-6 mt-4">
-            {filteredCategories.map((item, index) => (
-              <div key={index} className=" flex flex-col w-full">
-                <span
-                  style={{
-                    backgroundImage: `url(${item.img})`,
-                    backgroundPosition: "center",
-                    backgroundSize: "cover",
-                  }}
-                  className=" w-full h-[150px] bg-[#fff]"
-                ></span>
-                <p className=" mt-3 font-Outfit text-xs font-normal">
-                  {item.name}
+          <div className="grid grid-cols-3 md:grid-cols-5 lg:grid-cols-7 gap-6 mt-4">
+            {loading ? (
+              <>
+                {Array(7)
+                  .fill()
+                  .map((_, index) => (
+                    <div key={index} className="flex flex-col w-full">
+                      <Skeleton height={150} width="100%" />
+                      <Skeleton
+                        height={10}
+                        width="100%"
+                        className="mt-3"
+                      />{" "}
+                      {/* Full width for name */}
+                      <Skeleton height={8} width="80%" className="mt-1" />{" "}
+                      {/* Adjusted for date */}
+                      <div className="flex items-center justify-between mt-2">
+                        <Skeleton height={8} width="100%" />{" "}
+                        {/* Full width for button placeholder */}
+                      </div>
+                    </div>
+                  ))}
+              </>
+            ) : !libary?.resources.length ? (
+              <div className="flex flex-col items-center justify-center w-full h-[300px]">
+                <img src={nonoti} className="mt-7" alt="No items" />
+                <p className="font-Outfit text-center font-medium mt-3 text-base">
+                  No Items Available
                 </p>
-                <p className=" font-Outfit text-[10px] text-[#000000CC]">
-                  {item.date}
+                <p className="font-Outfit text-xs text-[#9E9E9E] mt-2 text-center">
+                  When you have items you’ll see them here
                 </p>
-                <span className=" flex items-center justify-between mt-2">
-                  <img src={pbar} className=" w-[80%]" alt="" />
-                  <p className=" font-Outfit text-[8px] font-normal">
-                    {item.progress}
-                  </p>
-                </span>
               </div>
-            ))}
+            ) : (
+              libary?.resources.map((item) => (
+                <div key={item._id} className="flex flex-col w-full">
+                  <span
+                    style={{
+                      backgroundImage: item?.image
+                        ? `url(${item?.image})`
+                        : "none",
+                      backgroundPosition: "center",
+                      backgroundSize: "cover",
+                      backgroundColor: item?.image ? "#fff" : "#f1f1f1",
+                    }}
+                    className="w-full h-[150px] flex items-center justify-center"
+                  >
+                    {!item?.image && <Book size={50} color="#666" />}
+                  </span>
+                  <p
+                    className="mt-3 font-Outfit text-xs font-normal overflow-hidden text-ellipsis whitespace-nowrap"
+                    style={{ maxWidth: "100%" }}
+                  >
+                    {item.name}
+                  </p>
+                  <p className="font-Outfit text-[10px] text-[#000000CC] mt-1">
+                    {new Date(item.createdAt).toLocaleDateString()}
+                  </p>
+                  <button
+                    className="mt-2 w-full bg-[#0530A1] text-white text-xs font-medium py-1 rounded-[6px] flex items-center font-Outfit justify-center"
+                    onClick={() => {
+                      if (item.file?.url) window.open(item.file.url, "_blank");
+                    }}
+                  >
+                    <Download
+                      size={12}
+                      color="#fff"
+                      className="mr-1 text-white "
+                    />{" "}
+                    Download
+                  </button>
+                </div>
+              ))
+            )}
           </div>
         </div>
       </div>

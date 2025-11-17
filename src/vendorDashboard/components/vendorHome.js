@@ -89,7 +89,7 @@ const VendorHome = ({ loading, profile, role }) => {
 
   const analysis = [
     {
-      name: "E-Book Completion",
+      name: "Book Completion",
       percentage: "90%",
       stat: "Weekly Stats",
       img: chart,
@@ -202,7 +202,7 @@ const VendorHome = ({ loading, profile, role }) => {
 
         <div className=" mt-6">
           <p className=" font-Outfit font-semibold text-xl text-black">
-            Analysis
+            Analytics
           </p>
           <div className=" mt-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {analysis.map((item, index) => (

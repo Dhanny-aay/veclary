@@ -11,6 +11,7 @@ import { useSnackbar } from "notistack";
 import { handleGetSchoolClasses } from "../../../controllers/schoolControllers/classController";
 import { handleAddTimetable } from "../../../controllers/schoolControllers/timetableController";
 import load from "./assets/load.gif";
+import SnackbarUtils from "../../../utils/snackbarUtils";
 
 const AddTimetable = ({ setAddTimetable, triggerFetch, dashboard }) => {
   const [days, setDays] = useState([
@@ -31,7 +32,6 @@ const AddTimetable = ({ setAddTimetable, triggerFetch, dashboard }) => {
   const [classes, setClasses] = useState([]);
   const [loadingClasses, setLoadingClasses] = useState(true);
   const [errors, setErrors] = useState({});
-  const { enqueueSnackbar } = useSnackbar();
   const schoolId = dashboard?.school?._id;
   const [loading, setLoading] = useState(false);
 
@@ -79,13 +79,11 @@ const AddTimetable = ({ setAddTimetable, triggerFetch, dashboard }) => {
         setTerms(data.terms);
       } else {
         setTerms([]);
-        enqueueSnackbar("No terms found for the selected session", {
-          variant: "info",
-        });
+        SnackbarUtils.info("No terms found for the selected session");
       }
     } catch (error) {
       console.error("Error fetching terms:", error);
-      enqueueSnackbar("Failed to fetch terms", { variant: "error" });
+      SnackbarUtils.error("Failed to fetch terms");
     } finally {
       setLoadingTerms(false);
     }
@@ -136,15 +134,13 @@ const AddTimetable = ({ setAddTimetable, triggerFetch, dashboard }) => {
     setLoading(false);
     setAddTimetable(false);
     triggerFetch();
-    enqueueSnackbar("Timetable added successfully!", { variant: "success" });
+    SnackbarUtils.success("Timetable added successfully!");
   };
 
   const onError = (error) => {
     setLoading(false);
 
-    enqueueSnackbar("Failed. Please try again.", {
-      variant: "error",
-    });
+    SnackbarUtils.error("Failed. Please try again.");
   };
 
   const handleSubmit = (e) => {
@@ -156,7 +152,7 @@ const AddTimetable = ({ setAddTimetable, triggerFetch, dashboard }) => {
 
     // setLoading(true);
     const userData = { schoolId, termId, classId, days };
-    //   handleAddTimetable(userData, onSuccess, onError);
+    handleAddTimetable(userData, onSuccess, onError);
     console.log(userData);
   };
 

@@ -7,6 +7,7 @@ import LabelSelector from "../../utils/labelSelector";
 import { handlePublisherBookUpload } from "../../controllers/publisherController/booksContoller";
 import load from "./assets/load.gif";
 import { handleAuthorBookUpload } from "../../controllers/authorController/generalContoller";
+import SnackbarUtils from "../../utils/snackbarUtils";
 
 const AddBook = ({ setUploadBook, role, triggerFetch }) => {
   const [schedule, setSchedule] = useState(false);
@@ -18,7 +19,6 @@ const AddBook = ({ setUploadBook, role, triggerFetch }) => {
 
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
-  const { enqueueSnackbar } = useSnackbar();
 
   const [coverImage, setBookCover] = useState(null);
   const [bookFile, setBookFile] = useState(null);
@@ -52,14 +52,14 @@ const AddBook = ({ setUploadBook, role, triggerFetch }) => {
 
   const onSuccess = (response) => {
     setLoading(false);
-    enqueueSnackbar(response.message, { variant: "success" });
+    SnackbarUtils.success(response.message);
     setUploadBook(false);
     triggerFetch();
   };
 
   const onError = (error) => {
     setLoading(false);
-    enqueueSnackbar(error.message, { variant: "error" });
+    SnackbarUtils.error(error.message);
     setUploadBook(false);
   };
 
@@ -82,9 +82,7 @@ const AddBook = ({ setUploadBook, role, triggerFetch }) => {
         handlePublisherBookUpload(formData, onSuccess, onError);
       }
     } else {
-      enqueueSnackbar("Please fix the errors in the form", {
-        variant: "error",
-      });
+      SnackbarUtils.error("Please fix the errors in the form");
     }
   };
 

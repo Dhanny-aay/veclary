@@ -4,6 +4,7 @@ import add from "./assets/addBlk.svg";
 import { useSnackbar } from "notistack";
 import load from "./assets/load.gif";
 import { handleAddEvent } from "../../../controllers/schoolControllers/sessionController";
+import SnackbarUtils from "../../../utils/snackbarUtils";
 
 const AddEvents = ({ setAddEvent, triggerFetch }) => {
   const sessionID = localStorage.getItem("veclary_sessionID");
@@ -13,7 +14,6 @@ const AddEvents = ({ setAddEvent, triggerFetch }) => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [errors, setErrors] = useState({});
-  const { enqueueSnackbar } = useSnackbar();
 
   // Validate all fields
   const validateFields = () => {
@@ -32,13 +32,13 @@ const AddEvents = ({ setAddEvent, triggerFetch }) => {
     setLoading(false);
     setAddEvent(false);
     triggerFetch();
-    enqueueSnackbar("Event added successfully!", { variant: "success" });
+    SnackbarUtils.success("Event added successfully!");
   };
 
   const onError = (error) => {
     setLoading(false);
     triggerFetch();
-    enqueueSnackbar("Event creation failed!", { variant: "error" });
+    SnackbarUtils.error("Event creation failed!");
   };
 
   const handleSubmit = () => {

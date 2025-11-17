@@ -1,7 +1,7 @@
-// api.js
+// silent.js
 import config from "../config";
 
-const api = async (method, uri, body = null) => {
+const silentApi = async (method, uri, body = null) => {
   const url = `${config.baseURL}${uri}`;
   const token = localStorage.getItem("veclary_token");
 
@@ -67,4 +67,4 @@ const handleError = (response, data) => {
   }
 };
 
-export default api;
+export default silentApi;

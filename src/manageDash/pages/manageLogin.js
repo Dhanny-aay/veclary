@@ -13,12 +13,11 @@ const ManageLogin = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const enqueueSnackbar = useSnackbar();
 
   const onSuccess = (response) => {
     setLoading(false);
 
-    navigate("/managementDashboard");
+    navigate("/management-dashboard");
     console.log(response);
   };
 
@@ -98,7 +97,7 @@ const ManageLogin = () => {
               >
                 {loading ? <img src={load} className=" w-6" alt="" /> : "Login"}
               </button>
-              <Link to="/managementSignup">
+              <Link to="/management-signup">
                 <p className=" mt-[19px] font-Outfit font-medium text-sm text-[#12121266] text-center">
                   Dont have an Account?{" "}
                   <span className=" text-[#0530A1]">Register</span>

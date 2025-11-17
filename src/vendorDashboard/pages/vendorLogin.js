@@ -7,19 +7,19 @@ import { Link, useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import { useState } from "react";
 import { handleUserLogin } from "../../controllers/generalController/authController";
+import SnackbarUtils from "../../utils/snackbarUtils";
 
 const VendorLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { enqueueSnackbar } = useSnackbar();
 
   const onSuccess = (response) => {
     setLoading(false);
-    enqueueSnackbar("Login successful!", { variant: "success" });
+    // SnackbarUtils.success("Login successful!");
     // console.log(response);
-    navigate("/vendorDashboard");
+    navigate("/vendor-dashboard");
   };
 
   const onError = (error) => {

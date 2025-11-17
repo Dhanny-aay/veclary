@@ -29,7 +29,6 @@ const VendorDashboard = () => {
   const [profile, setProfile] = useState(null);
   const [role, setRole] = useState(null);
   const [loading, setLoading] = useState(true);
-  const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -40,7 +39,7 @@ const VendorDashboard = () => {
       setVeclaryToken(storedItem);
       // console.log(storedItem);
     } else {
-      navigate("/vendorlogin");
+      navigate("/vendor-login");
     }
   }, []);
 
@@ -108,7 +107,7 @@ const VendorDashboard = () => {
   const componentMap = {
     Home: <VendorHome profile={profile} role={role} loading={loading} />,
     Profile: <VendorProfile role={role} profile={profile} loading={loading} />,
-    Analysis: <VectorAnalysis role={role} />,
+    Analytics: <VectorAnalysis role={role} />,
     Marketing: <VendorMarket />,
     Authors: <VendorAuthors />,
     Author_Profile: <VendorAuthorProfile />,

@@ -34,14 +34,22 @@ const FileUploader = ({ label, accept, maxSize, isImage, onFileSelect }) => {
 
   // Convert MIME types to file extensions for display
   const getFileExtensions = (accept) => {
+    if (!accept) return "";
     return accept
       .split(",")
       .map((type) => {
-        const extension = type.split("/")[1]; // Get part after "/"
-        if (extension.includes("+")) {
-          return extension.split("+")[0]; // Handle cases like "epub+zip"
+        const trimmedType = type.trim();
+        if (trimmedType.startsWith(".")) {
+          return trimmedType.substring(1); // It's a file extension like .csv
         }
-        return extension;
+        if (trimmedType.includes("/")) {
+          const extension = trimmedType.split("/")[1]; // It's a MIME type like text/csv
+          if (extension && extension.includes("+")) {
+            return extension.split("+")[0]; // Handle cases like "svg+xml"
+          }
+          return extension;
+        }
+        return trimmedType; // Fallback for other cases
       })
       .join(", .");
   };

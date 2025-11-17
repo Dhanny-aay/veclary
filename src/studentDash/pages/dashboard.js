@@ -20,20 +20,28 @@ import McqView from "../components/mcqView";
 import McqQuestions from "../components/mcqQuestions";
 import BookReader from "../components/bookReader";
 import StudentAssistant from "../components/studentAssistant";
-import { handleGetStudentProfile } from "../../controllers/studentControllers/userAuthController";
+import {
+  handleGetStudentDashboard,
+  handleGetStudentProfile,
+} from "../../controllers/studentControllers/userAuthController";
 import { handleGetNotes } from "../../controllers/studentControllers/noteController";
 import AddNote from "../components/addNote";
 import { useSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
 import { refreshToken } from "../../controllers/generalController/authController";
+import SnackbarUtils from "../../utils/snackbarUtils";
+import { handleGetStudentStreak } from "../../controllers/studentControllers/generalController";
 
 const Dashboard = () => {
   const [veclaryToken, setVeclaryToken] = useState(null);
   const [profile, setProfile] = useState(null);
+  const [streak, setStreak] = useState(null);
+  const [dashboard, setDashboard] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [loadingDashboard, setLoadingDashboard] = useState(true);
+  const [loadingStreak, setLoadingStreak] = useState(true);
   const [note, setNote] = useState([]);
   const [newNote, setNewNote] = useState(false);
-  const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -43,7 +51,7 @@ const Dashboard = () => {
     if (storedItem) {
       setVeclaryToken(storedItem);
     } else {
-      navigate("/studentlogin");
+      navigate("/student-login");
     }
   }, []);
 
@@ -69,6 +77,40 @@ const Dashboard = () => {
     fetchProfile();
   }, []);
 
+  useEffect(() => {
+    const fetchDashboard = async () => {
+      try {
+        const data = await handleGetStudentDashboard();
+        if (data) {
+          setDashboard(data);
+        } else {
+        }
+      } catch (error) {
+      } finally {
+        setLoadingDashboard(false);
+      }
+    };
+
+    fetchDashboard();
+  }, []);
+
+  useEffect(() => {
+    const fetchStreak = async () => {
+      try {
+        const data = await handleGetStudentStreak();
+        if (data) {
+          setStreak(data);
+        } else {
+        }
+      } catch (error) {
+      } finally {
+        setLoadingStreak(false);
+      }
+    };
+
+    fetchStreak();
+  }, []);
+
   const fetchNote = async () => {
     try {
       const data = await handleGetNotes();
@@ -77,13 +119,11 @@ const Dashboard = () => {
           data.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
         );
       } else {
-        enqueueSnackbar("Failed to fetch Note data", { variant: "error" });
+        // SnackbarUtils.error("Failed to fetch Note data");
       }
     } catch (error) {
       console.error("Error fetching note:", error);
-      enqueueSnackbar("An error occurred while fetching Note data", {
-        variant: "error",
-      });
+      // SnackbarUtils.error("An error occurred while fetching Note data");
     }
   };
 
@@ -102,7 +142,16 @@ const Dashboard = () => {
   }, []);
 
   const componentMap = {
-    Home: <StudentHome profile={profile} loading={loading} />,
+    Home: (
+      <StudentHome
+        profile={profile}
+        loading={loading}
+        streaks={streak}
+        loadingStreak={loadingStreak}
+        dashboard={dashboard}
+        loadingDashboard={loadingDashboard}
+      />
+    ),
     Lib: <StudentLib />,
     Subject: <StudentSub />,
     Profile: <StudentProfile profile={profile} loading={loading} />,

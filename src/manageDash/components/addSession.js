@@ -7,7 +7,6 @@ import { handleAddSession } from "../../controllers/schoolControllers/sessionCon
 
 const AddSession = ({ setAddSession, dashboard, triggerFetch }) => {
   const [loading, setLoading] = useState(false);
-  const { enqueueSnackbar } = useSnackbar();
 
   const [name, setName] = useState("");
   const [status, setStatus] = useState("");

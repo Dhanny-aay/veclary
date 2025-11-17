@@ -73,11 +73,10 @@ const BankSelector = ({ formData, handleChange, setBankCode }) => {
         value={searchTerm}
         onChange={(e) => {
           setSearchTerm(e.target.value);
-          setShowSuggestions(true); // Show suggestions as user types
+          setShowSuggestions(true);
         }}
         className="border border-[#EAEBF0] h-[40px] p-2.5 font-Outfit text-sm rounded-[15px] mt-2"
       />
-
       {/* Show dropdown suggestions */}
       {showSuggestions && searchTerm && (
         <ul className="absolute z-10 w-full bg-white border border-[#EAEBF0] max-h-60 overflow-auto mt-1 rounded-lg shadow-lg">

@@ -30,7 +30,7 @@ const VendorSidebar = ({ role }) => {
   const sidebar = [
     { name: "Home", img: home, activeImg: homeAc, page: "Home" },
     { name: "My Books", img: book, activeImg: book, page: "MyBooks" },
-    { name: "Analysis", img: anal, activeImg: anal, page: "Analysis" },
+    { name: "Analytics", img: anal, activeImg: anal, page: "Analytics" },
     { name: "Marketing", img: market, activeImg: market, page: "Marketing" },
     // Check if profile exists and has a valid role
     ...(role && role !== "AUTHOR"

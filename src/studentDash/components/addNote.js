@@ -4,26 +4,24 @@ import { useState } from "react";
 import load from "./assets/load.gif";
 import { handleCreateNote } from "../../controllers/studentControllers/noteController";
 import { useSnackbar } from "notistack";
+import SnackbarUtils from "../../utils/snackbarUtils";
 
 const AddNote = ({ setNewNote, fetchNote }) => {
   const [title, setTitle] = useState("");
   const [subtitle, setSubtitle] = useState("");
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
-  const { enqueueSnackbar } = useSnackbar();
 
   const onSuccess = (response) => {
     setLoading(false);
     setNewNote(false);
     fetchNote();
-    enqueueSnackbar("Note added successfully!", { variant: "success" });
+    SnackbarUtils.success("Note added successfully!");
   };
 
   const onError = (error) => {
     setLoading(false);
-    enqueueSnackbar("Note creation failed. Please try again.", {
-      variant: "error",
-    });
+    SnackbarUtils.error("Note creation failed. Please try again.");
   };
 
   const handleSubmit = (e) => {

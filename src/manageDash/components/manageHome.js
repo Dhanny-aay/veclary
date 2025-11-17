@@ -28,6 +28,8 @@ const ManageHome = ({ dashboard, loading }) => {
   const [chooseSub, setChooseSub] = useState(true);
   const [selectSub, setSelectSub] = useState(false);
   const [addSubject, setAddSubject] = useState(false);
+  const [trigger, setTrigger] = useState(false);
+  const [triggerAnnouce, setTriggerAnnouce] = useState(false);
 
   const handleClick = (page) => {
     setActivePage(page);
@@ -47,6 +49,13 @@ const ManageHome = ({ dashboard, loading }) => {
       img: pie,
     },
   ];
+
+  const triggerFetch = () => {
+    setTrigger(!trigger);
+  };
+  const triggerFetchAnnounce = () => {
+    setTriggerAnnouce(!triggerAnnouce);
+  };
 
   const timetableData = [
     { color: "#006531", time: "08:00", activity: "Morning Exercise" },
@@ -77,7 +86,7 @@ const ManageHome = ({ dashboard, loading }) => {
 
   useEffect(() => {
     fetchAnnouncements();
-  }, []);
+  }, [triggerAnnouce]);
 
   const fetchSubjects = async () => {
     setLoadingSubjects(true);
@@ -98,12 +107,15 @@ const ManageHome = ({ dashboard, loading }) => {
 
   useEffect(() => {
     fetchSubjects();
-  }, []);
+  }, [trigger]);
 
   return (
     <>
       {makeAnnouncement && (
-        <AddAnnouncement setMakeAnnouncement={setMakeAnnouncement} />
+        <AddAnnouncement
+          setMakeAnnouncement={setMakeAnnouncement}
+          triggerFetchAnnounce={triggerFetchAnnounce}
+        />
       )}
 
       {!loadingSubjects && subjects.length === 0 && chooseSub && (
@@ -111,9 +123,15 @@ const ManageHome = ({ dashboard, loading }) => {
       )}
 
       {selectSub && (
-        <SelectSubs setSelectSub={setSelectSub} setAddSubject={setAddSubject} />
+        <SelectSubs
+          setSelectSub={setSelectSub}
+          setAddSubject={setAddSubject}
+          triggerFetch={triggerFetch}
+        />
       )}
-      {addSubject && <AddSubject setAddSubject={setAddSubject} />}
+      {addSubject && (
+        <AddSubject setAddSubject={setAddSubject} triggerFetch={triggerFetch} />
+      )}
 
       <div
         onClick={() => {

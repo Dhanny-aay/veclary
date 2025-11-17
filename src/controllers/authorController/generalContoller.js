@@ -1,3 +1,4 @@
+import silentApi from "../../index/silent";
 import api from "../../index/api";
 const token = localStorage.getItem("veclary_token");
 
@@ -63,7 +64,7 @@ export const handleAuthorBookUpload = async (formData, onSuccess, onError) => {
 // Function to get annoumcements
 export const handleGetAuthorAnnounce = async () => {
   try {
-    const response = await api("GET", "/authors/announcements");
+    const response = await silentApi("GET", "/authors/announcements");
     return response;
   } catch (error) {
     console.log(error);

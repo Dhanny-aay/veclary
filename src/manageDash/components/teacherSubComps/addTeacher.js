@@ -6,6 +6,8 @@ import load from "./assets/load.gif";
 import { handleAddTeacher } from "../../../controllers/schoolControllers/teachersController";
 import { handleGetSchoolClasses } from "../../../controllers/schoolControllers/classController";
 import GenericLoadingSkeleton from "../../../utils/loadingSkeleton";
+import SnackbarUtils from "../../../utils/snackbarUtils";
+import { handleGetSchoolSubjects } from "../../../controllers/schoolControllers/subjectController";
 
 const AddTeacher = ({ setAddTeach, triggerFetch }) => {
   const [name, setName] = useState("");
@@ -13,15 +15,9 @@ const AddTeacher = ({ setAddTeach, triggerFetch }) => {
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
   const [loading, setLoading] = useState(false);
-  const { enqueueSnackbar } = useSnackbar();
   const [errors, setErrors] = useState({});
-  const [dropdownOptions, setDropdownOptions] = useState([
-    "English",
-    "Biology",
-    "Chemistry",
-    "Mathematics",
-    "Physics",
-  ]);
+  const [subjects, setSubjects] = useState([]);
+
   const [classes, setClasses] = useState([]);
   const [loadingClasses, setLoadingClasses] = useState(true);
   const [isClassTeacher, setIsClassTeacher] = useState(false);
@@ -29,7 +25,7 @@ const AddTeacher = ({ setAddTeach, triggerFetch }) => {
 
   const handleToggle = () => {
     setIsClassTeacher(!isClassTeacher);
-    setClassID(""); // Reset selected class when toggled off
+    setClassID("");
   };
 
   const fetchClasses = async () => {
@@ -38,21 +34,33 @@ const AddTeacher = ({ setAddTeach, triggerFetch }) => {
       const data = await handleGetSchoolClasses();
       if (data) {
         setClasses(data);
-      } else {
-        // enqueueSnackbar("Failed to fetch profile data", { variant: "error" });
       }
     } catch (error) {
-      console.error("Error fetching classes:", error);
+      // console.error("Error fetching classes:", error);
     } finally {
       setLoadingClasses(false);
     }
   };
 
+  const fetchSubjects = async () => {
+    setLoading(true);
+    try {
+      const data = await handleGetSchoolSubjects();
+      if (data) {
+        setSubjects(data[0].subjects);
+      }
+    } catch (error) {
+      // console.error("Error fetching subjects:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
+    fetchSubjects();
     fetchClasses();
   }, []);
 
-  // Validate all fields
   const validateFields = () => {
     let errors = {};
 
@@ -67,30 +75,34 @@ const AddTeacher = ({ setAddTeach, triggerFetch }) => {
     return Object.keys(errors).length === 0;
   };
 
-  const onSuccess = (response) => {
+  const onSuccess = () => {
     setLoading(false);
     setAddTeach(false);
     triggerFetch();
-    enqueueSnackbar("Teacher added successfully!", { variant: "success" });
+    SnackbarUtils.success("Teacher added successfully!");
   };
 
   const onError = (error) => {
     setLoading(false);
-
-    enqueueSnackbar("Failed. Please try again.", {
-      variant: "error",
-    });
+    SnackbarUtils.error("Failed. Please try again.");
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     if (!validateFields()) {
-      return; // If field validation fails, stop submission
+      return;
     }
 
     setLoading(true);
-    const userData = { name, subject, email, address };
+    const userData = {
+      name,
+      subject,
+      email,
+      address,
+      classTeacher: isClassTeacher,
+      classId: isClassTeacher ? classId : null,
+    };
     handleAddTeacher(userData, onSuccess, onError);
   };
 
@@ -174,7 +186,7 @@ const AddTeacher = ({ setAddTeach, triggerFetch }) => {
               )}
             </label>
 
-            <div className="  mt-3 w-full flex flex-row items-center justify-between">
+            <div className=" mt-3 w-full flex flex-row items-center justify-between">
               <label
                 htmlFor="choose"
                 className=" font-Outfit font-medium text-sm text-[#272D37]"
@@ -188,14 +200,14 @@ const AddTeacher = ({ setAddTeach, triggerFetch }) => {
                 id="subject-dropdown"
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
-                className=" w-full bg-transparent font-Outfit font-normal text-sm  text-[#919BA7]"
+                className=" w-full bg-transparent font-Outfit font-normal text-sm text-[#919BA7]"
               >
                 <option disabled selected value="">
                   Choose Subject
                 </option>
-                {dropdownOptions.map((subject) => (
-                  <option key={subject} value={subject}>
-                    {subject}
+                {subjects.map((subject) => (
+                  <option key={subject._id} value={subject.name}>
+                    {subject.name}
                   </option>
                 ))}
               </select>
@@ -210,14 +222,14 @@ const AddTeacher = ({ setAddTeach, triggerFetch }) => {
               <p className=" font-Outfit font-medium text-[#272D37] text-sm">
                 Assign as a Class Teacher
               </p>
-              <label class="switch">
+              <label className="switch">
                 <input
                   checked={isClassTeacher}
                   onChange={handleToggle}
                   className=" cursor-pointer"
                   type="checkbox"
                 />
-                <span class="slider round"></span>
+                <span className="slider round"></span>
               </label>
             </div>
 
@@ -226,6 +238,11 @@ const AddTeacher = ({ setAddTeach, triggerFetch }) => {
                 Class
                 {loadingClasses ? (
                   <GenericLoadingSkeleton count={1} width="100%" height={40} />
+                ) : classes.length === 0 ? (
+                  <p className="text-red-500 text-sm mt-2 font-Outfit">
+                    There are no classes yet. Please create one in the classes
+                    section.
+                  </p>
                 ) : (
                   <select
                     value={classId}

@@ -11,9 +11,9 @@ import GenericLoadingSkeleton from "../../../utils/loadingSkeleton";
 import FileUploader from "../../../utils/fileUploader";
 import { handleCreateResources } from "../../../controllers/schoolControllers/resourcesController";
 import load from "./assets/load.gif";
+import SnackbarUtils from "../../../utils/snackbarUtils";
 
 const AddResources = ({ triggerFetch, setAddResource }) => {
-  const { enqueueSnackbar } = useSnackbar();
   const [errors, setErrors] = useState({});
   const [sessions, setSessions] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -38,7 +38,7 @@ const AddResources = ({ triggerFetch, setAddResource }) => {
       if (data) {
         setSubjects(data[0].subjects);
       } else {
-        // enqueueSnackbar("Failed to fetch profile data", { variant: "error" });
+        // enqueueSnackbar("Failed to fetch profile data");
       }
     } catch (error) {
       console.error("Error fetching subjects:", error);
@@ -72,13 +72,11 @@ const AddResources = ({ triggerFetch, setAddResource }) => {
         setTerms(data.terms);
       } else {
         setTerms([]);
-        enqueueSnackbar("No terms found for the selected session", {
-          variant: "info",
-        });
+        SnackbarUtils.info("No terms found for the selected session");
       }
     } catch (error) {
       console.error("Error fetching terms:", error);
-      enqueueSnackbar("Failed to fetch terms", { variant: "error" });
+      SnackbarUtils.error("Failed to fetch terms");
     } finally {
       setLoadingTerms(false);
     }
@@ -112,14 +110,14 @@ const AddResources = ({ triggerFetch, setAddResource }) => {
 
   const onSuccess = (response) => {
     setLoading(false);
-    enqueueSnackbar("Resource created", { variant: "success" });
+    SnackbarUtils.success("Resource created");
     setAddResource(false);
     triggerFetch();
   };
 
   const onError = (error) => {
     setLoading(false);
-    enqueueSnackbar("Failed to create resource", { variant: "error" });
+    SnackbarUtils.error("Failed to create resource");
     setAddResource(false);
   };
 
@@ -136,9 +134,7 @@ const AddResources = ({ triggerFetch, setAddResource }) => {
 
       handleCreateResources(formData, onSuccess, onError);
     } else {
-      enqueueSnackbar("Please fix the errors in the form", {
-        variant: "error",
-      });
+      SnackbarUtils.error("Please fix the errors in the form");
     }
   };
 

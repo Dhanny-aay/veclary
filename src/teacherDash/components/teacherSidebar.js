@@ -29,7 +29,8 @@ const TeacherSidebar = () => {
     { name: "Home", img: home, activeImg: homeAc, page: "Home" },
     { name: "My Classes", img: myClass, activeImg: myClassAc, page: "Classes" },
     { name: "My Students", img: mystu, activeImg: mystuAc, page: "Students" },
-    { name: "Records", img: record, activeImg: recordAc, page: "Records" },
+    // { name: "Records", img: record, activeImg: recordAc, page: "Records" },
+    { name: "Resources", img: record, activeImg: recordAc, page: "Resources" },
     {
       name: "Class assistant",
       img: proBadge,

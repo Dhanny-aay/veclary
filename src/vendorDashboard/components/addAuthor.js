@@ -10,7 +10,6 @@ const AddAuthor = ({ setMakeModalVisible, fetchAuthors }) => {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
-  const { enqueueSnackbar } = useSnackbar();
 
   // Validation function
   const validateFields = () => {
@@ -40,7 +39,7 @@ const AddAuthor = ({ setMakeModalVisible, fetchAuthors }) => {
   };
   const onError = () => {
     setLoading(false);
-    // navigate("/studentlogin");\
+    // navigate("/student-login");\
   };
 
   const handleSubmit = (e) => {

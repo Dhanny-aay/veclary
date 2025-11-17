@@ -1,3 +1,4 @@
+import silentApi from "../../index/silent";
 import api from "../../index/api";
 const token = localStorage.getItem("veclary_token");
 
@@ -16,7 +17,7 @@ export const handleUserLogin = async (userData, onSuccess, onError) => {
 // Function to get logged in user
 export const handleGetLoggedinUser = async () => {
   try {
-    const response = await api("GET", "/users/current-user");
+    const response = await silentApi("GET", "/users/current-user");
     return response;
   } catch (error) {
     console.log(error);
@@ -97,7 +98,7 @@ export const refreshToken = async () => {
   }
 
   try {
-    const response = await api("POST", "/users/refresh-token", {
+    const response = await silentApi("POST", "/users/refresh-token", {
       refreshToken: refreshToken,
     });
 

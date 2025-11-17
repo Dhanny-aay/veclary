@@ -13,6 +13,7 @@ import DateRenderCalendar from "./calendarSubComps/dateRenderCalendar";
 // import Timeline from "./calendarSubComps/timeline";
 import ListView from "./calendarSubComps/listView";
 import AddEvents from "./calendarSubComps/addevent";
+import UpcomingEvent from "./calendarSubComps/upcomingEvent";
 
 const ManageViewCalendar = () => {
   const { setSidebarVisible } = useContext(ManageSidebarContext);
@@ -73,7 +74,6 @@ const ManageViewCalendar = () => {
     fetchEvents();
   }, [trigger]);
 
-  console.log(events);
   return (
     <>
       {addEvent && (
@@ -148,13 +148,7 @@ const ManageViewCalendar = () => {
                   className="w-full h-[300px]"
                 />
 
-                <div className=" border border-[#EAEBF0] py-5 px-6 mt-6 rounded-lg">
-                  <p className=" font-Outfit font-semibold text-base text-black">
-                    Upcoming Events
-                  </p>
-
-                  <div className=" mt-3"></div>
-                </div>
+                <UpcomingEvent events={events} loadingEvents={loadingEvents} />
               </div>
             </div>
           </div>

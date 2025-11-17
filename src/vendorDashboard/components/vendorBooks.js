@@ -1,10 +1,9 @@
 import { useContext, useEffect, useState } from "react";
 import arrowBlue from "./assets/arrowblue.svg";
 import upload from "./assets/upload.svg";
-import file from "./assets/file.svg";
 import edit from "./assets/edit.svg";
 import trash from "./assets/trash.svg";
-
+import file from "./assets/file.svg";
 import {
   VendorActivePageContext,
   VendorSidebarContext,
@@ -13,7 +12,7 @@ import {
 import AddBook from "./addBook";
 import { handleGetPublisherBooks } from "../../controllers/publisherController/booksContoller";
 import { handleGetAuthorBooks } from "../../controllers/authorController/generalContoller";
-import InfoLoading from "../../utils/infoLoading";
+import GenericLoadingSkeleton from "../../utils/loadingSkeleton";
 import DeleteBook from "./deleteBook";
 
 const VendorBooks = ({ role }) => {
@@ -21,14 +20,14 @@ const VendorBooks = ({ role }) => {
     useContext(VendorSidebarContext);
   const { activePage, setActivePage } = useContext(VendorActivePageContext);
 
-  const handleClick = (page) => {
-    setActivePage(page);
-  };
-
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [noBooks, setNoBooks] = useState(false);
   const [trigger, setTrigger] = useState(false);
+
+  const handleClick = (page) => {
+    setActivePage(page);
+  };
 
   const triggerFetch = () => {
     setTrigger(!trigger); // Toggle trigger to true or false
@@ -98,7 +97,6 @@ const VendorBooks = ({ role }) => {
 
   return (
     <>
-      {/* upload book component */}
       {uploadBook && (
         <AddBook
           role={role}
@@ -114,7 +112,6 @@ const VendorBooks = ({ role }) => {
         />
       )}
 
-      {/* Books(main) Component */}
       <div
         onClick={() => {
           setSidebarVisible(false);
@@ -147,81 +144,102 @@ const VendorBooks = ({ role }) => {
             </p>
           </button>
 
-          {/* <div className="flex w-full flex-row items-center justify-start mt-8 overflow-auto border-b pb- border-[#EAEBF0]">
-            <button
-              className={`font-normal font-Outfit text-sm pb-3 text-[#00000080] md:w-auto transition-all ${
-                activeButton === "all"
-                  ? "border-b-[3px] border-[#0530A1] text-[#0530A1]"
-                  : ""
-              }`}
-              onClick={() => handleButtonClick("all")}
-            >
-              All Books
-            </button>
-         
-            {Array.from(
-              new Set(categories.map((category) => category.tag))
-            ).map((tag, index) => (
-              <button
-                key={index}
-                className={`font-normal font-Outfit pb-3 text-sm text-[#00000080] px-5 transition-all ${
-                  activeButton === tag
-                    ? "border-b-[3px] border-[#0530A1] text-[#0530A1]"
-                    : ""
-                }`}
-                onClick={() => handleButtonClick(tag)}
-              >
-                {tag}
-              </button>
-            ))}
-          </div> */}
-
-          <div className=" w-full mt-6 ">
-            <div className=" w-full border border-[#EAEBF0] rounded-[10px]">
+          <div className="w-full mt-6">
+            <div className="w-full border border-[#EAEBF0] rounded-[10px] p-4">
               {loading ? (
-                // Show loading spinner while fetching data
-                <InfoLoading />
+                <GenericLoadingSkeleton count={3} height={100} />
               ) : noBooks ? (
-                // Show "No authors found" message
-
-                <tr>
-                  <td
-                    colSpan="5"
-                    className="px-4 py-3 text-center font-Outfit text-[#667085] text-sm"
-                  >
-                    There are no Books yet.
-                  </td>
-                </tr>
+                <div className="text-center p-8">
+                  <p className="font-Outfit text-[#667085] text-base">
+                    You have not uploaded any books yet.
+                  </p>
+                </div>
               ) : (
-                <div className=" flex flex-col space-y-3 w-full h-full p-4">
+                <div className="flex flex-col space-y-4 w-full h-full">
                   {books.map((item) => (
                     <div
                       key={item._id}
-                      className=" w-full py-3 border-b border-[#EAEBF0] flex flex-row items-center justify-between"
+                      className="w-full py-3 border-b border-[#EAEBF0] flex flex-col md:flex-row md:items-center justify-between"
                     >
-                      <div className=" flex flex-row space-x-3">
-                        <img src={file} alt="" />
-                        <div className="">
+                      <div className="flex flex-row space-x-4 items-start">
+                        <img
+                          src={file}
+                          alt={item.title}
+                          className="w-12 h-16 object-cover rounded"
+                        />
+                        <div className="flex flex-col">
                           <p className=" font-Outfit font-medium text-[#272D37] text-xs capitalize">
                             {item.title}
                           </p>
-                          {item.labels.map((item) => (
-                            <p className=" font-Outfit text-[10px] text-[#5F6D7E] capitalize">
-                              {item}
+                          <p className="font-Outfit text-[10px] text-[#5F6D7E] mt-1">
+                            {item.description}
+                          </p>
+                          <div className="flex flex-wrap gap-1 mt-2">
+                            {item.labels
+                              .join(",")
+                              .split(",")
+                              .map(
+                                (label, index) =>
+                                  label && (
+                                    <span
+                                      key={index}
+                                      className="bg-[#F0F2F5] text-[#344054] text-[10px] font-medium px-2 py-0.5 rounded-full"
+                                    >
+                                      {label}
+                                    </span>
+                                  )
+                              )}
+                          </div>
+                          <div className="flex items-center space-x-4 mt-2 text-[10px] text-[#667085] font-Outfit">
+                            <p className=" block">
+                              Created:{" "}
+                              {new Date(item.createdAt).toLocaleDateString()}
                             </p>
-                          ))}
+                            {/* <p className=" block">
+                              Published:{" "}
+                              {item.status === "PUBLISHED"
+                                ? new Date(item.updatedAt).toLocaleDateString()
+                                : "N/A"}
+                            </p> */}
+                          </div>
                         </div>
                       </div>
-                      <span className=" flex space-x-3">
-                        <img src={edit} className=" w-4" alt="" />
-                        {role === "AUTHOR" && (
-                          <img
-                            src={trash}
-                            onClick={() => toggleModal(item._id)}
-                            className=" w-4"
-                            alt=""
-                          />
-                        )}
+                      <span className="flex flex-col md:flex-row items-end md:items-center space-y-2 md:space-y-0 md:space-x-3 mt-3 md:mt-0">
+                        <button
+                          className={`py-1 px-2 text-xs font-medium rounded-[18px] font-Outfit flex items-center space-x-2 ${
+                            item.status === "PENDING"
+                              ? "text-[#344054] bg-[#3440541a]"
+                              : item.status === "PUBLISHED"
+                              ? "text-[#027A48] bg-[#027A481a]"
+                              : "text-[#B42318] bg-[#B423181a]"
+                          }`}
+                        >
+                          <span
+                            className={`w-[6px] h-[6px] rounded-full ${
+                              item.status === "PENDING"
+                                ? "bg-[#344054]"
+                                : item.status === "PUBLISHED"
+                                ? "bg-[#027A48]"
+                                : "bg-[#B42318]"
+                            }`}
+                          ></span>
+                          <p>
+                            {item.status === "PENDING"
+                              ? "Pending approval"
+                              : item.status}
+                          </p>
+                        </button>
+                        {/* <img
+                          src={edit}
+                          className="w-4 cursor-pointer"
+                          alt="Edit"
+                        /> */}
+                        <img
+                          src={trash}
+                          onClick={() => toggleModal(item._id)}
+                          className="w-4 cursor-pointer"
+                          alt="Delete"
+                        />
                       </span>
                     </div>
                   ))}

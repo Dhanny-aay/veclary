@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import load from "./assets/load.gif";
 import { handleUpdateNote } from "../../controllers/studentControllers/noteController";
 import { useSnackbar } from "notistack";
+import SnackbarUtils from "../../utils/snackbarUtils";
 
 const EditNote = ({
   noteID,
@@ -17,7 +18,6 @@ const EditNote = ({
   const [noteSubtitle, setNoteSubtitle] = useState(subtitle);
   const [noteContent, setNoteContent] = useState(content);
   const [loading, setLoading] = useState(false);
-  const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     setNoteTitle(title);
@@ -29,14 +29,12 @@ const EditNote = ({
     setLoading(false);
     setEditComp(false);
     fetchNote();
-    enqueueSnackbar("Note edited successfully!", { variant: "success" });
+    SnackbarUtils.success("Note edited successfully!");
   };
 
   const onError = (error) => {
     setLoading(false);
-    enqueueSnackbar("Note edit failed. Please try again.", {
-      variant: "error",
-    });
+    SnackbarUtils.error("Note edit failed. Please try again.");
   };
 
   const handleSave = (e) => {

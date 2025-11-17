@@ -10,6 +10,7 @@ import ManageActivePageProvider from "./manageDash/contexts/ManageActivePageCont
 import VendorActivePageProvider from "./vendorDashboard/contexts/VendorActivePageContext";
 import AdminActivePageProvider from "./adminDash/contexts/AdminActivePageContext";
 import { Toaster } from "sonner";
+import AuthProvider from "./adminDash/contexts/AuthContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(

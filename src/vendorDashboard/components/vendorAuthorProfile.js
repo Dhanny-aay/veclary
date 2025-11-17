@@ -7,10 +7,14 @@ import {
   CurrAuthorIDContext,
   VendorActivePageContext,
   VendorSidebarContext,
-} from "../contexts/VendorActivePageContext";
-import { handleGetPublisherAuthorById } from "../../controllers/publisherController/authorController";
+} from "../contexts/VendorActivePageContext"; // Corrected import path
+import {
+  handleGetPublisherAuthorById,
+  handleGetPublisherAuthorBooksById,
+} from "../../controllers/publisherController/authorController";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import GenericLoadingSkeleton from "../../utils/loadingSkeleton";
 
 const VendorAuthorProfile = () => {
   const { sidebarVisible, setSidebarVisible } =
@@ -18,6 +22,9 @@ const VendorAuthorProfile = () => {
   const { activePage, setActivePage } = useContext(VendorActivePageContext);
   const { currAuthorID } = useContext(CurrAuthorIDContext);
   const [loading, setLoading] = useState(true);
+  const [loadingBooks, setLoadingBooks] = useState(true);
+  const [noBooks, setNoBooks] = useState(false);
+  const [authorBooks, setAuthorBooks] = useState([]);
   const [authorDetails, setAuthorDetails] = useState([]);
 
   const handleClick = (page) => {
@@ -44,110 +51,60 @@ const VendorAuthorProfile = () => {
     fetchAuthorByID();
   }, []);
 
-  console.log(authorDetails);
+  useEffect(() => {
+    if (currAuthorID) {
+      const fetchAuthorBooks = async () => {
+        setLoadingBooks(true);
+        try {
+          const data = await handleGetPublisherAuthorBooksById(currAuthorID);
+          if (data && data.length > 0) {
+            setAuthorBooks(data);
+            setFilteredBooks(data); // Initialize filtered books with all books
+            setNoBooks(false);
+          } else {
+            setAuthorBooks([]);
+            setFilteredBooks([]);
+            setNoBooks(true);
+          }
+        } catch (error) {
+          console.error("Error fetching author books:", error);
+          setAuthorBooks([]);
+          setFilteredBooks([]);
+          setNoBooks(true);
+        } finally {
+          setLoadingBooks(false);
+        }
+      };
+      fetchAuthorBooks();
+    }
+  }, [currAuthorID]);
 
-  const categories = [
-    {
-      img: bookimg,
-      name: "Chalice of the Gods",
-      date: "February 24, 2023",
-      tag: "Novels",
-    },
-    {
-      img: bookimg,
-      name: "Chalice of the Gods",
-      date: "February 24, 2023",
-      tag: "Novels",
-    },
-    {
-      img: bookimg,
-      name: "Chalice of the Gods",
-      date: "February 24, 2023",
-      tag: "Novels",
-    },
-    {
-      img: bookimg,
-      name: "Chalice of the Gods",
-      date: "February 24, 2023",
-      tag: "Novels",
-    },
-    {
-      img: bookimg,
-      name: "Chalice of the Gods",
-      date: "February 24, 2023",
-      tag: "Text Books",
-    },
-    {
-      img: bookimg,
-      name: "Chalice of the Gods",
-      date: "February 24, 2023",
-      tag: "Text Books",
-    },
-    {
-      img: bookimg,
-      name: "Chalice of the Gods",
-      date: "February 24, 2023",
-      tag: "Text Books",
-    },
-    {
-      img: bookimg,
-      name: "Chalice of the Gods",
-      date: "February 24, 2023",
-      tag: "Novels",
-    },
-    {
-      img: bookimg,
-      name: "Chalice of the Gods",
-      date: "February 24, 2023",
-      tag: "Novels",
-    },
-    {
-      img: bookimg,
-      name: "Chalice of the Gods",
-      date: "February 24, 2023",
-      tag: "Novels",
-    },
-    {
-      img: bookimg,
-      name: "Chalice of the Gods",
-      date: "February 24, 2023",
-      tag: "Others",
-    },
-    {
-      img: bookimg,
-      name: "Chalice of the Gods",
-      date: "February 24, 2023",
-      tag: "Others",
-    },
-    {
-      img: bookimg,
-      name: "Chalice of the Gods",
-      date: "February 24, 2023",
-      tag: "Others",
-    },
-    {
-      img: bookimg,
-      name: "Chalice of the Gods",
-      date: "February 24, 2023",
-      tag: "Others",
-    },
-  ];
+  //states
+  const [activeButton, setActiveButton] = useState("all");
+  const [filteredBooks, setFilteredBooks] = useState([]);
+
+  // Function to get unique tags from authorBooks
+  const getUniqueTags = () => {
+    const allLabels = authorBooks.flatMap((book) => book.labels || []);
+    return Array.from(new Set(allLabels));
+  };
 
   // Function to handle button click
   const handleButtonClick = (tag) => {
     setActiveButton(tag);
     if (tag === "all") {
-      setFilteredCategories(categories);
+      setFilteredBooks(authorBooks);
     } else {
-      const filtered = categories.filter((category) => category.tag === tag);
-      setFilteredCategories(filtered);
+      // Filter books where any of their labels include the selected tag
+      const filtered = authorBooks.filter(
+        (book) => book.labels && book.labels.includes(tag)
+      );
+      setFilteredBooks(filtered);
     }
   };
 
-  //states
-  const [activeButton, setActiveButton] = useState("all");
-  const [selectedTag, setSelectedTag] = useState("all");
-  const [filteredCategories, setFilteredCategories] = useState(categories);
+  console.log("Author Details:", authorDetails);
+  console.log("Author Books:", authorBooks);
 
   return (
     <>
@@ -227,53 +184,85 @@ const VendorAuthorProfile = () => {
           <p className=" font-Outfit font-semibold text-xl text-[#101828]">
             Explore Books by Author
           </p>
-          <div className="flex w-full flex-row items-center justify-start mt-8 overflow-auto border-b pb- border-[#EAEBF0]">
-            <button
-              className={`font-normal font-Outfit text-sm pb-3 text-[#00000080] md:w-auto transition-all ${
-                activeButton === "all"
-                  ? "border-b-[3px] border-[#0530A1] text-[#0530A1]"
-                  : ""
-              }`}
-              onClick={() => handleButtonClick("all")}
-            >
-              All Books
-            </button>
-            {/* Display unique categories */}
-            {Array.from(
-              new Set(categories.map((category) => category.tag))
-            ).map((tag, index) => (
+          <div className="flex w-full flex-row items-center justify-start mt-8 overflow-auto border-b pb- border-[#EAEBF0] scrollbar-hide">
+            {loadingBooks ? (
+              <GenericLoadingSkeleton
+                count={4}
+                width={100}
+                height={20}
+                className="mr-4"
+              />
+            ) : (
               <button
-                key={index}
-                className={`font-normal font-Outfit pb-3 text-sm text-[#00000080] px-5 transition-all ${
-                  activeButton === tag
+                className={`font-normal font-Outfit text-sm pb-3 text-[#00000080] md:w-auto transition-all ${
+                  activeButton === "all"
                     ? "border-b-[3px] border-[#0530A1] text-[#0530A1]"
                     : ""
-                }`}
-                onClick={() => handleButtonClick(tag)}
+                } mr-4`}
+                onClick={() => handleButtonClick("all")}
               >
-                {tag}
+                All Books
               </button>
-            ))}
+            )}
+
+            {!loadingBooks &&
+              getUniqueTags().map((tag, index) => (
+                <button
+                  key={index}
+                  className={`font-normal font-Outfit pb-3 text-sm text-[#00000080] px-5 transition-all ${
+                    activeButton === tag
+                      ? "border-b-[3px] border-[#0530A1] text-[#0530A1]"
+                      : ""
+                  }`}
+                  onClick={() => handleButtonClick(tag)}
+                >
+                  {tag}
+                </button>
+              ))}
           </div>
-          <div className=" grid grid-cols-3 md:grid-cols-5 lg:grid-cols-7 gap-6 mt-4">
-            {filteredCategories.map((item, index) => (
-              <div key={index} className=" flex flex-col w-full">
-                <span
-                  style={{
-                    backgroundImage: `url(${item.img})`,
-                    backgroundPosition: "center",
-                    backgroundSize: "cover",
-                  }}
-                  className=" w-full h-[150px] bg-[#fff]"
-                ></span>
-                <p className=" mt-3 font-Outfit text-xs font-normal">
-                  {item.name}
-                </p>
-                <p className=" font-Outfit text-[10px] text-[#000000CC]">
-                  {item.date}
+          <div className="grid grid-cols-3 md:grid-cols-5 lg:grid-cols-7 gap-6 mt-4">
+            {loadingBooks ? (
+              [...Array(7)].map((_, index) => (
+                <div key={index} className="flex flex-col w-full animate-pulse">
+                  <div className="w-full h-[150px] bg-gray-200 rounded"></div>
+                  <div className="mt-3 h-4 bg-gray-200 rounded w-3/4"></div>
+                  <div className="h-3 bg-gray-200 rounded w-1/2 mt-1"></div>
+                </div>
+              ))
+            ) : noBooks ? (
+              <div className="col-span-full text-center p-4">
+                <p className="font-Outfit text-[#667085] text-base">
+                  No books found for this author.
                 </p>
               </div>
-            ))}
+            ) : filteredBooks.length === 0 ? (
+              <div className="col-span-full text-center p-4">
+                <p className="font-Outfit text-[#667085] text-base">
+                  No books match the selected filter.
+                </p>
+              </div>
+            ) : (
+              filteredBooks.map((book, index) => (
+                <div key={book._id || index} className="flex flex-col w-full">
+                  <span
+                    style={{
+                      backgroundImage: `url(${
+                        book.coverImage?.url || bookimg
+                      })`, // Use book cover image or default
+                      backgroundPosition: "center",
+                      backgroundSize: "cover",
+                    }}
+                    className=" w-full h-[150px] bg-[#fff]"
+                  ></span>
+                  <p className=" mt-3 font-Outfit text-xs font-normal">
+                    {book.title}
+                  </p>
+                  <p className=" font-Outfit text-[10px] text-[#000000CC]">
+                    {new Date(book.createdAt).toLocaleDateString()}
+                  </p>
+                </div>
+              ))
+            )}
           </div>
         </div>
       </div>

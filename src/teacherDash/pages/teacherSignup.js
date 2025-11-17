@@ -9,18 +9,16 @@ import ilus1 from "./assets/ilus1.svg";
 import prog1 from "./assets/prog1.svg";
 import plus from "./assets/plus.svg";
 import { useState } from "react";
+import PasswordComponent from "../../utils/passwordComponent";
 
 const TeacherSignup = () => {
-  const req = [
-    { name: "Characters", example: "8+" },
-    { name: "Uppercase", example: "AA" },
-    { name: "Lowercase", example: "aa" },
-    { name: "Numbers", example: "123" },
-    { name: "Symbol", example: "$#^" },
-  ];
+  // // Callback to update formData when password changes
+  // const handlePasswordChange = (password) => {
+  //   setFormData((prevData) => ({ ...prevData, password }));
+  // };
 
-  const [personal, setPersonal] = useState(false);
-  const [academic, setAcademic] = useState(true);
+  const [personal, setPersonal] = useState(true);
+  const [academic, setAcademic] = useState(false);
 
   return (
     <>
@@ -64,43 +62,7 @@ const TeacherSignup = () => {
                     />
                   </label>
 
-                  <label
-                    htmlFor="Email"
-                    className=" flex flex-col w-full font-Outfit text-sm font-medium mt-4"
-                  >
-                    Password
-                    <input
-                      type="email"
-                      className=" border border-[#EAEBF0] h-[40px] p-2.5 font-Outfit text-sm rounded-[15px] mt-2"
-                    />
-                  </label>
-
-                  <img src={strength} className=" w-full mt-5" alt="" />
-
-                  <p className=" font-Outfit text-base font-medium text-[#000000B2] mt-4">
-                    Password Strength Requirement
-                  </p>
-                  <div className=" flex flex-row justify-between items-center mt-4 w-full">
-                    {req.map((item, index) => (
-                      <span
-                        key={index}
-                        className=" flex flex-col text-center items-center"
-                      >
-                        <p className=" font-Outfit text-lg font-medium text-[#01A85D]">
-                          {item.example}
-                        </p>
-                        <p className=" font-Outfit text-sm text-[#12121266] font-medium">
-                          {item.name}
-                        </p>
-                      </span>
-                    ))}
-                  </div>
-                  <span className=" flex flex-row items-center space-x-3 mt-6">
-                    <p className=" font-Outfit text-base font-medium">
-                      Referral Code (optional)
-                    </p>
-                    <img src={down} alt="" />
-                  </span>
+                  {/* <PasswordComponent onChange={handlePasswordChange} /> */}
                 </div>
               </div>
             )}
@@ -179,12 +141,12 @@ const TeacherSignup = () => {
             )}
 
             <div className=" mt-16 lg:mt-0 lg:absolute bottom-0 w-full left-0 lg:px-10">
-              <Link to="/teachersDashboard" className=" w-full">
+              <Link to="/teachers-dashboard" className=" w-full">
                 <button className=" w-full bg-[#0530A1] rounded-[10px] flex items-center justify-center  h-[38px] text-white text-center font-Outfit text-base">
                   Request for Approval
                 </button>
               </Link>
-              <Link to="/teacherslogin">
+              <Link to="/teachers-login">
                 <p className=" mt-[19px] font-Outfit font-medium text-xs text-[#12121266] text-center">
                   Already have an Account?{" "}
                   <span className=" text-[#0530A1]">Login</span>

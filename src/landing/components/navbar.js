@@ -42,7 +42,7 @@ const Navbar = () => {
             </span>
           </div>
           <span className=" mt-8 flex md:hidden items-center justify-between w-full">
-            <Link to="/getStarted">
+            <Link to="/get-started">
               <button className=" rounded-[4px] px-4 py-3 font-Outfit text-xs font-semibold border border-[#1212121A] shadow-sm shadow-[#1018280A] text-[#121212] text-center">
                 Sign Up
               </button>
@@ -86,7 +86,7 @@ const Navbar = () => {
           </span>
 
           <span className=" hidden md:flex flex-row items-center space-x-3">
-            <Link to="/getStarted">
+            <Link to="/get-started">
               <button className=" rounded-[5px] px-6 py-3 font-Outfit text-base font-semibold bg-[#F1F1F1] shadow-sm shadow-[#1018280A] text-[#121212] text-center">
                 Sign Up
               </button>

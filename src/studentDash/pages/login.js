@@ -7,21 +7,21 @@ import load from "./assets/load.gif";
 import { useEffect, useState } from "react";
 import { handleStudentLogin } from "../../controllers/studentControllers/userAuthController";
 import { useSnackbar } from "notistack";
+import SnackbarUtils from "../../utils/snackbarUtils";
 
 const Login = () => {
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { enqueueSnackbar } = useSnackbar();
 
   // console.log(password);
 
   const onSuccess = (response) => {
     setLoading(false);
-    enqueueSnackbar("Login successful!", { variant: "success" });
+    // SnackbarUtils.success("Login successful!");
     // console.log(response);
-    navigate("/studentDashboard");
+    navigate("/student-dashboard");
   };
 
   const onError = (error) => {
@@ -101,7 +101,7 @@ const Login = () => {
               >
                 {loading ? <img src={load} className=" w-6" alt="" /> : "Login"}
               </button>
-              <Link to="/studentSignup">
+              <Link to="/student-signup">
                 <p className=" mt-[19px] font-Outfit font-medium text-sm text-[#12121266] text-center">
                   Dont have an Account?{" "}
                   <span className=" text-[#0530A1]">Register</span>

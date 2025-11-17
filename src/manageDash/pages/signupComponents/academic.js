@@ -21,7 +21,7 @@ const AcademicManage = ({ formData, setFormData }) => {
           School Administrator Information
         </p>
         <p className=" font-Outfit text-[#636363] font-normal text-sm">
-          Individual approve...
+          Individual approved by management
         </p>
 
         <div className=" w-full mt-4 lg:overflow-y-scroll lg:h-[260px]">

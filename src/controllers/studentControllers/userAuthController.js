@@ -1,3 +1,4 @@
+import silentApi from "../../index/silent";
 import api from "../../index/api";
 
 // Function to handle student registration
@@ -27,7 +28,7 @@ export const handleStudentLogin = async (userData, onSuccess, onError) => {
 // Function to get student profile
 export const handleGetStudentProfile = async () => {
   try {
-    const response = await api("GET", "/students/profile");
+    const response = await silentApi("GET", "/students/profile");
     return response;
   } catch (error) {
     console.log(error);
@@ -47,5 +48,15 @@ export const handleStudentProfileUpdate = async (
     if (onError) {
       onError(error);
     }
+  }
+};
+
+// Function to get student dashboard
+export const handleGetStudentDashboard = async () => {
+  try {
+    const response = await silentApi("GET", "/students/dashboard");
+    return response;
+  } catch (error) {
+    console.log(error);
   }
 };

@@ -13,6 +13,8 @@ import { handleGetSchoolSubjects } from "../../controllers/schoolControllers/sub
 import AddSubject from "./subjectSubComps/addSubject";
 import DeleteSubject from "./subjectSubComps/deleteSubject";
 import EditSubject from "./subjectSubComps/editSubject";
+import SnackbarUtils from "../../utils/snackbarUtils";
+import SelectSubs from "./subjectSubComps/selectSubjects";
 
 const ManageSubjects = () => {
   const { setSidebarVisible } = useContext(ManageSidebarContext);
@@ -24,9 +26,14 @@ const ManageSubjects = () => {
   const [subjectID, setSubjectID] = useState("");
   const [deleteSubject, setDeleteSubject] = useState(false);
   const [editSubject, setEditSubject] = useState(false);
+  const [selectSub, setSelectSub] = useState(false);
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10); // Number of items per page
 
   const triggerFetch = () => {
-    setTrigger(!trigger); // Toggle trigger to true or false
+    setTrigger(!trigger);
   };
 
   const fetchSubjects = async () => {
@@ -36,10 +43,10 @@ const ManageSubjects = () => {
       if (data) {
         setSubjects(data[0].subjects);
       } else {
-        // enqueueSnackbar("Failed to fetch profile data", { variant: "error" });
+        // SnackbarUtils.error("Failed to fetch profile data");
       }
     } catch (error) {
-      console.error("Error fetching subjects:", error);
+      // console.error("Error fetching subjects:", error);
     } finally {
       setLoading(false);
     }
@@ -63,10 +70,67 @@ const ManageSubjects = () => {
     setEditSubject(true);
   };
 
-  // console.log(subjects);
+  // Pagination logic
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentSubjects = subjects.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(subjects.length / itemsPerPage);
+
+  const paginate = (pageNumber) => {
+    if (pageNumber > 0 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+    }
+  };
+
+  const renderPageNumbers = () => {
+    const pageNumbers = [];
+    if (totalPages <= 5) {
+      for (let i = 1; i <= totalPages; i++) {
+        pageNumbers.push(i);
+      }
+    } else {
+      pageNumbers.push(1);
+      if (currentPage > 3) {
+        pageNumbers.push("...");
+      }
+      if (currentPage > 2) {
+        pageNumbers.push(currentPage - 1);
+      }
+      if (currentPage !== 1 && currentPage !== totalPages) {
+        pageNumbers.push(currentPage);
+      }
+      if (currentPage < totalPages - 1) {
+        pageNumbers.push(currentPage + 1);
+      }
+      if (currentPage < totalPages - 2) {
+        pageNumbers.push("...");
+      }
+      pageNumbers.push(totalPages);
+    }
+
+    return pageNumbers.map((number, index) => (
+      <span
+        key={index}
+        onClick={() => typeof number === "number" && paginate(number)}
+        className={`font-Outfit text-sm cursor-pointer ${
+          currentPage === number ? "text-[#0530A1]" : "text-[#5F6D7E]"
+        }`}
+      >
+        {number}
+      </span>
+    ));
+  };
 
   return (
     <>
+      {selectSub && (
+        <SelectSubs
+          setSelectSub={setSelectSub}
+          setAddSubject={setAddSubject}
+          triggerFetch={triggerFetch}
+        />
+      )}
+
       {addSubject && (
         <AddSubject setAddSubject={setAddSubject} triggerFetch={triggerFetch} />
       )}
@@ -109,9 +173,9 @@ const ManageSubjects = () => {
           <span className=" flex items-start">
             <button
               onClick={() => {
-                setAddSubject(true);
+                setSelectSub(true);
               }}
-              className=" text-center  text-sm font-Outfit font-medium text-white bg-[#0530A1] py-2 px-3 md:px-6 rounded-[10px]"
+              className=" text-center text-sm font-Outfit font-medium text-white bg-[#0530A1] py-2 px-3 md:px-6 rounded-[10px]"
             >
               Add New Subject
             </button>
@@ -130,55 +194,42 @@ const ManageSubjects = () => {
                     <th className="border-b font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 text-center px-4">
                       Name
                     </th>
-                    {/* <th className="border-b font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 text-center px-4">
-                      Class
-                    </th> */}
-                    {/* <th className="border-b font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 text-center px-4">
-                      Class Teacher
-                    </th> */}
                     <th className="border-b font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 text-center px-4"></th>
                   </tr>
                 </thead>
                 <tbody>
                   {loading ? (
                     <tr>
-                      <td colSpan="6">
-                        <LoadingTable rows={6} columns={6} />
+                      <td colSpan="3">
+                        <LoadingTable rows={3} columns={3} />
                       </td>
                     </tr>
-                  ) : subjects.length === 0 ? (
-                    // Show if there are no subjects
+                  ) : currentSubjects.length === 0 ? (
                     <tr className=" w-full">
                       <td
-                        colSpan="5"
+                        colSpan="3"
                         className="px-4 py-3 text-center font-Outfit text-[#667085] text-sm w-full"
                       >
                         There are no subjects yet.
                       </td>
                     </tr>
                   ) : (
-                    subjects.map((data, index) => (
-                      <tr key={index}>
+                    currentSubjects.map((data, index) => (
+                      <tr key={data._id}>
                         <td className=" font-Outfit py-4 border-t border-[#EAEBF0] text-sm text-[#5F6D7E] font-medium text-center">
-                          0{index + 1}
+                          {indexOfFirstItem + index + 1}
                         </td>
                         <td className=" font-Outfit py-4 border-t border-[#EAEBF0] text-[#272D37] font-medium text-sm text-center capitalize">
                           {data.name}
                         </td>
-                        {/* <td className=" font-Outfit py-4 border-t border-[#EAEBF0] text-[#272D37] font-medium text-sm text-center">
-                          {data.subject}
-                        </td> */}
-                        {/* <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">
-                          {data.address}
-                        </td> */}
 
                         <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center flex items-center justify-center space-x-3">
-                          {/* <img
+                          <img
                             onClick={() => handleEditIconClick(data._id)}
                             className=" w-3 mt-2 cursor-pointer"
                             src={edit}
                             alt=""
-                          /> */}
+                          />
                           <img
                             onClick={() => handleDeleteIconClick(data._id)}
                             className=" w-3 mt-2 cursor-pointer"
@@ -193,20 +244,28 @@ const ManageSubjects = () => {
               </table>
             </div>
             <div className=" w-full py-3 px-3 flex justify-between items-center">
-              <span className=" flex space-x-1">
+              <span
+                className={`flex space-x-1 cursor-pointer ${
+                  currentPage === 1 ? "opacity-50 pointer-events-none" : ""
+                }`}
+                onClick={() => paginate(currentPage - 1)}
+              >
                 <img src={backArr} alt="" />
                 <p className=" font-Outfit font-medium text-[#5F6D7E] text-sm">
                   Prev
                 </p>
               </span>
               <span className=" flex items-end space-x-4">
-                <p className=" font-Outfit text-sm text-[#0530A1]">1</p>
-                <p className=" font-Outfit text-sm">2</p>
-                <p className=" font-Outfit text-sm">...</p>
-                <p className=" font-Outfit text-sm">5</p>
-                <p className=" font-Outfit text-sm">6</p>
+                {renderPageNumbers()}
               </span>
-              <span className=" flex space-x-1">
+              <span
+                className={`flex space-x-1 cursor-pointer ${
+                  currentPage === totalPages || totalPages === 0
+                    ? "opacity-50 pointer-events-none"
+                    : ""
+                }`}
+                onClick={() => paginate(currentPage + 1)}
+              >
                 <p className=" font-Outfit font-medium text-[#5F6D7E] text-sm">
                   Next
                 </p>

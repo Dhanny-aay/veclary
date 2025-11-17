@@ -52,7 +52,7 @@ const ManageDashboard = () => {
     fetchDashboard();
   }, []);
 
-  console.log(dashboard);
+  // console.log(dashboard);
 
   const componentMap = {
     Home: <ManageHome dashboard={dashboard} loading={loading} />,

@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import plus from "./assets/PlusCircle.svg";
 import trash from "./assets/trash.svg";
-import { useSnackbar } from "notistack";
+import SnackbarUtils from "../../../utils/snackbarUtils";
+import { handleGetSchoolSubjects } from "../../../controllers/schoolControllers/subjectController";
+import GenericLoadingSkeleton from "../../../utils/loadingSkeleton";
 
-const Period = ({ period, onUpdate, onRemove }) => {
+const Period = ({ period, onUpdate, onRemove, subjects, loadingSubjects }) => {
   const [editingPeriod, setEditingPeriod] = useState(false);
 
   const updatePeriod = (updatedPeriod) => {
@@ -12,7 +14,7 @@ const Period = ({ period, onUpdate, onRemove }) => {
   };
 
   return (
-    <div className="bg-gray-100 py-3 px-4 rounded-md ">
+    <div className="bg-gray-100 py-3 px-4 rounded-md mt-2">
       {editingPeriod ? (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2 items-center">
           <div className="flex flex-col space-y-1">
@@ -39,16 +41,25 @@ const Period = ({ period, onUpdate, onRemove }) => {
             >
               Subject
             </label>
-            <input
-              type="text"
+            <select
               id="subject"
               value={period.subject}
               onChange={(e) =>
                 updatePeriod({ ...period, subject: e.target.value })
               }
               className="border border-[#DAE0E6] p-1.5 font-Outfit font-normal text-[#272D37] text-sm rounded-[5px]"
-              placeholder="Enter Subject"
-            />
+            >
+              <option value="">Select Subject</option>
+              {loadingSubjects ? (
+                <option disabled>Loading...</option>
+              ) : (
+                subjects.map((s) => (
+                  <option key={s._id} value={s.name}>
+                    {s.name}
+                  </option>
+                ))
+              )}
+            </select>
           </div>
           <div className="flex flex-col space-y-1">
             <label
@@ -77,7 +88,7 @@ const Period = ({ period, onUpdate, onRemove }) => {
             </button>
             <button
               onClick={onRemove}
-              className="p-1  rounded-md bg-red-500 hover:bg-red-600 text-white"
+              className="p-1 rounded-md bg-red-500 hover:bg-red-600 text-white"
             >
               <img src={trash} className="w-4" alt="" />
             </button>
@@ -90,12 +101,12 @@ const Period = ({ period, onUpdate, onRemove }) => {
             {period.subject} ({period.ends} min)
           </div>
           <div className=" flex items-center space-x-2">
-            {/* <button
+            <button
               onClick={() => setEditingPeriod(true)}
               className="py-1 px-2 text-sm font-medium font-Outfit rounded-md bg-gray-300 hover:bg-gray-400"
             >
               Edit
-            </button> */}
+            </button>
             <button
               onClick={onRemove}
               className="p-1 rounded-md bg-red-500 hover:bg-red-600 text-white"
@@ -110,19 +121,36 @@ const Period = ({ period, onUpdate, onRemove }) => {
 };
 
 const Day = ({ day, onUpdate, onRemove }) => {
+  const [subjects, setSubjects] = useState([]);
+  const [loadingSubjects, setLoadingSubjects] = useState(true);
+
   const [newPeriod, setNewPeriod] = useState({
     start: "07:30",
     subject: "",
     ends: 30,
   });
-  const { enqueueSnackbar } = useSnackbar();
+
+  const fetchSubjects = async () => {
+    setLoadingSubjects(true);
+    try {
+      const data = await handleGetSchoolSubjects();
+      if (data) {
+        setSubjects(data[0]?.subjects || []);
+      }
+    } catch (error) {
+      console.error("Error fetching subjects:", error);
+    } finally {
+      setLoadingSubjects(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchSubjects();
+  }, []);
 
   const addPeriod = () => {
-    // Validate input before adding new period
     if (!newPeriod.subject.trim()) {
-      //   alert("Please enter a subject.");
-      enqueueSnackbar("Please enter a subject.", { variant: "warning" });
-
+      SnackbarUtils.warning("Please select a subject.");
       return;
     }
 
@@ -132,7 +160,6 @@ const Day = ({ day, onUpdate, onRemove }) => {
     };
     onUpdate(updatedDay);
 
-    // Update the start time for the next period
     const [hours, minutes] = newPeriod.start.split(":");
     const durationInMinutes = parseInt(newPeriod.ends);
     const nextStartHour =
@@ -172,7 +199,7 @@ const Day = ({ day, onUpdate, onRemove }) => {
   };
 
   return (
-    <div className="bg-white  mt-4 border border-[#DAE0E6] p-2.5 rounded-[5px] mb-4">
+    <div className="bg-white mt-4 border border-[#DAE0E6] p-2.5 rounded-[5px] mb-4">
       <h2 className="text-base font-Outfit text-[#272D37] font-bold mb-4">
         {day.name}
       </h2>
@@ -182,6 +209,8 @@ const Day = ({ day, onUpdate, onRemove }) => {
           period={period}
           onUpdate={(updatedPeriod) => updatePeriod(index, updatedPeriod)}
           onRemove={() => removePeriod(index)}
+          subjects={subjects}
+          loadingSubjects={loadingSubjects}
         />
       ))}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-2 items-center">
@@ -209,15 +238,25 @@ const Day = ({ day, onUpdate, onRemove }) => {
           >
             Subject
           </label>
-          <input
-            type="text"
+          <select
             id="subject"
             value={newPeriod.subject}
             onChange={(e) =>
               setNewPeriod({ ...newPeriod, subject: e.target.value })
             }
             className="border border-[#DAE0E6] p-1.5 font-Outfit font-normal text-[#272D37] text-sm rounded-[5px]"
-          />
+          >
+            <option value="">Select Subject</option>
+            {loadingSubjects ? (
+              <option disabled>Loading...</option>
+            ) : (
+              subjects.map((s) => (
+                <option key={s._id} value={s.name}>
+                  {s.name}
+                </option>
+              ))
+            )}
+          </select>
         </div>
         <div className="flex flex-col space-y-1">
           <label
@@ -239,7 +278,6 @@ const Day = ({ day, onUpdate, onRemove }) => {
         <button
           onClick={addPeriod}
           className="p-2 rounded-md bg-[#0530A1] hover:bg-blue-600 text-white flex items-center justify-center space-x-2 mt-5 font-Outfit font-medium text-sm"
-          //   className=" mt-3"
         >
           <img src={plus} alt="" />
           <p className=" text-white">Add</p>

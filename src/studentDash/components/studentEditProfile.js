@@ -11,13 +11,13 @@ import load from "./assets/load.gif";
 import { handleStudentProfileUpdate } from "../../controllers/studentControllers/userAuthController";
 import { useSnackbar } from "notistack";
 import { handleAvatarUpload } from "../../controllers/generalController/authController";
+import SnackbarUtils from "../../utils/snackbarUtils";
 
 const StudentEditProfile = ({ profile, loading }) => {
   const { activePage, setActivePage } = useContext(ActivePageContext);
   const { sidebarVisible, setSidebarVisible } = useContext(SidebarContext);
   const [loading1, setLoading1] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
-  const { enqueueSnackbar } = useSnackbar();
 
   // Flatten the nested profile object
   const flattenProfile = (profile) => ({
@@ -92,7 +92,7 @@ const StudentEditProfile = ({ profile, loading }) => {
     if (file && (file.type === "image/png" || file.type === "image/jpeg")) {
       setSelectedImage(URL.createObjectURL(file));
 
-      enqueueSnackbar("Uploading image...", { variant: "info" });
+      SnackbarUtils.info("Uploading image...");
 
       const userData = new FormData();
       userData.append("avatar", file);
@@ -101,23 +101,17 @@ const StudentEditProfile = ({ profile, loading }) => {
         await handleAvatarUpload(
           userData,
           () => {
-            enqueueSnackbar("Upload successful!", { variant: "success" });
+            SnackbarUtils.error("Upload successful!");
           },
           (error) => {
-            enqueueSnackbar("Upload failed. Please try again.", {
-              variant: "error",
-            });
+            SnackbarUtils.error("Upload failed. Please try again.");
           }
         );
       } catch (error) {
-        enqueueSnackbar("Upload failed. Please try again.", {
-          variant: "error",
-        });
+        SnackbarUtils.error("Upload failed. Please try again.");
       }
     } else {
-      enqueueSnackbar("Please upload a valid PNG or JPG file.", {
-        variant: "error",
-      });
+      SnackbarUtils.error("Please upload a valid PNG or JPG file.");
     }
   };
 

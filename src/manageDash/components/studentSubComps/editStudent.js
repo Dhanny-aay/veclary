@@ -9,6 +9,7 @@ import edit from "./assets/addBlk.svg";
 import { useSnackbar } from "notistack";
 import load from "./assets/load.gif";
 import GenericLoadingSkeleton from "../../../utils/loadingSkeleton";
+import SnackbarUtils from "../../../utils/snackbarUtils";
 
 const EditStudent = ({ triggerFetch, studentID, setEditStudent }) => {
   const [student, setStudent] = useState({
@@ -18,7 +19,6 @@ const EditStudent = ({ triggerFetch, studentID, setEditStudent }) => {
   });
   const [loading, setLoading] = useState(true);
   const [loadingEdit, setLoadingEdit] = useState(false);
-  const { enqueueSnackbar } = useSnackbar();
   const [classes, setClasses] = useState([]);
   const [loadingClasses, setLoadingClasses] = useState(true);
 
@@ -73,9 +73,7 @@ const EditStudent = ({ triggerFetch, studentID, setEditStudent }) => {
     const requiredFields = ["name", "classId", "email"];
     for (let field of requiredFields) {
       if (!student[field]) {
-        enqueueSnackbar(`Please fill in the ${field.replace("_", " ")}`, {
-          variant: "error",
-        });
+        SnackbarUtils.warning(`Please fill in the ${field.replace("_", " ")}`);
         return false;
       }
     }

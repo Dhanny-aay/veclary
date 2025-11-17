@@ -49,10 +49,11 @@ const ManageSignup = () => {
 
   const onSuccess = () => {
     setLoading(false);
-    navigate("/managementlogin");
+    navigate("/management-login");
   };
-  const onError = () => {
+  const onError = (error) => {
     setLoading(false);
+    // console.error("Registration failed:", error);
   };
 
   const handleSubmit = (e) => {
@@ -106,7 +107,7 @@ const ManageSignup = () => {
                   )}
                 </button>
               </div>
-              <Link to="/managementlogin">
+              <Link to="/management-login">
                 <p className=" mt-[19px] font-Outfit font-medium text-xs text-[#12121266] text-center">
                   Already have an Account?{" "}
                   <span className=" text-[#0530A1]">Login</span>

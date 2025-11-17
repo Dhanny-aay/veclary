@@ -27,26 +27,42 @@ const StudentSignup = () => {
     bestLearningModel: "",
   });
 
-  console.log(formData);
-
   const onSuccess = () => {
     setLoading(false);
-    navigate("/studentlogin");
+    navigate("/student-login");
   };
   const onError = () => {
     setLoading(false);
-    // navigate("/studentlogin");
   };
 
-  const steps = [
+  // Define all possible steps
+  const allSteps = [
     <PersonalStudent formData={formData} setFormData={setFormData} />,
     <AcademicStudent formData={formData} setFormData={setFormData} />,
     <PlanStudent formData={formData} setFormData={setFormData} />,
   ];
 
+  // Determine if the current path should lead to submission
+  const isLastStepForCurrentPath = () => {
+    // If on Academic step (index 1) and schoolName is provided, it's the last step
+    if (currentStep === 1 && formData.schoolName) {
+      return true;
+    }
+    // If on Plan step (index 2), it's always the last step
+    if (currentStep === 2) {
+      return true;
+    }
+    return false;
+  };
+
   const handleProceed = () => {
-    if (currentStep < steps.length - 1) {
-      setCurrentStep(currentStep + 1);
+    if (isLastStepForCurrentPath()) {
+      handleSubmit(); // If it's the last step for this path, submit
+    } else {
+      // Otherwise, proceed to the next step
+      if (currentStep < allSteps.length - 1) {
+        setCurrentStep(currentStep + 1);
+      }
     }
   };
 
@@ -57,7 +73,7 @@ const StudentSignup = () => {
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+    e?.preventDefault(); // Prevent default only if event object is present
     setLoading(true);
     const userData = formData;
     handleStudentRegister(userData, onSuccess, onError);
@@ -75,7 +91,7 @@ const StudentSignup = () => {
               Get Started Now
             </p>
 
-            {steps[currentStep]}
+            {allSteps[currentStep]}
 
             <div className="mt-16 lg:mt-0 lg:absolute bottom-0 w-full left-0 lg:px-10">
               <div className="flex justify-between">
@@ -92,23 +108,19 @@ const StudentSignup = () => {
                   className={`${
                     currentStep > 0 ? "w-[48%]" : "w-full"
                   } bg-[#0530A1] rounded-[10px] flex items-center justify-center h-[38px] text-white text-center font-Outfit text-base`}
-                  onClick={
-                    currentStep < steps.length - 1
-                      ? handleProceed
-                      : handleSubmit
-                  }
+                  onClick={handleProceed} // Always call handleProceed
                 >
                   {loading ? (
-                    <img src={load} className=" w-6" alt="" />
-                  ) : currentStep < steps.length - 1 ? (
-                    "Proceed"
-                  ) : (
+                    <img src={load} className="w-6" alt="" />
+                  ) : isLastStepForCurrentPath() ? (
                     "Submit"
+                  ) : (
+                    "Proceed"
                   )}
                 </button>
               </div>
 
-              <Link to="/studentlogin">
+              <Link to="/student-login">
                 <p className="mt-[19px] font-Outfit font-medium text-xs text-[#12121266] text-center">
                   Already have an Account?{" "}
                   <span className="text-[#0530A1]">Login</span>

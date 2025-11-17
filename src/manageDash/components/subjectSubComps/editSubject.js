@@ -10,6 +10,7 @@ import {
 } from "../../../controllers/schoolControllers/subjectController";
 import { handleGetSchoolClasses } from "../../../controllers/schoolControllers/classController";
 import { handleUpdateStudentById } from "../../../controllers/schoolControllers/studentController";
+import SnackbarUtils from "../../../utils/snackbarUtils";
 
 const EditSubject = ({ setEditSubject, subjectID, triggerFetch }) => {
   const [subject, setSubject] = useState({
@@ -18,7 +19,6 @@ const EditSubject = ({ setEditSubject, subjectID, triggerFetch }) => {
   });
   const [loading, setLoading] = useState(true);
   const [loadingEdit, setLoadingEdit] = useState(false);
-  const { enqueueSnackbar } = useSnackbar();
   const [classes, setClasses] = useState([]);
   const [loadingClasses, setLoadingClasses] = useState(true);
 
@@ -73,9 +73,7 @@ const EditSubject = ({ setEditSubject, subjectID, triggerFetch }) => {
     const requiredFields = ["name", "classId"];
     for (let field of requiredFields) {
       if (!subject[field]) {
-        enqueueSnackbar(`Please fill in the ${field.replace("_", " ")}`, {
-          variant: "error",
-        });
+        SnackbarUtils.warning(`Please fill in the ${field.replace("_", " ")}`);
         return false;
       }
     }

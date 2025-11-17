@@ -10,42 +10,42 @@ import {
   handleGetLoggedinUser,
   handleUserLogin,
 } from "../../controllers/generalController/authController";
+import SnackbarUtils from "../../utils/snackbarUtils";
 
 const Signin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { enqueueSnackbar } = useSnackbar();
 
   // console.log(password);
 
   const onSuccess = (response) => {
     setLoading(false);
-    enqueueSnackbar("Login successful!", { variant: "success" });
+    // SnackbarUtils.success("Login successful!");
 
     // Extract the role from the response
     const userRole = response.user.role;
 
     // Navigate to the appropriate dashboard based on the user's role
     if (userRole === "STUDENT") {
-      navigate("/studentDashboard");
+      navigate("/student-dashboard");
     } else if (userRole === "TEACHER") {
-      navigate("/teachersDashboard");
+      navigate("/teachers-dashboard");
     } else if (userRole === "AUTHOR") {
-      navigate("/vendorDashboard");
+      navigate("/vendor-dashboard");
     } else if (userRole === "PUBLISHER") {
-      navigate("/vendorDashboard");
+      navigate("/vendor-dashboard");
     } else if (userRole === "SCHOOL") {
-      navigate("/managementDashboard");
+      navigate("/management-dashboard");
     } else {
-      enqueueSnackbar("Role not recognized.", { variant: "error" });
+      SnackbarUtils.error("Role not recognized.");
     }
   };
 
   const onError = (error) => {
     setLoading(false);
-    // enqueueSnackbar("Login failed. Please try again.", { variant: "error" });
+    // SnackbarUtils.error("Login failed. Please try again.");
   };
 
   const handleSubmit = (e) => {
@@ -64,22 +64,20 @@ const Signin = () => {
 
         // Navigate to the appropriate dashboard based on the user's role
         if (userRole === "STUDENT") {
-          navigate("/studentDashboard");
+          navigate("/student-dashboard");
         } else if (userRole === "TEACHER") {
-          navigate("/teachersDashboard");
+          navigate("/teachers-dashboard");
         } else if (userRole === "SCHOOL") {
-          navigate("/managementDashboard");
+          navigate("/management-dashboard");
         } else {
-          enqueueSnackbar("Role not recognized.", { variant: "error" });
+          SnackbarUtils.error("Role not recognized.");
         }
       } else {
-        enqueueSnackbar("Please log in", { variant: "error" });
+        // SnackbarUtils.error("Please log in");
       }
     } catch (error) {
       console.error("Error fetching note:", error);
-      enqueueSnackbar("An error occurred while fetching Note data", {
-        variant: "error",
-      });
+      // SnackbarUtils.error("An error occurred while  Note data");
     }
   };
 
@@ -155,7 +153,7 @@ const Signin = () => {
               >
                 {loading ? <img src={load} className=" w-6" alt="" /> : "Login"}
               </button>
-              <Link to="/getStarted">
+              <Link to="/get-started">
                 <p className=" mt-[19px] font-Outfit font-medium text-sm text-[#12121266] text-center">
                   Dont have an Account?{" "}
                   <span className=" text-[#0530A1]">Register</span>

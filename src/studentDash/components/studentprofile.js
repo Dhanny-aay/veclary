@@ -3,17 +3,58 @@ import edit from "./assets/edit.svg";
 import league from "./assets/league.svg";
 import grap from "./assets/grap.svg";
 import flame from "./assets/flsm.svg";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   ActivePageContext,
   SidebarContext,
 } from "../contexts/ActivePageContext";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import {
+  handleGetStudentLeaderboard,
+  handleGetStudentMetrics,
+} from "../../controllers/studentControllers/generalController";
 
 const StudentProfile = ({ profile, loading }) => {
   const { activePage, setActivePage } = useContext(ActivePageContext);
   const { sidebarVisible, setSidebarVisible } = useContext(SidebarContext);
+  const [metrics, setMetrics] = useState(null);
+  const [loadingMetrics, setLoadingMetrics] = useState(true);
+  const [leaderboard, setLeaderboard] = useState(null);
+  const [loadingLeaderboard, setLoadingLeaderboard] = useState(true);
+
+  useEffect(() => {
+    const fetchMetrics = async () => {
+      try {
+        const data = await handleGetStudentMetrics();
+        if (data) {
+          setMetrics(data);
+        } else {
+        }
+      } catch (error) {
+      } finally {
+        setLoadingMetrics(false);
+      }
+    };
+
+    fetchMetrics();
+  }, []);
+  useEffect(() => {
+    const fetchLeaderboard = async () => {
+      try {
+        const data = await handleGetStudentLeaderboard();
+        if (data) {
+          setLeaderboard(data);
+        } else {
+        }
+      } catch (error) {
+      } finally {
+        setLoadingLeaderboard(false);
+      }
+    };
+
+    fetchLeaderboard();
+  }, []);
 
   const handleClick = (page) => {
     setActivePage(page);

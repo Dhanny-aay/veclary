@@ -133,11 +133,7 @@ const ManageResource = () => {
             </label>
           </span>
 
-          <span className=" flex  mt-6 md:mt-0 items-end space-x-3">
-            <button className=" text-center  text-sm font-Outfit font-medium text-white bg-[#0530A1] py-2 px-3 md:px-6 rounded-[10px]">
-              Add New Subject
-            </button>
-
+          <span className=" flex  mt-6 md:mt-0 items-end ">
             <button
               onClick={() => {
                 setAddResource(true);

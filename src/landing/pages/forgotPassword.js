@@ -7,24 +7,24 @@ import load from "./assets/load.gif";
 import { useEffect, useState } from "react";
 import { useSnackbar } from "notistack";
 import { handleForgotPassword } from "../../controllers/generalController/authController";
+import SnackbarUtils from "../../utils/snackbarUtils";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
 
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { enqueueSnackbar } = useSnackbar();
 
   // console.log(password);
 
   const onSuccess = (response) => {
     setLoading(false);
-    enqueueSnackbar("Mail Sent!", { variant: "success" });
+    SnackbarUtils.success("Mail Sent!");
   };
 
   const onError = (error) => {
     setLoading(false);
-    enqueueSnackbar("failed. Please try again.", { variant: "error" });
+    SnackbarUtils.error("failed. Please try again.");
   };
 
   const handleSubmit = (e) => {
@@ -72,7 +72,7 @@ const ForgotPassword = () => {
                   "Submit"
                 )}
               </button>
-              <Link to="/studentSignup">
+              <Link to="/student-signup">
                 <p className=" mt-[19px] font-Outfit font-medium text-sm text-[#12121266] text-center">
                   Dont have an Account?{" "}
                   <span className=" text-[#0530A1]">Register</span>

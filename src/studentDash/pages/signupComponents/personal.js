@@ -1,17 +1,10 @@
 import strength from "../assets/strength.svg";
 import progress from "../assets/progress.svg";
 import { useState, useEffect } from "react";
+import PasswordComponent from "../../../utils/passwordComponent";
 
 const PersonalStudent = ({ formData, setFormData }) => {
   const [personalData, setPersonalData] = useState(formData);
-
-  const req = [
-    { name: "Characters", example: "8+" },
-    { name: "Uppercase", example: "AA" },
-    { name: "Lowercase", example: "aa" },
-    { name: "Numbers", example: "123" },
-    { name: "Symbol", example: "$#^" },
-  ];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -21,6 +14,11 @@ const PersonalStudent = ({ formData, setFormData }) => {
   useEffect(() => {
     setPersonalData(formData);
   }, [formData]);
+
+  // Callback to update formData when password changes
+  const handlePasswordChange = (password) => {
+    setFormData((prevData) => ({ ...prevData, password }));
+  };
 
   return (
     <>
@@ -59,7 +57,9 @@ const PersonalStudent = ({ formData, setFormData }) => {
             />
           </label>
 
-          <label
+          <PasswordComponent onChange={handlePasswordChange} />
+
+          {/* <label
             htmlFor="password"
             className="flex flex-col w-full font-Outfit text-sm font-medium mt-4"
           >
@@ -92,7 +92,7 @@ const PersonalStudent = ({ formData, setFormData }) => {
                 </p>
               </span>
             ))}
-          </div>
+          </div> */}
         </div>
       </div>
     </>

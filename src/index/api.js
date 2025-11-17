@@ -26,14 +26,28 @@ const api = async (method, uri, body = null) => {
       handleSuccess(data);
       return data;
     } else {
+      const errorMessage =
+        data?.error ||
+        data?.data?.error ||
+        data?.message ||
+        response.statusText ||
+        "Something went wrong";
+
+      SnackbarUtils.error(errorMessage);
       handleError(response, data);
+
+      throw new Error(errorMessage);
     }
   } catch (err) {
-    handleFetchError(err);
+    if (err.message.startsWith("Fetch error")) {
+      handleFetchError(err);
+    } else {
+      throw err;
+    }
   }
 };
 
-const handleSuccess = (data) => {
+export const handleSuccess = (data) => {
   if (data.accessToken) {
     localStorage.setItem("veclary_token", data.accessToken);
   }
@@ -45,36 +59,20 @@ const handleSuccess = (data) => {
   }
 };
 
-const handleError = (response, data) => {
-  const errorMessage =
-    data?.error ||
-    data?.data?.error ||
-    data?.message ||
-    response.statusText ||
-    "Something went wrong";
-
+export const handleError = (response, data) => {
   switch (response.status) {
     case 403:
       localStorage.removeItem("veclary_token");
       window.location = "/login";
       break;
-    case 409:
-      const message =
-        errorMessage === "Email Address already Exists"
-          ? "This email is already in use. Please use a different email."
-          : errorMessage;
-      SnackbarUtils.error(message);
-      throw new Error(message);
+
     case 422:
-      SnackbarUtils.error(errorMessage);
-      throw new Error(errorMessage);
+    case 409:
     default:
-      SnackbarUtils.error(errorMessage);
-      throw new Error(errorMessage);
   }
 };
 
-const handleFetchError = (err) => {
+export const handleFetchError = (err) => {
   SnackbarUtils.error(`Fetch error: ${err.message}`);
   throw err;
 };

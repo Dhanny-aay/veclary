@@ -6,11 +6,11 @@ import { useSnackbar } from "notistack";
 import load from "./assets/load.gif";
 // import GenericLoadingSkeleton from "../../../utils/loadingSkeleton";
 import { handleCreateSubject } from "../../../controllers/schoolControllers/subjectController";
+import SnackbarUtils from "../../../utils/snackbarUtils";
 
 const AddSubject = ({ triggerFetch, setAddSubject }) => {
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
-  const { enqueueSnackbar } = useSnackbar();
   const [errors, setErrors] = useState({});
 
   const validateFields = () => {
@@ -32,7 +32,7 @@ const AddSubject = ({ triggerFetch, setAddSubject }) => {
 
   const onError = (error) => {
     setLoading(false);
-    enqueueSnackbar("Failed. Please try again.", { variant: "error" });
+    SnackbarUtils.error("Failed. Please try again.");
   };
 
   const handleSubmit = (e) => {

@@ -35,3 +35,13 @@ export const handleGetPublisherAuthorById = async (authorId) => {
     console.log(error);
   }
 };
+
+// Function to get author's books by ID
+export const handleGetPublisherAuthorBooksById = async (authorId) => {
+  try {
+    const response = await api("GET", `/publishers/authors/${authorId}/book`);
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+};

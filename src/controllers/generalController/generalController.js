@@ -1,9 +1,10 @@
+import silentApi from "../../index/silent";
 import api from "../../index/api";
 
 // Function to get banks
 export const handleGetBanks = async () => {
   try {
-    const response = await api("GET", "/general/banks");
+    const response = await silentApi("GET", "/general/banks");
     return response;
   } catch (error) {
     console.log(error);
@@ -22,6 +23,12 @@ export const handleBankVerify = async (userData, onSuccess, onError) => {
   }
 };
 
-
-
-
+// Function to get subjects
+export const handleGetGeneralSubjects = async () => {
+  try {
+    const response = await silentApi("GET", `/general/subjects`);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+};

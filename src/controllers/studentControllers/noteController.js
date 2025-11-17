@@ -1,3 +1,4 @@
+import silentApi from "../../index/silent";
 import api from "../../index/api";
 
 // Function to handle note creation
@@ -15,7 +16,7 @@ export const handleCreateNote = async (userData, onSuccess, onError) => {
 // Function to get user note
 export const handleGetNotes = async () => {
   try {
-    const response = await api("GET", "/students/notes");
+    const response = await silentApi("GET", "/students/notes");
     return response;
   } catch (error) {
     console.log(error);

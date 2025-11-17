@@ -70,8 +70,6 @@ const ListView = ({ terms }) => {
     setLoading(false);
   }, [terms]);
 
-  console.log(events);
-
   const getStatusColor = (status) => {
     switch (status) {
       case "Ongoing":

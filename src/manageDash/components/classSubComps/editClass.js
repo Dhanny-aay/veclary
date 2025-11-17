@@ -11,6 +11,7 @@ import GenericLoadingSkeleton from "../../../utils/loadingSkeleton";
 import { handleGetSchoolSessions } from "../../../controllers/schoolControllers/sessionController";
 import { handleGetSchoolTeachers } from "../../../controllers/schoolControllers/teachersController";
 import { handleGetSchoolSubjects } from "../../../controllers/schoolControllers/subjectController";
+import SnackbarUtils from "../../../utils/snackbarUtils";
 
 const EditClass = ({ setEditClass, classID, triggerFetch }) => {
   const [classDeets, setClassDeets] = useState({
@@ -21,7 +22,7 @@ const EditClass = ({ setEditClass, classID, triggerFetch }) => {
   });
   const [loading, setLoading] = useState(true);
   const [loadingEdit, setLoadingEdit] = useState(false);
-  const { enqueueSnackbar } = useSnackbar();
+
   const [teachers, setTeachers] = useState([]);
   const [sessions, setSessions] = useState([]);
   const [loadingSession, setLoadingSession] = useState(true);
@@ -126,9 +127,7 @@ const EditClass = ({ setEditClass, classID, triggerFetch }) => {
     const requiredFields = ["name", "sessionId"];
     for (let field of requiredFields) {
       if (!classDeets[field]) {
-        enqueueSnackbar(`Please fill in the ${field.replace("_", " ")}`, {
-          variant: "error",
-        });
+        SnackbarUtils.error(`Please fill in the ${field.replace("_", " ")}`);
         return false;
       }
     }

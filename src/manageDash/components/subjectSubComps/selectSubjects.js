@@ -10,13 +10,13 @@ import load from "./assets/load.gif";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import GenericLoadingSkeleton from "../../../utils/loadingSkeleton";
+import SnackbarUtils from "../../../utils/snackbarUtils";
 
-const SelectSubs = ({ setSelectSub, setAddSubject }) => {
+const SelectSubs = ({ setSelectSub, setAddSubject, triggerFetch }) => {
   const [subjects, setSubjects] = useState([]);
   const [loadingSubjects, setLoadingSubjects] = useState(true);
   const [selectedSubjects, setSelectedSubjects] = useState([]);
   const [loading, setLoading] = useState(false);
-  const { enqueueSnackbar } = useSnackbar();
   const [errors, setErrors] = useState({});
 
   const handleAppendSubject = (subjectId) => {
@@ -53,12 +53,14 @@ const SelectSubs = ({ setSelectSub, setAddSubject }) => {
 
   const onSuccess = (response) => {
     setLoading(false);
+    setSelectSub(false);
+    triggerFetch();
     // enqueueSnackbar("Subjects added successfully!", { variant: "success" });
   };
 
   const onError = (error) => {
     setLoading(false);
-    enqueueSnackbar("Failed. Please try again.", { variant: "error" });
+    SnackbarUtils.error("Failed. Please try again.");
   };
 
   // const handleSubmit = (e) => {
@@ -79,7 +81,7 @@ const SelectSubs = ({ setSelectSub, setAddSubject }) => {
     handleAddSubject(userData, onSuccess, onError);
   };
 
-  console.log(selectedSubjects);
+  // console.log(selectedSubjects);
 
   return (
     <>

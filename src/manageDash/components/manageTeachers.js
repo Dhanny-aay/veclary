@@ -20,14 +20,36 @@ const ManageTeachers = () => {
   const { activePage, setActivePage } = useContext(ManageActivePageContext);
   const [addTeach, setAddTeach] = useState(false);
   const [teachers, setTeachers] = useState([]);
-  const [trigger, setTrigger] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [trigger, setTrigger] = useState(false);
   const [teacherID, setTeacherID] = useState("");
   // const [deleteTeach, setDeleteTeach] = useState(false);
   const [editTeach, setEditTeach] = useState(false);
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [teachersPerPage] = useState(10);
+
+  // Get current teachers for the page
+  const indexOfLastTeacher = currentPage * teachersPerPage;
+  const indexOfFirstTeacher = indexOfLastTeacher - teachersPerPage;
+  const currentTeachers = teachers.slice(
+    indexOfFirstTeacher,
+    indexOfLastTeacher
+  );
+
+  // Calculate total pages
+  const totalPages = Math.ceil(teachers.length / teachersPerPage);
+
+  // Change page
+  const paginate = (pageNumber) => {
+    if (pageNumber > 0 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+    }
+  };
+
   const triggerFetch = () => {
-    setTrigger(!trigger); // Toggle trigger to true or false
+    setTrigger(!trigger);
   };
 
   const fetchTeachers = async () => {
@@ -36,8 +58,6 @@ const ManageTeachers = () => {
       const data = await handleGetSchoolTeachers();
       if (data) {
         setTeachers(data);
-      } else {
-        // enqueueSnackbar("Failed to fetch profile data", { variant: "error" });
       }
     } catch (error) {
       console.error("Error fetching events:", error);
@@ -57,7 +77,6 @@ const ManageTeachers = () => {
   const getStatusColor = (status) => {
     switch (status) {
       case "APPROVED":
-        return "bg-[#17BD8D1A] text-[#17BD8D]";
       case "CURRENT":
         return "bg-[#17BD8D1A] text-[#17BD8D]";
       case "PENDING":
@@ -69,8 +88,8 @@ const ManageTeachers = () => {
     }
   };
   // const handleDeleteIconClick = (teacherID) => {
-  //   setTeacherID(teacherID);
-  //   setDeleteTeach(true);
+  //   setTeacherID(teacherID);
+  //   setDeleteTeach(true);
   // };
 
   const handleEditIconClick = (teacherID) => {
@@ -84,12 +103,12 @@ const ManageTeachers = () => {
         <AddTeacher setAddTeach={setAddTeach} triggerFetch={triggerFetch} />
       )}
       {/* {deleteTeach && (
-        <DeleteTeacher
-          teacherID={teacherID}
-          setDeleteTeach={setDeleteTeach}
-          triggerFetch={triggerFetch}
-        />
-      )} */}
+        <DeleteTeacher
+          teacherID={teacherID}
+          setDeleteTeach={setDeleteTeach}
+          triggerFetch={triggerFetch}
+        />
+      )} */}
       {editTeach && (
         <EditTeacher
           teacherID={teacherID}
@@ -139,7 +158,7 @@ const ManageTeachers = () => {
               onClick={() => {
                 setAddTeach(true);
               }}
-              className=" text-center  text-sm font-Outfit font-medium text-white bg-[#0530A1] py-2 px-3 md:px-6 rounded-[10px]"
+              className=" text-center  text-sm font-Outfit font-medium text-white bg-[#0530A1] py-2 px-3 md:px-6 rounded-[10px]"
             >
               Add New Teacher
             </button>
@@ -168,8 +187,8 @@ const ManageTeachers = () => {
                       Status
                     </th>
                     {/* <th className="border-b font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 text-center px-4">
-                      Class Taught
-                    </th> */}
+                      Class Taught
+                    </th> */}
                     <th className="border-b font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 text-center px-4"></th>
                   </tr>
                 </thead>
@@ -181,20 +200,19 @@ const ManageTeachers = () => {
                       </td>
                     </tr>
                   ) : teachers.length === 0 ? (
-                    // Show if there are no teachers
                     <tr className=" w-full">
                       <td
-                        colSpan="5"
+                        colSpan="6"
                         className="px-4 py-3 text-center font-Outfit text-[#667085] text-sm w-full"
                       >
                         There are no teachers yet.
                       </td>
                     </tr>
                   ) : (
-                    teachers.map((data, index) => (
+                    currentTeachers.map((data, index) => (
                       <tr key={index}>
                         <td className=" font-Outfit py-4 border-t border-[#EAEBF0] text-sm text-[#5F6D7E] font-medium text-center">
-                          0{index + 1}
+                          {indexOfFirstTeacher + index + 1}
                         </td>
                         <td className=" font-Outfit py-4 border-t border-[#EAEBF0] text-[#272D37] font-medium text-sm text-center">
                           {data.name}
@@ -215,8 +233,8 @@ const ManageTeachers = () => {
                           </button>
                         </td>
                         {/* <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">
-                          {data.class}
-                        </td> */}
+                          {data.class}
+                        </td> */}
                         <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center flex items-center justify-center">
                           <img
                             onClick={() => handleEditIconClick(data._id)}
@@ -225,11 +243,11 @@ const ManageTeachers = () => {
                             alt=""
                           />
                           {/* <img
-                            onClick={() => handleDeleteIconClick(data._id)}
-                            className=" w-3"
-                            src={trash}
-                            alt=""
-                          /> */}
+                            onClick={() => handleDeleteIconClick(data._id)}
+                            className=" w-3"
+                            src={trash}
+                            alt=""
+                          /> */}
                         </td>
                       </tr>
                     ))
@@ -238,20 +256,40 @@ const ManageTeachers = () => {
               </table>
             </div>
             <div className=" w-full py-3 px-3 flex justify-between items-center">
-              <span className=" flex space-x-1">
+              <span
+                className={`flex space-x-1 cursor-pointer ${
+                  currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
+                }`}
+                onClick={() => paginate(currentPage - 1)}
+              >
                 <img src={backArr} alt="" />
                 <p className=" font-Outfit font-medium text-[#5F6D7E] text-sm">
                   Prev
                 </p>
               </span>
               <span className=" flex items-end space-x-4">
-                <p className=" font-Outfit text-sm text-[#0530A1]">1</p>
-                <p className=" font-Outfit text-sm">2</p>
-                <p className=" font-Outfit text-sm">...</p>
-                <p className=" font-Outfit text-sm">5</p>
-                <p className=" font-Outfit text-sm">6</p>
+                {[...Array(totalPages).keys()].map((number) => (
+                  <p
+                    key={number + 1}
+                    onClick={() => paginate(number + 1)}
+                    className={`font-Outfit text-sm cursor-pointer ${
+                      currentPage === number + 1
+                        ? "text-[#0530A1] font-bold"
+                        : "text-[#5F6D7E]"
+                    }`}
+                  >
+                    {number + 1}
+                  </p>
+                ))}
               </span>
-              <span className=" flex space-x-1">
+              <span
+                className={`flex space-x-1 cursor-pointer ${
+                  currentPage === totalPages
+                    ? "opacity-50 cursor-not-allowed"
+                    : ""
+                }`}
+                onClick={() => paginate(currentPage + 1)}
+              >
                 <p className=" font-Outfit font-medium text-[#5F6D7E] text-sm">
                   Next
                 </p>

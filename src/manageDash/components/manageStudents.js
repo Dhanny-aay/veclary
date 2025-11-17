@@ -28,8 +28,26 @@ const ManageStudents = () => {
   const [deleteStudent, setDeleteStudent] = useState(false);
   const [studentID, setStudentID] = useState("");
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [studentsPerPage] = useState(10);
+
+  // Get current students for the page
+  const indexOfLastStudent = currentPage * studentsPerPage;
+  const indexOfFirstStudent = indexOfLastStudent - studentsPerPage;
+  const currentStudents = students.slice(
+    indexOfFirstStudent,
+    indexOfLastStudent
+  );
+
+  // Calculate total pages
+  const totalPages = Math.ceil(students.length / studentsPerPage);
+
+  // Change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   const triggerFetch = () => {
-    setTrigger(!trigger); // Toggle trigger to true or false
+    setTrigger(!trigger);
   };
 
   const handleClick = (page) => {
@@ -37,20 +55,20 @@ const ManageStudents = () => {
   };
 
   const fetchStudents = async () => {
-    setLoading(true); // Start loading when fetching Students
+    setLoading(true);
     try {
       const data = await handleGetSchoolStudents();
       if (Array.isArray(data) && data.length === 0) {
-        setNoStudents(true); // Set noStudents to true if no Students found
-        setStudents([]); // Clear the Students array
+        setNoStudents(true);
+        setStudents([]);
       } else {
-        setStudents(data); // Set the Students if data is available
-        setNoStudents(false); // Reset noStudents if Students are found
+        setStudents(data);
+        setNoStudents(false);
       }
     } catch (error) {
-      setNoStudents(true); // Set noStudents to true in case of error
+      setNoStudents(true);
     } finally {
-      setLoading(false); // Stop loading when fetch is complete
+      setLoading(false);
     }
   };
 
@@ -129,7 +147,7 @@ const ManageStudents = () => {
               onClick={() => {
                 setAddStudent(true);
               }}
-              className=" text-center  text-sm font-Outfit font-medium text-white bg-[#0530A1] py-2 px-3 md:px-6 rounded-[10px]"
+              className=" text-center  text-sm font-Outfit font-medium text-white bg-[#0530A1] py-2 px-3 md:px-6 rounded-[10px]"
             >
               Add New Student
             </button>
@@ -155,7 +173,7 @@ const ManageStudents = () => {
                       Date of Birth
                     </th>
                     <th className="border-b font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 text-center px-4">
-                      Academic Rating
+                      Status
                     </th>
                     <th className="border-b font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 text-center px-4">
                       Attendance Rating
@@ -165,28 +183,25 @@ const ManageStudents = () => {
                 </thead>
                 <tbody>
                   {loading ? (
-                    // Show loading spinner while fetching data
                     <tr>
-                      <td colSpan="6">
-                        <LoadingTable rows={6} columns={6} />
+                      <td colSpan="7">
+                        <LoadingTable rows={6} columns={7} />
                       </td>
                     </tr>
                   ) : noStudents ? (
-                    // Show "No Students found" message
-
                     <tr className=" w-full">
                       <td
-                        colSpan="6"
+                        colSpan="7"
                         className="px-4 py-3 text-center font-Outfit text-[#667085] text-sm w-full"
                       >
                         There are no Students yet.
                       </td>
                     </tr>
                   ) : (
-                    students.map((data, index) => (
+                    currentStudents.map((data, index) => (
                       <tr key={index}>
                         <td className=" font-Outfit py-4 border-t border-[#EAEBF0] text-sm text-[#5F6D7E] font-medium text-center">
-                          0{index + 1}
+                          {indexOfFirstStudent + index + 1}
                         </td>
                         <td className=" font-Outfit py-4 border-t border-[#EAEBF0] text-[#272D37] font-medium text-sm text-center">
                           {data.name}
@@ -198,19 +213,18 @@ const ManageStudents = () => {
                           {data.dob}
                         </td>
                         <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">
-                          {data.rate1}
+                          {data.status}
                         </td>
                         <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">
                           {data.rate2}
                         </td>
-                        <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center flex space-x-3">
+                        <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center flex space-x-3 justify-center">
                           <img
                             className=" w-3 cursor-pointer"
                             src={edit}
                             onClick={() => handleEditIconClick(data._id)}
                             alt=""
                           />
-                          {/* <img className=" w-3" src={vis} alt="" /> */}
                           <img
                             className=" w-3 cursor-pointer"
                             onClick={() => handleDeleteIconClick(data._id)}
@@ -225,20 +239,34 @@ const ManageStudents = () => {
               </table>
             </div>
             <div className=" w-full py-3 px-3 flex justify-between items-center">
-              <span className=" flex space-x-1">
+              <span
+                className=" flex space-x-1 cursor-pointer"
+                onClick={() => paginate(currentPage - 1)}
+              >
                 <img src={backArr} alt="" />
                 <p className=" font-Outfit font-medium text-[#5F6D7E] text-sm">
                   Prev
                 </p>
               </span>
               <span className=" flex items-end space-x-4">
-                <p className=" font-Outfit text-sm text-[#0530A1]">1</p>
-                <p className=" font-Outfit text-sm">2</p>
-                <p className=" font-Outfit text-sm">...</p>
-                <p className=" font-Outfit text-sm">5</p>
-                <p className=" font-Outfit text-sm">6</p>
+                {[...Array(totalPages).keys()].map((number) => (
+                  <p
+                    key={number + 1}
+                    onClick={() => paginate(number + 1)}
+                    className={`font-Outfit text-sm cursor-pointer ${
+                      currentPage === number + 1
+                        ? "text-[#0530A1] font-bold"
+                        : "text-[#5F6D7E]"
+                    }`}
+                  >
+                    {number + 1}
+                  </p>
+                ))}
               </span>
-              <span className=" flex space-x-1">
+              <span
+                className=" flex space-x-1 cursor-pointer"
+                onClick={() => paginate(currentPage + 1)}
+              >
                 <p className=" font-Outfit font-medium text-[#5F6D7E] text-sm">
                   Next
                 </p>

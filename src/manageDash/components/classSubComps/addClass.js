@@ -8,6 +8,7 @@ import { handleGetSchoolTeachers } from "../../../controllers/schoolControllers/
 import GenericLoadingSkeleton from "../../../utils/loadingSkeleton";
 import { handleAddClass } from "../../../controllers/schoolControllers/classController";
 import { handleGetSchoolSubjects } from "../../../controllers/schoolControllers/subjectController";
+import SnackbarUtils from "../../../utils/snackbarUtils";
 // import add from "./assets/addBlk.svg";
 // import plus from "./assets/PlusCircle.svg";
 
@@ -17,7 +18,6 @@ const AddClass = ({ setAddClass, triggerFetch }) => {
   const [teachers, setTeachers] = useState([]);
   const [classteacher, setClassTeacher] = useState("");
   const [loading, setLoading] = useState(false);
-  const { enqueueSnackbar } = useSnackbar();
   const [errors, setErrors] = useState({});
   const [sessions, setSessions] = useState([]);
   const [loadingSession, setLoadingSession] = useState(true);
@@ -31,9 +31,7 @@ const AddClass = ({ setAddClass, triggerFetch }) => {
     try {
       const data = await handleGetSchoolSubjects();
       if (data) {
-        setSubjects(data[0].subjects);
-      } else {
-        // enqueueSnackbar("Failed to fetch profile data", { variant: "error" });
+        setSubjects(data[0]?.subjects || []);
       }
     } catch (error) {
       console.error("Error fetching subjects:", error);
@@ -85,19 +83,27 @@ const AddClass = ({ setAddClass, triggerFetch }) => {
     fetchTeachers();
   }, []);
 
+  // Set default values after data is fetched
+  useEffect(() => {
+    if (sessions.length > 0 && !sessionId) {
+      setSessionId(sessions[0]._id);
+    }
+  }, [sessions, sessionId]);
+
+  useEffect(() => {
+    if (teachers.length > 0 && !classteacher) {
+      setClassTeacher(teachers[0]._id);
+    }
+  }, [teachers, classteacher]);
+
   const validateFields = () => {
     let errors = {};
-    // Validate the class name and session ID
     if (!name) errors.name = "Name is required";
     if (!sessionId) errors.sessionId = "Session is required";
-
-    // Validate that at least one subject is selected
     if (selectedSubjects.length === 0) {
       errors.selectedSubjects = "At least one subject must be selected";
     }
-
     setErrors(errors);
-    // If no errors, return true
     return Object.keys(errors).length === 0;
   };
 
@@ -105,12 +111,12 @@ const AddClass = ({ setAddClass, triggerFetch }) => {
     setLoading(false);
     setAddClass(false);
     triggerFetch();
-    enqueueSnackbar("Class added successfully!", { variant: "success" });
+    // SnackbarUtils.success("Class added successfully!");
   };
 
   const onError = (error) => {
     setLoading(false);
-    enqueueSnackbar("Failed. Please try again.", { variant: "error" });
+    SnackbarUtils.error("Failed. Please try again.");
   };
 
   const handleSubmit = (e) => {
@@ -130,22 +136,10 @@ const AddClass = ({ setAddClass, triggerFetch }) => {
     };
 
     handleAddClass(userData, onSuccess, onError);
-    // console.log(userData);
   };
 
-  // const addTeacherSubjectPair = () => {
-  //   setTeacherSubjectPairs([
-  //     ...teacherSubjectPairs,
-  //     { teacherId: "", subject: "" },
-  //   ]);
-  // };
-
-  // const handleTeacherSubjectChange = (index, field, value) => {
-  //   const updatedPairs = teacherSubjectPairs.map((pair, idx) =>
-  //     idx === index ? { ...pair, [field]: value } : pair
-  //   );
-  //   setTeacherSubjectPairs(updatedPairs);
-  // };
+  const disableSubmit =
+    loading || sessions.length === 0 || teachers.length === 0;
 
   return (
     <div className="w-full md:w-[120%] h-full bg-[#1212128d] z-[999] fixed top-0 md:-left-[20%] p-6 flex justify-center items-center">
@@ -183,13 +177,17 @@ const AddClass = ({ setAddClass, triggerFetch }) => {
             Session
             {loadingSession ? (
               <GenericLoadingSkeleton count={1} width="100%" height={40} />
+            ) : sessions.length === 0 ? (
+              <p className="font-Outfit text-red-500 text-sm mt-2">
+                No sessions found. Please go to the school calendar menu to
+                create one.
+              </p>
             ) : (
               <select
                 value={sessionId}
                 onChange={(e) => setSessionId(e.target.value)}
                 className="mt-2 border border-[#DAE0E6] p-2.5 rounded-[5px] text-sm font-Outfit font-normal text-[#919BA7] w-full"
               >
-                <option value="">Select Session</option>
                 {sessions.map((item, index) => (
                   <option value={item._id} key={index}>
                     {item.name}
@@ -209,6 +207,10 @@ const AddClass = ({ setAddClass, triggerFetch }) => {
               Class Teacher(optional)
               {loadingTeachers ? (
                 <GenericLoadingSkeleton count={1} width="100%" height={40} />
+              ) : teachers.length === 0 ? (
+                <p className="font-Outfit text-red-500 text-sm mt-2">
+                  No teachers found. Please go to the teachers menu to add one.
+                </p>
               ) : (
                 <select
                   value={classteacher}
@@ -226,18 +228,7 @@ const AddClass = ({ setAddClass, triggerFetch }) => {
             </label>
           </div>
 
-          {/* 
-          <button
-            className="flex items-center space-x-2 mt-3"
-            onClick={addTeacherSubjectPair}
-          >
-            <img src={add} alt="" className="w-5 h-5" />
-            <p className="font-Outfit font-medium text-sm text-[#272d37]">
-              Add another teacher
-            </p>
-          </button> */}
-
-          <div className="  mt-6 w-full flex flex-row items-center justify-between">
+          <div className="mt-6 w-full flex flex-row items-center justify-between">
             <label
               htmlFor="choose"
               className=" font-Outfit font-medium text-sm text-[#272D37]"
@@ -267,7 +258,7 @@ const AddClass = ({ setAddClass, triggerFetch }) => {
                     <option
                       className="capitalize"
                       key={subject._id}
-                      value={subject._id} // Pass only the ID
+                      value={subject._id}
                     >
                       {subject.name}
                     </option>
@@ -310,8 +301,12 @@ const AddClass = ({ setAddClass, triggerFetch }) => {
             </button>
             <button
               onClick={handleSubmit}
-              disabled={loading}
-              className="w-full py-3 font-Outfit rounded-md bg-[#0530A1] text-white font-semibold text-base"
+              disabled={disableSubmit}
+              className={`w-full py-3 font-Outfit rounded-md text-white font-semibold text-base ${
+                disableSubmit
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-[#0530A1]"
+              }`}
             >
               {loading ? (
                 <img src={load} alt="" className="h-6 w-6 mx-auto" />
