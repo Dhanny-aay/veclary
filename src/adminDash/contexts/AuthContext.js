@@ -89,7 +89,7 @@ export const AuthProvider = ({ children }) => {
         const tokenStorage = rememberMe ? localStorage : sessionStorage;
         tokenStorage.setItem("veclary_token", response.accessToken);
 
-        navigate("/adminDashboard");
+        navigate("/admin-dashboard");
 
         return true;
       } catch (error) {
@@ -110,7 +110,7 @@ export const AuthProvider = ({ children }) => {
       setUser(null);
       localStorage.removeItem("veclary_token");
       sessionStorage.removeItem("veclary_token");
-      navigate("/adminLogin");
+      navigate("//admin-login");
     }
   }, [navigate]);
 

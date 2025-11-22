@@ -9,7 +9,7 @@ const AdminActivePageProvider = (props) => {
   const { user } = useAuth();
 
   const [activePage, setActivePage] = useState("Home");
-  const [accountType, setAccountType] = useState("CEO"); //SalesOfficer || JuniorPC || TitleOfficer || Supervisor || JuniorFinLead || Management || FinLead || Technical || PCOfficer || RemunerationManager || CustomerSupport || CEO || ContentManager
+  const [accountType, setAccountType] = useState("super"); //SalesOfficer || JuniorPC || TitleOfficer || Supervisor || JuniorFinLead || Management || FinLead || Technical || PCOfficer || RemunerationManager || CustomerSupport || CEO || ContentManager || super
 
   const [sidebarVisible, setSidebarVisible] = useState(false);
 

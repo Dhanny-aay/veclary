@@ -72,19 +72,19 @@ function App() {
             <Route path="/vendor-login" element={<VendorLogin />} />
             <Route path="/vendor-signup" element={<VendorSignup />} />
             <Route path="/vendor-dashboard" element={<VendorDashboard />} />
-            <Route path="/adminSelect" element={<AdminSelect />} />
-            <Route path="/adminSignup" element={<AdminSignup />} />
-            <Route path="/adminlogin" element={<AdminLogin />} />
-            {/* <Route path="/adminDashboard" element={<AdminDashBoard />} /> */}
+            <Route path="/admin-select" element={<AdminSelect />} />
+            <Route path="/admin-signup" element={<AdminSignup />} />
+            <Route path="/admin-login" element={<AdminLogin />} />
+            {/* <Route path="/admin-dashboard" element={<AdminDashBoard />} /> */}
 
             {/* Protected Admin Routes */}
-            <Route path="/adminDashboard/*" element={<ProtectedRoute />}>
+            <Route path="/admin-dashboard/*" element={<ProtectedRoute />}>
               <Route index element={<AdminDashBoard />} />
               {/* Default dashboard */}
               {/* <Route path="users" element={<UsersPage />} /> */}
-              {/* /adminDashboard/users */}
+              {/* /admin-dashboard/users */}
               {/* <Route path="settings" element={<SettingsPage />} /> */}
-              {/* /adminDashboard/settings */}
+              {/* /admin-dashboard/settings */}
             </Route>
           </Routes>
         </Container>

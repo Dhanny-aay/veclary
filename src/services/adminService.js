@@ -2,7 +2,8 @@ import api from "../index/api";
 
 // Base admin service with shared functionality
 class BaseAdminService {
-  static BASE_PATH = "/admins";
+  static BASE_PATH = "/users";
+  static ADMIN_PATH = "/admins";
 
   static handleQueryParams(params = {}) {
     return params ? `?${new URLSearchParams(params).toString()}` : "";
@@ -286,22 +287,25 @@ export class ContentService extends BaseAdminService {
 // School Management Service
 export class SchoolService extends BaseAdminService {
   static async registerSchool(schoolData) {
-    return api("POST", `${this.BASE_PATH}/schools/register`, schoolData);
+    return api("POST", `${this.ADMIN_PATH}/schools/register`, schoolData);
   }
   static async addTeacher(teacherData) {
-    return api("POST", `${this.BASE_PATH}/schools/add-teacher`, teacherData);
+    return api("POST", `${this.ADMIN_PATH}/schools/add-teacher`, teacherData);
   }
 
-  static async getSchools() {
-    return api("GET", `${this.BASE_PATH}/schools`);
+  static async getSchools(params) {
+    return api(
+      "GET",
+      `${this.ADMIN_PATH}/schools${this.handleQueryParams(params)}`
+    );
   }
 
   static async getSchoolById(schoolId) {
-    return api("GET", `${this.BASE_PATH}/schools/${schoolId}`);
+    return api("GET", `${this.ADMIN_PATH}/schools/${schoolId}`);
   }
 
   static async updateSchool(schoolId, schoolData) {
-    return api("PATCH", `${this.BASE_PATH}/schools/${schoolId}`, schoolData);
+    return api("PATCH", `${this.ADMIN_PATH}/schools/${schoolId}`, schoolData);
   }
 }
 

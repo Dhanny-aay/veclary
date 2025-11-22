@@ -77,14 +77,14 @@ const TeacherAssignments = ({ dashboard }) => {
     // Filter by class
     if (selectedClass !== "all") {
       newFilteredAssignments = newFilteredAssignments.filter(
-        (a) => a.classId === selectedClass
+        (a) => a.classId?._id === selectedClass
       );
     }
 
     // Filter by subject
     if (selectedSubject !== "all") {
       newFilteredAssignments = newFilteredAssignments.filter(
-        (a) => a.subjectId === selectedSubject
+        (a) => a.subjectId?._id === selectedSubject
       );
     }
 
@@ -100,15 +100,6 @@ const TeacherAssignments = ({ dashboard }) => {
     setDeletingAssignmentId(null);
     fetchAssignments();
   };
-
-  if (viewingAssignment) {
-    return (
-      <ViewAssignment
-        assignment={viewingAssignment}
-        onBack={() => setViewingAssignment(null)}
-      />
-    );
-  }
 
   const renderTableContent = () => {
     if (filteredAssignments.length === 0) {
@@ -140,7 +131,7 @@ const TeacherAssignments = ({ dashboard }) => {
             {assignment.subjectId?.name || "N/A"}
           </td>
           <td className="font-Outfit py-4 px-6 border-t border-[#EAEBF0] text-[#272D37] font-medium text-sm text-left capitalize">
-            {assignment.classId?.className || "N/A"}
+            {assignment.classId?.name || "N/A"}
           </td>
           <td className="font-Outfit text-sm text-[#5F6D7E] py-4 px-6 border-t border-[#EAEBF0] text-left capitalize">
             {new Date(assignment.dueTime).toLocaleDateString()}
@@ -179,6 +170,12 @@ const TeacherAssignments = ({ dashboard }) => {
 
   return (
     <div className="w-full">
+      {viewingAssignment && (
+        <ViewAssignment
+          assignment={viewingAssignment}
+          onBack={() => setViewingAssignment(null)}
+        />
+      )}
       {deletingAssignmentId && (
         <DeleteAssignment
           assignmentId={deletingAssignmentId}
@@ -239,7 +236,7 @@ const TeacherAssignments = ({ dashboard }) => {
           >
             <option value="all">All Subjects</option>
             {subjects.map((s) => (
-              <option key={s.id} value={s.id}>
+              <option key={s.id} value={s.id} className=" capitalize">
                 {s.name}
               </option>
             ))}
@@ -257,34 +254,34 @@ const TeacherAssignments = ({ dashboard }) => {
       <div className="border border-[#EAEBF0] rounded-[10px] overflow-x-auto">
         <table className="w-full">
           <thead>
-            {loading ? (
-              <tr>
-                <td colSpan="7">
-                  <GenericLoadingSkeleton count={5} height={40} />
-                </td>
-              </tr>
-            ) : (
-              <tr>
-                {[
-                  "S/N",
-                  "Title",
-                  "Subject",
-                  "Class",
-                  "Deadline",
-                  "Status",
-                  "Action",
-                ].map((head) => (
-                  <th
-                    key={head}
-                    className="border-b font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 px-6 text-left"
-                  >
-                    {head}
-                  </th>
-                ))}
-              </tr>
-            )}
+            <tr>
+              {[
+                "S/N",
+                "Title",
+                "Subject",
+                "Class",
+                "Deadline",
+                "Status",
+                "Action",
+              ].map((head) => (
+                <th
+                  key={head}
+                  className="border-b font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 px-6 text-left"
+                >
+                  {head}
+                </th>
+              ))}
+            </tr>
           </thead>
-          <tbody>{renderTableContent()}</tbody>
+          <tbody>
+            {loading ? (
+              <td colSpan="7">
+                <GenericLoadingSkeleton count={5} height={40} />
+              </td>
+            ) : (
+              renderTableContent()
+            )}
+          </tbody>
         </table>
       </div>
     </div>

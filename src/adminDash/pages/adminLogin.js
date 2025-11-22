@@ -29,7 +29,7 @@ const AdminLogin = () => {
     setIsSubmitting(true);
     try {
       await login(email, password, rememberMe);
-      navigate("/adminDashboard");
+      navigate("/admin-dashboard");
     } catch (error) {
       SnackbarUtils.error(error.message || "Login failed. Please try again.");
     } finally {
@@ -117,7 +117,7 @@ const AdminLogin = () => {
             {isSubmitting ? "Logging in..." : "Login"}
           </button>
 
-          <Link to="/adminSignup">
+          <Link to="/admin-signup">
             <p className="mt-[19px] font-Outfit font-medium text-sm text-[#12121266] text-center">
               Don't have an Account?{" "}
               <span className="text-[#0530A1] hover:underline cursor-pointer">

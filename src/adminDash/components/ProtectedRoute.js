@@ -11,7 +11,7 @@ const ProtectedRoute = () => {
   }
 
   if (!user || user.role !== "ADMIN") {
-    return <Navigate to="/adminLogin" state={{ from: location }} replace />;
+    return <Navigate to="/admin-login" state={{ from: location }} replace />;
   }
 
   return <Outlet />;

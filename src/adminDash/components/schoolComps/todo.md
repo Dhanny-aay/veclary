@@ -1,0 +1,3 @@
+- view studemt profile
+- view teacher profile
+- upload documents profile

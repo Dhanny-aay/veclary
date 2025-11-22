@@ -11,6 +11,7 @@ import VendorActivePageProvider from "./vendorDashboard/contexts/VendorActivePag
 import AdminActivePageProvider from "./adminDash/contexts/AdminActivePageContext";
 import { Toaster } from "sonner";
 import AuthProvider from "./adminDash/contexts/AuthContext";
+import { AdminNavProvider } from "./adminDash/contexts/AdminNavContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -18,17 +19,19 @@ root.render(
     <Router>
       <AuthProvider>
         <AdminActivePageProvider>
-          <VendorActivePageProvider>
-            <ManageActivePageProvider>
-              <TeacherActivePageProvider>
-                <ActivePageProvider>
-                  <Toaster position="top-right" richColors closeButton />
+          <AdminNavProvider>
+            <VendorActivePageProvider>
+              <ManageActivePageProvider>
+                <TeacherActivePageProvider>
+                  <ActivePageProvider>
+                    <Toaster position="top-right" richColors closeButton />
 
-                  <App />
-                </ActivePageProvider>
-              </TeacherActivePageProvider>
-            </ManageActivePageProvider>
-          </VendorActivePageProvider>
+                    <App />
+                  </ActivePageProvider>
+                </TeacherActivePageProvider>
+              </ManageActivePageProvider>
+            </VendorActivePageProvider>
+          </AdminNavProvider>
         </AdminActivePageProvider>
       </AuthProvider>
     </Router>

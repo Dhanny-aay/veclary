@@ -75,7 +75,7 @@ export const handleGetAssignmentsByTeacher = async (teacherId) => {
   try {
     const response = await silentApi(
       "GET",
-      `/teachers/assignments/${teacherId}`
+      `/teachers/${teacherId}/assignments`
     );
     return response;
   } catch (error) {

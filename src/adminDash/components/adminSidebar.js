@@ -184,6 +184,7 @@ const AdminSidebar = () => {
       "PublisherFee",
     ],
     ContentManager: ["Home"],
+    super: sidebar.map((item) => item.page),
   };
 
   const handleClick = (page) => {
@@ -227,8 +228,8 @@ const AdminSidebar = () => {
             />
           </div>
 
-          <div className="mt-5">
-            <div className="">
+          <div className="mt-5 h-[calc(100vh-180px)] overflow-y-auto">
+            <div>
               {/* Sidebar content */}
               {filteredSidebar.map((item, index) => (
                 <button

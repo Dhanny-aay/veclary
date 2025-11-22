@@ -9,29 +9,61 @@ const StudyResources = () => {
   const [noBooks, setNoBooks] = useState(false);
 
   useEffect(() => {
-    const fetchBooks = async () => {
-      setLoading(true);
-      try {
-        // Using handleGetAuthorBooks as a placeholder for fetching general resources
-        const data = await handleGetAuthorBooks();
-        if (data && data.message === "No books found") {
-          setNoBooks(true);
-          setBooks([]);
-        } else if (data) {
-          setBooks(data);
-          setNoBooks(false);
-        } else {
-          setNoBooks(true);
-        }
-      } catch (error) {
-        console.error("Error fetching resources:", error);
-        setNoBooks(true);
-      } finally {
-        setLoading(false);
-      }
-    };
+    // Commented out actual fetching for dummy data to view UI
+    // const fetchBooks = async () => {
+    //   setLoading(true);
+    //   try {
+    //     // Using handleGetAuthorBooks as a placeholder for fetching general resources
+    //     const data = await handleGetAuthorBooks();
+    //     if (data && data.message === "No books found") {
+    //       setNoBooks(true);
+    //       setBooks([]);
+    //     } else if (data) {
+    //       setBooks(data);
+    //       setNoBooks(false);
+    //     } else {
+    //       setNoBooks(true);
+    //     }
+    //   } catch (error) {
+    //     console.error("Error fetching resources:", error);
+    //     setNoBooks(true);
+    //   } finally {
+    //     setLoading(false);
+    //   }
+    // };
 
-    fetchBooks();
+    // fetchBooks();
+
+    // Dummy data for UI viewing
+    setLoading(true);
+    setTimeout(() => {
+      // Simulate loading delay
+      const dummyBooks = [
+        {
+          _id: "1",
+          title: "Mathematics Textbook",
+          description: "Comprehensive guide to algebra and geometry.",
+        },
+        {
+          _id: "2",
+          title: "Science Workbook",
+          description: "Interactive exercises for physics and chemistry.",
+        },
+        {
+          _id: "3",
+          title: "History Notes",
+          description: "Key events and timelines from world history.",
+        },
+        {
+          _id: "4",
+          title: "English Literature",
+          description: "Classic novels and poetry analysis.",
+        },
+      ];
+      setBooks(dummyBooks);
+      setNoBooks(false);
+      setLoading(false);
+    }, 1000); // 1 second delay to simulate loading
   }, []);
 
   return (
