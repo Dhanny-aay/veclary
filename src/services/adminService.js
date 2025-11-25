@@ -77,8 +77,25 @@ export class UserService extends BaseAdminService {
     return api("PATCH", `${this.BASE_PATH}/users/${userId}`, userData);
   }
 
-  static async getPersonnel() {
-    return api("GET", `${this.BASE_PATH}/human-resource/personnels`);
+  // static async getPersonnel() {
+  //   return api("GET", `${this.BASE_PATH}/human-resource/personnels`);
+  // }
+
+  static async addHRPersonnel(personnelData) {
+    return api(
+      "POST",
+      `${this.ADMIN_PATH}/human-resource/add-personnel`,
+      personnelData
+    );
+  }
+
+  static async getHRPersonnels(params) {
+    return api(
+      "GET",
+      `${this.ADMIN_PATH}/human-resource/personnels${this.handleQueryParams(
+        params
+      )}`
+    );
   }
 }
 
@@ -177,34 +194,37 @@ export class FinancialService extends BaseAdminService {
 
 // Transactions Service
 export class TransactionService extends BaseAdminService {
-  static async getTransactions() {
-    return api("GET", `${this.BASE_PATH}/transactions`);
+  static async getTransactions(params) {
+    return api(
+      "GET",
+      `${this.ADMIN_PATH}/transactions${this.handleQueryParams(params)}`
+    );
   }
 
   static async getTransactionById(transactionId) {
-    return api("GET", `${this.BASE_PATH}/transactions/${transactionId}`);
+    return api("GET", `${this.ADMIN_PATH}/transactions/${transactionId}`);
   }
 
   static async updateTransaction(transactionId, data) {
     return api(
       "PATCH",
-      `${this.BASE_PATH}/transactions/${transactionId}`,
+      `${this.ADMIN_PATH}/transactions/${transactionId}`,
       data
     );
   }
 
   static async getTransactionFees() {
-    return api("GET", `${this.BASE_PATH}/transactions/fees`);
+    return api("GET", `${this.ADMIN_PATH}/transactions/fees`);
   }
 
   static async getTransactionFeeById(transactionId) {
-    return api("GET", `${this.BASE_PATH}/transactions/fees/${transactionId}`);
+    return api("GET", `${this.ADMIN_PATH}/transactions/fees/${transactionId}`);
   }
 
   static async updateTransactionFee(transactionId, data) {
     return api(
       "PATCH",
-      `${this.BASE_PATH}/transactions/fees/${transactionId}`,
+      `${this.ADMIN_PATH}/transactions/fees/${transactionId}`,
       data
     );
   }
