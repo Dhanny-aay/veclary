@@ -39,42 +39,42 @@ const AdminSidebar = () => {
       activeImg: homeAc,
       page: "TechnicalTeam",
     },
-    {
-      name: "Salary",
-      img: home,
-      activeImg: homeAc,
-      page: "Salary",
-    },
-    {
-      name: "Paid Salary",
-      img: home,
-      activeImg: homeAc,
-      page: "PaidSalary",
-    },
-    {
-      name: "Paid Salary",
-      img: home,
-      activeImg: homeAc,
-      page: "PaidSalaryCEO",
-    },
-    {
-      name: "Unpaid Salary",
-      img: home,
-      activeImg: homeAc,
-      page: "UnPaidSalaryCEO",
-    },
-    {
-      name: "Pending Salary",
-      img: home,
-      activeImg: homeAc,
-      page: "PendingSalary",
-    },
-    {
-      name: "Pending Salary",
-      img: home,
-      activeImg: homeAc,
-      page: "PendingSalaryCEO",
-    },
+    // {
+    //   name: "Salary",
+    //   img: home,
+    //   activeImg: homeAc,
+    //   page: "Salary",
+    // },
+    // {
+    //   name: "Paid Salary",
+    //   img: home,
+    //   activeImg: homeAc,
+    //   page: "PaidSalary",
+    // },
+    // {
+    //   name: "Paid Salary",
+    //   img: home,
+    //   activeImg: homeAc,
+    //   page: "PaidSalaryCEO",
+    // },
+    // {
+    //   name: "Unpaid Salary",
+    //   img: home,
+    //   activeImg: homeAc,
+    //   page: "UnPaidSalaryCEO",
+    // },
+    // {
+    //   name: "Pending Salary",
+    //   img: home,
+    //   activeImg: homeAc,
+    //   page: "PendingSalary",
+    // },
+    // {
+    //   name: "Pending Salary",
+    //   img: home,
+    //   activeImg: homeAc,
+    //   page: "PendingSalaryCEO",
+    // },
     {
       name: "Publisher/Author’s Fee",
       img: home,
@@ -142,6 +142,12 @@ const AdminSidebar = () => {
       activeImg: homeAc,
       page: "WebsiteControl",
     },
+    {
+      name: "Job Applications",
+      img: home,
+      activeImg: homeAc,
+      page: "jobApplications",
+    },
   ];
 
   const bottom = [
@@ -183,7 +189,7 @@ const AdminSidebar = () => {
       "PendingSalary",
       "PublisherFee",
     ],
-    ContentManager: ["Home"],
+    ContentManager: ["Home", "jobApplications", "WebsiteControl"],
     super: sidebar.map((item) => item.page),
   };
 

@@ -2,6 +2,8 @@ import { useState } from "react";
 import LandingPage from "./ContentManagerComponents/Landingpage";
 import { useAuth } from "../../contexts/AuthContext";
 import AdminDashMiniHeader from "../AdminDashMiniHeader";
+import Career from "./ContentManagerComponents/career";
+import Blog from "./ContentManagerComponents/blog";
 
 const ContentManager = () => {
   const [activeButton, setActiveButton] = useState("Landingpage");
@@ -13,25 +15,25 @@ const ContentManager = () => {
       value: "Landingpage",
       component: <LandingPage />,
     },
-    {
-      label: "About us",
-      value: "Aboutus",
-      component: "",
-    },
-    {
-      label: "Terms and conditions",
-      value: "Termsandconditions",
-      component: "",
-    },
+    // {
+    //   label: "About us",
+    //   value: "Aboutus",
+    //   component: "",
+    // },
+    // {
+    //   label: "Terms and conditions",
+    //   value: "Termsandconditions",
+    //   component: "",
+    // },
     {
       label: "Career",
       value: "Career",
-      component: "",
+      component: <Career />,
     },
     {
       label: "Blogs",
       value: "Blogs",
-      component: "",
+      component: <Blog />,
     },
   ];
 

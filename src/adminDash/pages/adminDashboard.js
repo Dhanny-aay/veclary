@@ -31,6 +31,7 @@ import PendingSalary from "../components/pendingSalary";
 import PaidSalaryCEO from "../components/PaidSalaryCEO";
 import UnPaidSalaryCEO from "../components/UnPaidSalaryCEO";
 import PendingSalaryCEO from "../components/PendingSalaryCEO";
+import JobApps from "../components/jobApps";
 
 const AdminDashBoard = () => {
   const componentMap = {
@@ -62,6 +63,7 @@ const AdminDashBoard = () => {
     PaidSalaryCEO: <PaidSalaryCEO />,
     UnPaidSalaryCEO: <UnPaidSalaryCEO />,
     PendingSalaryCEO: <PendingSalaryCEO />,
+    jobApplications: <JobApps />,
   };
 
   const { activePage } = useContext(AdminActivePageContext);

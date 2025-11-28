@@ -1,6 +1,41 @@
+import React, { useState, useEffect } from "react";
 import pload from "./assets/pload.svg";
+import { ContentService } from "../../../../services/adminService";
+import SnackbarUtils from "../../../../utils/snackbarUtils";
+import GenericLoadingSkeleton from "../../../../utils/loadingSkeleton";
 
 const LandingPage = () => {
+  const [content, setContent] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchContent = async () => {
+      try {
+        setLoading(true);
+        const response = await ContentService.getHomePageContent();
+        if (response) {
+          setContent(response);
+        }
+      } catch (err) {
+        setError(err.message || "Failed to fetch content.");
+        SnackbarUtils.error(err.message || "Failed to fetch content.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchContent();
+  }, []);
+
+  if (loading) {
+    return <GenericLoadingSkeleton count={5} />;
+  }
+
+  if (error) {
+    return <div className="text-red-500 p-4">{error}</div>;
+  }
+
   return (
     <>
       <div className=" w-full mt-6">
@@ -19,6 +54,7 @@ const LandingPage = () => {
                 <textarea
                   name=""
                   className=" border border-[#DAE0E6] rounded-[6px] mt-2 resize-none"
+                  defaultValue={content?.heroSlides?.[0]?.heading}
                   id=""
                 ></textarea>
               </label>
@@ -30,6 +66,7 @@ const LandingPage = () => {
                 <textarea
                   name=""
                   className=" border border-[#DAE0E6] rounded-[6px] mt-2 h-[100px] resize-none"
+                  defaultValue={content?.heroSlides?.[0]?.subheading}
                   id=""
                 ></textarea>
               </label>
@@ -39,7 +76,10 @@ const LandingPage = () => {
                 Upload hero image
               </p>
               <div className=" mt-2 w-full border border-[#DAE0E6] rounded-[5px] flex items-center justify-center flex-col p-6">
-                <img src={pload} alt="" />
+                <img
+                  src={content?.heroSlides?.[0]?.image || pload}
+                  alt="Hero Slide 1"
+                />
                 <p className=" mt-3 text-sm font-normal font-Outfit text-[#667085]">
                   <span className=" font-semibold text-[#0530A1] mr-1">
                     Click to upload
@@ -68,6 +108,7 @@ const LandingPage = () => {
                 <textarea
                   name=""
                   className=" border border-[#DAE0E6] rounded-[6px] mt-2 resize-none"
+                  defaultValue={content?.heroSlides?.[1]?.heading}
                   id=""
                 ></textarea>
               </label>
@@ -79,6 +120,7 @@ const LandingPage = () => {
                 <textarea
                   name=""
                   className=" border border-[#DAE0E6] rounded-[6px] mt-2 h-[100px] resize-none"
+                  defaultValue={content?.heroSlides?.[1]?.subheading}
                   id=""
                 ></textarea>
               </label>
@@ -88,7 +130,10 @@ const LandingPage = () => {
                 Upload hero image
               </p>
               <div className=" mt-2 w-full border border-[#DAE0E6] rounded-[5px] flex items-center justify-center flex-col p-6">
-                <img src={pload} alt="" />
+                <img
+                  src={content?.heroSlides?.[1]?.image || pload}
+                  alt="Hero Slide 2"
+                />
                 <p className=" mt-3 text-sm font-normal font-Outfit text-[#667085]">
                   <span className=" font-semibold text-[#0530A1] mr-1">
                     Click to upload
@@ -117,6 +162,7 @@ const LandingPage = () => {
                 <textarea
                   name=""
                   className=" border border-[#DAE0E6] rounded-[6px] mt-2 resize-none"
+                  defaultValue={content?.heroSlides?.[2]?.heading}
                   id=""
                 ></textarea>
               </label>
@@ -128,6 +174,7 @@ const LandingPage = () => {
                 <textarea
                   name=""
                   className=" border border-[#DAE0E6] rounded-[6px] mt-2 h-[100px] resize-none"
+                  defaultValue={content?.heroSlides?.[2]?.subheading}
                   id=""
                 ></textarea>
               </label>
@@ -137,7 +184,10 @@ const LandingPage = () => {
                 Upload hero image
               </p>
               <div className=" mt-2 w-full border border-[#DAE0E6] rounded-[5px] flex items-center justify-center flex-col p-6">
-                <img src={pload} alt="" />
+                <img
+                  src={content?.heroSlides?.[2]?.image || pload}
+                  alt="Hero Slide 3"
+                />
                 <p className=" mt-3 text-sm font-normal font-Outfit text-[#667085]">
                   <span className=" font-semibold text-[#0530A1] mr-1">
                     Click to upload
@@ -166,6 +216,7 @@ const LandingPage = () => {
                 <textarea
                   name=""
                   className=" border border-[#DAE0E6] rounded-[6px] mt-2 resize-none"
+                  defaultValue={content?.heroSlides?.[3]?.heading}
                   id=""
                 ></textarea>
               </label>
@@ -177,6 +228,7 @@ const LandingPage = () => {
                 <textarea
                   name=""
                   className=" border border-[#DAE0E6] rounded-[6px] mt-2 h-[100px] resize-none"
+                  defaultValue={content?.heroSlides?.[3]?.subheading}
                   id=""
                 ></textarea>
               </label>
@@ -186,7 +238,10 @@ const LandingPage = () => {
                 Upload hero image
               </p>
               <div className=" mt-2 w-full border border-[#DAE0E6] rounded-[5px] flex items-center justify-center flex-col p-6">
-                <img src={pload} alt="" />
+                <img
+                  src={content?.heroSlides?.[3]?.image || pload}
+                  alt="Hero Slide 4"
+                />
                 <p className=" mt-3 text-sm font-normal font-Outfit text-[#667085]">
                   <span className=" font-semibold text-[#0530A1] mr-1">
                     Click to upload
@@ -215,6 +270,7 @@ const LandingPage = () => {
               <textarea
                 name=""
                 className=" border border-[#DAE0E6] rounded-[6px] mt-2 resize-none"
+                defaultValue={content?.leaderboard?.heading}
                 id=""
               ></textarea>
             </label>
@@ -226,6 +282,7 @@ const LandingPage = () => {
               <textarea
                 name=""
                 className=" border border-[#DAE0E6] rounded-[6px] mt-2 h-[100px] resize-none"
+                defaultValue={content?.leaderboard?.subheading}
                 id=""
               ></textarea>
             </label>
@@ -247,6 +304,7 @@ const LandingPage = () => {
                 <textarea
                   name=""
                   className=" border border-[#DAE0E6] rounded-[6px] mt-2 resize-none"
+                  defaultValue={content?.whatWeOffer?.heading1}
                   id=""
                 ></textarea>
               </label>
@@ -258,6 +316,7 @@ const LandingPage = () => {
                 <textarea
                   name=""
                   className=" border border-[#DAE0E6] rounded-[6px] mt-2 h-[100px] resize-none"
+                  defaultValue={content?.whatWeOffer?.subheading1}
                   id=""
                 ></textarea>
               </label>
@@ -271,6 +330,7 @@ const LandingPage = () => {
                 <textarea
                   name=""
                   className=" border border-[#DAE0E6] rounded-[6px] mt-2 resize-none"
+                  defaultValue={content?.whatWeOffer?.heading2}
                   id=""
                 ></textarea>
               </label>
@@ -282,6 +342,7 @@ const LandingPage = () => {
                 <textarea
                   name=""
                   className=" border border-[#DAE0E6] rounded-[6px] mt-2 h-[100px] resize-none"
+                  defaultValue={content?.whatWeOffer?.subheading2}
                   id=""
                 ></textarea>
               </label>
@@ -303,6 +364,7 @@ const LandingPage = () => {
               <textarea
                 name=""
                 className=" border border-[#DAE0E6] rounded-[6px] mt-2 resize-none"
+                defaultValue={content?.whoIsVeclaryFor?.heading}
                 id=""
               ></textarea>
             </label>
@@ -314,6 +376,7 @@ const LandingPage = () => {
               <textarea
                 name=""
                 className=" border border-[#DAE0E6] rounded-[6px] mt-2 h-[100px] resize-none"
+                defaultValue={content?.whoIsVeclaryFor?.subheading}
                 id=""
               ></textarea>
             </label>
@@ -329,6 +392,7 @@ const LandingPage = () => {
                 <textarea
                   name=""
                   className=" border border-[#DAE0E6] rounded-[6px] mt-2 resize-none"
+                  defaultValue={content?.whoIsVeclaryFor?.sections?.[0]?.heading}
                   id=""
                 ></textarea>
               </label>
@@ -340,6 +404,9 @@ const LandingPage = () => {
                 <textarea
                   name=""
                   className=" border border-[#DAE0E6] rounded-[6px] mt-2 h-[100px] resize-none"
+                  defaultValue={
+                    content?.whoIsVeclaryFor?.sections?.[0]?.subheading
+                  }
                   id=""
                 ></textarea>
               </label>
@@ -349,7 +416,10 @@ const LandingPage = () => {
                 Upload hero image 1
               </p>
               <div className=" mt-2 w-full border border-[#DAE0E6] rounded-[5px] flex items-center justify-center flex-col p-6">
-                <img src={pload} alt="" />
+                <img
+                  src={content?.whoIsVeclaryFor?.sections?.[0]?.image || pload}
+                  alt="Section 1"
+                />
                 <p className=" mt-3 text-sm font-normal font-Outfit text-[#667085]">
                   <span className=" font-semibold text-[#0530A1] mr-1">
                     Click to upload
@@ -373,6 +443,7 @@ const LandingPage = () => {
                 <textarea
                   name=""
                   className=" border border-[#DAE0E6] rounded-[6px] mt-2 resize-none"
+                  defaultValue={content?.whoIsVeclaryFor?.sections?.[1]?.heading}
                   id=""
                 ></textarea>
               </label>
@@ -384,6 +455,9 @@ const LandingPage = () => {
                 <textarea
                   name=""
                   className=" border border-[#DAE0E6] rounded-[6px] mt-2 h-[100px] resize-none"
+                  defaultValue={
+                    content?.whoIsVeclaryFor?.sections?.[1]?.subheading
+                  }
                   id=""
                 ></textarea>
               </label>
@@ -393,7 +467,10 @@ const LandingPage = () => {
                 Upload hero image 2
               </p>
               <div className=" mt-2 w-full border border-[#DAE0E6] rounded-[5px] flex items-center justify-center flex-col p-6">
-                <img src={pload} alt="" />
+                <img
+                  src={content?.whoIsVeclaryFor?.sections?.[1]?.image || pload}
+                  alt="Section 2"
+                />
                 <p className=" mt-3 text-sm font-normal font-Outfit text-[#667085]">
                   <span className=" font-semibold text-[#0530A1] mr-1">
                     Click to upload
@@ -417,6 +494,7 @@ const LandingPage = () => {
                 <textarea
                   name=""
                   className=" border border-[#DAE0E6] rounded-[6px] mt-2 resize-none"
+                  defaultValue={content?.whoIsVeclaryFor?.sections?.[2]?.heading}
                   id=""
                 ></textarea>
               </label>
@@ -428,6 +506,9 @@ const LandingPage = () => {
                 <textarea
                   name=""
                   className=" border border-[#DAE0E6] rounded-[6px] mt-2 h-[100px] resize-none"
+                  defaultValue={
+                    content?.whoIsVeclaryFor?.sections?.[2]?.subheading
+                  }
                   id=""
                 ></textarea>
               </label>
@@ -437,7 +518,10 @@ const LandingPage = () => {
                 Upload hero image 3
               </p>
               <div className=" mt-2 w-full border border-[#DAE0E6] rounded-[5px] flex items-center justify-center flex-col p-6">
-                <img src={pload} alt="" />
+                <img
+                  src={content?.whoIsVeclaryFor?.sections?.[2]?.image || pload}
+                  alt="Section 3"
+                />
                 <p className=" mt-3 text-sm font-normal font-Outfit text-[#667085]">
                   <span className=" font-semibold text-[#0530A1] mr-1">
                     Click to upload
@@ -461,6 +545,7 @@ const LandingPage = () => {
                 <textarea
                   name=""
                   className=" border border-[#DAE0E6] rounded-[6px] mt-2 resize-none"
+                  defaultValue={content?.whoIsVeclaryFor?.sections?.[3]?.heading}
                   id=""
                 ></textarea>
               </label>
@@ -472,6 +557,9 @@ const LandingPage = () => {
                 <textarea
                   name=""
                   className=" border border-[#DAE0E6] rounded-[6px] mt-2 h-[100px] resize-none"
+                  defaultValue={
+                    content?.whoIsVeclaryFor?.sections?.[3]?.subheading
+                  }
                   id=""
                 ></textarea>
               </label>
@@ -481,7 +569,10 @@ const LandingPage = () => {
                 Upload hero image 4
               </p>
               <div className=" mt-2 w-full border border-[#DAE0E6] rounded-[5px] flex items-center justify-center flex-col p-6">
-                <img src={pload} alt="" />
+                <img
+                  src={content?.whoIsVeclaryFor?.sections?.[3]?.image || pload}
+                  alt="Section 4"
+                />
                 <p className=" mt-3 text-sm font-normal font-Outfit text-[#667085]">
                   <span className=" font-semibold text-[#0530A1] mr-1">
                     Click to upload
@@ -505,6 +596,7 @@ const LandingPage = () => {
                 <textarea
                   name=""
                   className=" border border-[#DAE0E6] rounded-[6px] mt-2 resize-none"
+                  defaultValue={content?.whoIsVeclaryFor?.sections?.[4]?.heading}
                   id=""
                 ></textarea>
               </label>
@@ -516,6 +608,9 @@ const LandingPage = () => {
                 <textarea
                   name=""
                   className=" border border-[#DAE0E6] rounded-[6px] mt-2 h-[100px] resize-none"
+                  defaultValue={
+                    content?.whoIsVeclaryFor?.sections?.[4]?.subheading
+                  }
                   id=""
                 ></textarea>
               </label>
@@ -525,7 +620,10 @@ const LandingPage = () => {
                 Upload hero image 5
               </p>
               <div className=" mt-2 w-full border border-[#DAE0E6] rounded-[5px] flex items-center justify-center flex-col p-6">
-                <img src={pload} alt="" />
+                <img
+                  src={content?.whoIsVeclaryFor?.sections?.[4]?.image || pload}
+                  alt="Section 5"
+                />
                 <p className=" mt-3 text-sm font-normal font-Outfit text-[#667085]">
                   <span className=" font-semibold text-[#0530A1] mr-1">
                     Click to upload
@@ -549,6 +647,7 @@ const LandingPage = () => {
                 <textarea
                   name=""
                   className=" border border-[#DAE0E6] rounded-[6px] mt-2 resize-none"
+                  defaultValue={content?.whoIsVeclaryFor?.sections?.[5]?.heading}
                   id=""
                 ></textarea>
               </label>
@@ -560,6 +659,9 @@ const LandingPage = () => {
                 <textarea
                   name=""
                   className=" border border-[#DAE0E6] rounded-[6px] mt-2 h-[100px] resize-none"
+                  defaultValue={
+                    content?.whoIsVeclaryFor?.sections?.[5]?.subheading
+                  }
                   id=""
                 ></textarea>
               </label>
@@ -569,7 +671,10 @@ const LandingPage = () => {
                 Upload hero image 6
               </p>
               <div className=" mt-2 w-full border border-[#DAE0E6] rounded-[5px] flex items-center justify-center flex-col p-6">
-                <img src={pload} alt="" />
+                <img
+                  src={content?.whoIsVeclaryFor?.sections?.[5]?.image || pload}
+                  alt="Section 6"
+                />
                 <p className=" mt-3 text-sm font-normal font-Outfit text-[#667085]">
                   <span className=" font-semibold text-[#0530A1] mr-1">
                     Click to upload
@@ -599,6 +704,7 @@ const LandingPage = () => {
               <textarea
                 name=""
                 className=" border border-[#DAE0E6] rounded-[6px] mt-2 resize-none"
+                defaultValue={content?.footer?.heading}
                 id=""
               ></textarea>
             </label>
@@ -610,6 +716,7 @@ const LandingPage = () => {
               <textarea
                 name=""
                 className=" border border-[#DAE0E6] rounded-[6px] mt-2 h-[100px] resize-none"
+                defaultValue={content?.footer?.subheading}
                 id=""
               ></textarea>
             </label>

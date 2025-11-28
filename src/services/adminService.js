@@ -248,59 +248,62 @@ export class SalaryService extends BaseAdminService {
     );
   }
 
-  static async getSalaries() {
-    return api("GET", `${this.BASE_PATH}/salaries`);
+  static async getSalaries(params) {
+    return api(
+      "GET",
+      `${this.ADMIN_PATH}/salaries${this.handleQueryParams(params)}`
+    );
   }
 
   static async createSalary(data) {
-    return api("POST", `${this.BASE_PATH}/salaries`, data);
+    return api("POST", `${this.ADMIN_PATH}/salaries`, data);
   }
 
   static async getRecentSalaries() {
-    return api("GET", `${this.BASE_PATH}/salaries/recent`);
+    return api("GET", `${this.ADMIN_PATH}/salaries/recent`);
   }
 
   static async getSalaryStats() {
-    return api("GET", `${this.BASE_PATH}/salaries/stats`);
+    return api("GET", `${this.ADMIN_PATH}/salaries/stats`);
   }
 
   static async getSalaryById(salaryId) {
-    return api("GET", `${this.BASE_PATH}/salaries/${salaryId}`);
+    return api("GET", `${this.ADMIN_PATH}/salaries/${salaryId}`);
   }
 
   static async updateSalary(salaryId, data) {
-    return api("PATCH", `${this.BASE_PATH}/salaries/${salaryId}`, data);
+    return api("PATCH", `${this.ADMIN_PATH}/salaries/${salaryId}`, data);
   }
 
   static async rejectSalaryPayment(salaryId, data) {
-    return api("PATCH", `${this.BASE_PATH}/salaries/${salaryId}/reject`, data);
+    return api("PATCH", `${this.ADMIN_PATH}/salaries/${salaryId}/reject`, data);
   }
 }
 
 // Content Management Service
 export class ContentService extends BaseAdminService {
   static async getHomePageContent() {
-    return api("GET", `${this.BASE_PATH}/contents/home-page`);
+    return api("GET", `${this.ADMIN_PATH}/contents/home-page`);
   }
 
   static async createHomePageContent(content) {
-    return api("POST", `${this.BASE_PATH}/contents/home-page`, content);
+    return api("POST", `${this.ADMIN_PATH}/contents/home-page`, content);
   }
 
   static async getBlogs() {
-    return api("GET", `${this.BASE_PATH}/blogs`);
+    return api("GET", `${this.ADMIN_PATH}/blogs`);
   }
 
   static async createBlog(blogData) {
-    return api("POST", `${this.BASE_PATH}/blogs`, blogData);
+    return api("POST", `${this.ADMIN_PATH}/blogs`, blogData);
   }
 
   static async getBlogById(blogId) {
-    return api("GET", `${this.BASE_PATH}/blogs/${blogId}`);
+    return api("GET", `${this.ADMIN_PATH}/blogs/${blogId}`);
   }
 
   static async updateBlog(blogId, blogData) {
-    return api("PATCH", `${this.BASE_PATH}/blogs/${blogId}`, blogData);
+    return api("PATCH", `${this.ADMIN_PATH}/blogs/${blogId}`, blogData);
   }
 }
 
@@ -332,33 +335,33 @@ export class SchoolService extends BaseAdminService {
 // Job Management Service
 export class JobService extends BaseAdminService {
   static async getJobs() {
-    return api("GET", `${this.BASE_PATH}/jobs`);
+    return api("GET", `${this.ADMIN_PATH}/jobs`);
   }
 
   static async createJob(jobData) {
-    return api("POST", `${this.BASE_PATH}/jobs`, jobData);
+    return api("POST", `${this.ADMIN_PATH}/jobs`, jobData);
   }
 
   static async getJobById(jobId) {
-    return api("GET", `${this.BASE_PATH}/Jobs/${jobId}`);
+    return api("GET", `${this.ADMIN_PATH}/Jobs/${jobId}`);
   }
 
   static async updateJob(jobId, jobData) {
-    return api("PATCH", `${this.BASE_PATH}/Jobs/${jobId}`, jobData);
+    return api("PATCH", `${this.ADMIN_PATH}/Jobs/${jobId}`, jobData);
   }
 
   static async getJobApplications() {
-    return api("GET", `${this.BASE_PATH}/jobs/applications`);
+    return api("GET", `${this.ADMIN_PATH}/jobs/applications`);
   }
 
   static async getJobApplicationById(applicationId) {
-    return api("GET", `${this.BASE_PATH}/Jobs/applications/${applicationId}`);
+    return api("GET", `${this.ADMIN_PATH}/Jobs/applications/${applicationId}`);
   }
 
   static async updateJobApplication(applicationId, data) {
     return api(
       "PATCH",
-      `${this.BASE_PATH}/Jobs/applications/${applicationId}`,
+      `${this.ADMIN_PATH}/Jobs/applications/${applicationId}`,
       data
     );
   }
@@ -366,7 +369,7 @@ export class JobService extends BaseAdminService {
   static async deleteJobApplication(applicationId) {
     return api(
       "DELETE",
-      `${this.BASE_PATH}/Jobs/applications/${applicationId}`
+      `${this.ADMIN_PATH}/Jobs/applications/${applicationId}`
     );
   }
 }

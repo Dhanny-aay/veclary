@@ -44,7 +44,7 @@ const AdminHome = () => {
       case "Management":
         return <Management />;
       case "super":
-        return <CEO />;
+        return <ContentManager />;
       case "FinLead":
         return <FinanceLead />;
       case "Technical":
