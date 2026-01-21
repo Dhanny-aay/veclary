@@ -13,6 +13,7 @@ import SnackbarUtils from "../../utils/snackbarUtils";
 import GenericLoadingSkeleton from "../../utils/loadingSkeleton";
 import AddTeacher from "./schoolComps/addTeacher";
 import { handleGetGeneralSubjects } from "../../controllers/generalController/generalController";
+import AddDocument from "./schoolComps/addDocument";
 
 const AdminSchoolProfile = () => {
   const { sidebarVisible, setSidebarVisible } = useContext(AdminSidebarContext);
@@ -26,7 +27,9 @@ const AdminSchoolProfile = () => {
   const [activeButton, setActiveButton] = useState("Information");
   const [isAddTeacherModalOpen, setAddTeacherModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isAddDocumentModalOpen, setAddDocumentModalOpen] = useState(false);
   const [subjects, setSubjects] = useState([]);
+  const [documentRefreshKey, setDocumentRefreshKey] = useState(0);
 
   const handleClick = (page) => {
     setActivePage(page);
@@ -87,11 +90,39 @@ const AdminSchoolProfile = () => {
     }
   };
 
+  const handleOpenAddDocumentModal = () => setAddDocumentModalOpen(true);
+  const handleCloseAddDocumentModal = () => setAddDocumentModalOpen(false);
+
+  const handleUploadDocuments = async (formData) => {
+    setIsSubmitting(true);
+    try {
+      const response = await SchoolService.uploadVerificationDocuments(
+        schoolId,
+        formData
+      );
+      if (response) {
+        SnackbarUtils.success("Documents uploaded successfully!");
+        setDocumentRefreshKey((prevKey) => prevKey + 1); // Trigger document refetch
+      }
+    } catch (error) {
+      SnackbarUtils.error(error.message || "Failed to upload documents.");
+    } finally {
+      setIsSubmitting(false);
+      handleCloseAddDocumentModal();
+    }
+  };
+
   const buttons = [
     {
       label: "Information",
       value: "Information",
-      component: <Information school={school} loading={loading} />,
+      component: (
+        <Information
+          school={school}
+          loading={loading}
+          refreshKey={documentRefreshKey}
+        />
+      ),
     },
     {
       label: "Teachers",
@@ -124,6 +155,12 @@ const AdminSchoolProfile = () => {
         onSubmit={handleAddNewTeacher}
         isSubmitting={isSubmitting}
         subjects={subjects}
+      />
+      <AddDocument
+        isOpen={isAddDocumentModalOpen}
+        onClose={handleCloseAddDocumentModal}
+        onSubmit={handleUploadDocuments}
+        isSubmitting={isSubmitting}
       />
       <div
         onClick={() => {
@@ -170,7 +207,10 @@ const AdminSchoolProfile = () => {
           )}
 
           <div className=" space-x-4 flex">
-            <button className=" flex items-center space-x-2 px-4 py-2 bg-[#0530A1] rounded-[8px]">
+            <button
+              onClick={handleOpenAddDocumentModal}
+              className=" flex items-center space-x-2 px-4 py-2 bg-[#0530A1] rounded-[8px]"
+            >
               {/* <img src={userPlus} alt="" /> */}
               <p className=" font-Outfit text-sm font-semibold text-[#fff]">
                 Upload Document

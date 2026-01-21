@@ -8,6 +8,7 @@ import AdminDashMiniHeader from "../AdminDashMiniHeader";
 import AnnouncementSection from "../AnnouncementSection";
 import SnackbarUtils from "../../../utils/snackbarUtils";
 import RecentTransactions from "../RecentTransactions";
+import { AnnouncementService } from "../../../services/adminService";
 
 const Management = () => {
   const [addPerson, setAddPerson] = useState(false);
@@ -18,9 +19,13 @@ const Management = () => {
     setActivePage(page);
   };
 
-  const handleSubmitAnnouncement = (announcement) => {
-    // submit announcement logic
-    SnackbarUtils.success("Announcement Submitted");
+  const handleSubmitAnnouncement = async (announcement) => {
+    try {
+      await AnnouncementService.createAnnouncement(announcement);
+      SnackbarUtils.success("Announcement Submitted");
+    } catch (error) {
+      SnackbarUtils.error(error.message || "Failed to submit announcement");
+    }
   };
 
   const analysis = [
@@ -146,7 +151,10 @@ const Management = () => {
 
       {/* row 2 */}
       <div className=" mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-3 w-full">
-        <AnnouncementSection submitAnnouncement={handleSubmitAnnouncement} />
+        <AnnouncementSection
+          submitAnnouncement={handleSubmitAnnouncement}
+          className="lg:w-full"
+        />
 
         <div className=" w-full border border-[#EAEBF0] rounded-[10px] p-4">
           <p className=" font-Outfit font-semibold text-lg text-[#272D37]">
@@ -189,7 +197,10 @@ const Management = () => {
           </button>
         </div>
 
-        <RecentTransactions handleClick={() => handleClick("Transaction")} />
+        <RecentTransactions
+          handleClick={() => handleClick("Transaction")}
+          className="lg:w-full"
+        />
       </div>
     </>
   );

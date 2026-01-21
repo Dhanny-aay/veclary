@@ -1,3 +1,4 @@
+import apiMultipart from "../index/apiMultipart";
 import api from "../index/api";
 
 // Base admin service with shared functionality
@@ -65,16 +66,16 @@ export class UserService extends BaseAdminService {
   static async getUsers(params) {
     return api(
       "GET",
-      `${this.BASE_PATH}/users${this.handleQueryParams(params)}`
+      `${this.ADMIN_PATH}/users${this.handleQueryParams(params)}`
     );
   }
 
   static async getUserById(userId) {
-    return api("GET", `${this.BASE_PATH}/users/${userId}`);
+    return api("GET", `${this.ADMIN_PATH}/users/${userId}`);
   }
 
   static async updateUser(userId, userData) {
-    return api("PATCH", `${this.BASE_PATH}/users/${userId}`, userData);
+    return api("PATCH", `${this.ADMIN_PATH}/users/${userId}`, userData);
   }
 
   // static async getPersonnel() {
@@ -101,28 +102,31 @@ export class UserService extends BaseAdminService {
 
 // Complaints Service
 export class ComplaintsService extends BaseAdminService {
-  static async getAllComplaints() {
-    return api("GET", `${this.BASE_PATH}/complaints`);
+  static async getAllComplaints(params) {
+    return api(
+      "GET",
+      `${this.ADMIN_PATH}/complaints${this.handleQueryParams(params)}`
+    );
   }
 
   static async getWhatsappComplaints() {
-    return api("GET", `${this.BASE_PATH}/complaints/whatsapp`);
+    return api("GET", `${this.ADMIN_PATH}/complaints/whatsapp`);
   }
 
   static async getChatComplaints() {
-    return api("GET", `${this.BASE_PATH}/complaints/chats`);
+    return api("GET", `${this.ADMIN_PATH}/complaints/chats`);
   }
 
   static async getEmailComplaints() {
-    return api("GET", `${this.BASE_PATH}/complaints/emails`);
+    return api("GET", `${this.ADMIN_PATH}/complaints/emails`);
   }
 
   static async getComplaintById(complaintId) {
-    return api("GET", `${this.BASE_PATH}/complaints/${complaintId}`);
+    return api("GET", `${this.ADMIN_PATH}/complaints/${complaintId}`);
   }
 
   static async updateComplaint(complaintId, data) {
-    return api("PATCH", `${this.BASE_PATH}/complaints/${complaintId}`, data);
+    return api("PATCH", `${this.ADMIN_PATH}/complaints/${complaintId}`, data);
   }
 }
 
@@ -159,36 +163,30 @@ export class SubscriptionService extends BaseAdminService {
 
 // Financial Service
 export class FinancialService extends BaseAdminService {
-  static async getPayments() {
-    return api("GET", `${this.BASE_PATH}/payments`);
+  static async getPayments(params) {
+    return api(
+      "GET",
+      `${this.ADMIN_PATH}/payments${this.handleQueryParams(params)}`
+    );
   }
 
   static async updatePayments(data) {
-    return api("PATCH", `${this.BASE_PATH}/payments`, data);
+    return api("PATCH", `${this.ADMIN_PATH}/payments`, data);
   }
 
   static async getPaymentById(paymentId) {
-    return api("GET", `${this.BASE_PATH}/payments/${paymentId}`);
+    return api("GET", `${this.ADMIN_PATH}/payments/${paymentId}`);
   }
 
   static async updatePaymentPlan(paymentId, data) {
-    return api("PATCH", `${this.BASE_PATH}/payments/${paymentId}`, data);
+    return api("PATCH", `${this.ADMIN_PATH}/payments/${paymentId}`, data);
   }
 
   static async deletePayment(paymentId) {
-    return api("DELETE", `${this.BASE_PATH}/payments/${paymentId}`);
+    return api("DELETE", `${this.ADMIN_PATH}/payments/${paymentId}`);
   }
-
-  static async getEarnings() {
-    return api("GET", `${this.BASE_PATH}/earnings`);
-  }
-
-  static async getEarningById(earningId) {
-    return api("GET", `${this.BASE_PATH}/earnings/${earningId}`);
-  }
-
   static async getRevenue() {
-    return api("GET", `${this.BASE_PATH}/revenue`);
+    return api("GET", `${this.ADMIN_PATH}/revenue`);
   }
 }
 
@@ -295,7 +293,7 @@ export class ContentService extends BaseAdminService {
   }
 
   static async createBlog(blogData) {
-    return api("POST", `${this.ADMIN_PATH}/blogs`, blogData);
+    return apiMultipart("POST", `${this.ADMIN_PATH}/blogs`, blogData);
   }
 
   static async getBlogById(blogId) {
@@ -329,6 +327,58 @@ export class SchoolService extends BaseAdminService {
 
   static async updateSchool(schoolId, schoolData) {
     return api("PATCH", `${this.ADMIN_PATH}/schools/${schoolId}`, schoolData);
+  }
+
+  static async getVerificationDocuments(schoolId) {
+    return api(
+      "GET",
+      `${this.ADMIN_PATH}/schools/verification-documents/${schoolId}`
+    );
+  }
+
+  static async uploadVerificationDocuments(schoolId, documentsData) {
+    return apiMultipart(
+      "POST",
+      `${this.ADMIN_PATH}/schools/verification-documents/${schoolId}`,
+      documentsData
+    );
+  }
+
+  static async getTeachers(params) {
+    return api(
+      "GET",
+      `${this.ADMIN_PATH}/teachers${this.handleQueryParams(params)}`
+    );
+  }
+
+  static async getStudents(params) {
+    return api(
+      "GET",
+      `${this.ADMIN_PATH}/students${this.handleQueryParams(params)}`
+    );
+  }
+}
+
+// Book Management Service
+export class BookService extends BaseAdminService {
+  static async createBook(bookData) {
+    return apiMultipart("POST", `${this.ADMIN_PATH}/books`, bookData);
+  }
+
+  static async getBooks(params) {
+    return api(
+      "GET",
+      `${this.ADMIN_PATH}/books${this.handleQueryParams(params)}`
+    );
+  }
+
+  static async getBookById(bookId) {
+    return api("GET", `${this.ADMIN_PATH}/books/${bookId}`);
+  }
+
+  static async updateBook(bookId, bookData) {
+    // Assuming update might not always be multipart. If it is, change to apiMultipart
+    return api("PATCH", `${this.ADMIN_PATH}/books/${bookId}`, bookData);
   }
 }
 
@@ -373,33 +423,76 @@ export class JobService extends BaseAdminService {
     );
   }
 }
-// Announcement Service
-export class AnnouncementService extends BaseAdminService {
-  static async createAnnouncement(announcement) {
+
+// Publisher Service
+export class PublisherService extends BaseAdminService {
+  static async getPublishers(params) {
     return api(
-      "POST",
-      `${this.BASE_PATH}/announcements
-`,
-      announcement
+      "GET",
+      `${this.ADMIN_PATH}/publishers${this.handleQueryParams(params)}`
     );
   }
 
+  static async getPublisherById(publisherId) {
+    return api("GET", `${this.ADMIN_PATH}/publishers/${publisherId}`);
+  }
+
+  static async updatePublisher(publisherId, publisherData) {
+    return api(
+      "PATCH",
+      `${this.ADMIN_PATH}/publishers/${publisherId}`,
+      publisherData
+    );
+  }
+}
+
+// Earning Service
+export class EarningService extends BaseAdminService {
+  static async getEarnings(params) {
+    return api(
+      "GET",
+      `${this.ADMIN_PATH}/earnings${this.handleQueryParams(params)}`
+    );
+  }
+
+  static async getEarningById(earningId) {
+    return api("GET", `${this.ADMIN_PATH}/earnings/${earningId}`);
+  }
+
+  static async getVendorEarnings(params) {
+    return api(
+      "GET",
+      `${this.ADMIN_PATH}/earnings/vendors${this.handleQueryParams(params)}`
+    );
+  }
+
+  static async getVendorEarningById(earningId) {
+    return api("GET", `${this.ADMIN_PATH}/earnings/vendors/${earningId}`);
+  }
+}
+
+// Announcement Service
+export class AnnouncementService extends BaseAdminService {
+  static async createAnnouncement(announcement) {
+    return api("POST", `${this.ADMIN_PATH}/announcements`, announcement);
+  }
+
   static async getAnnouncement() {
-    return api("GET", `${this.BASE_PATH}/announcements`);
+    return api("GET", `${this.ADMIN_PATH}/announcements`);
   }
   static async getAnnouncementById(announcementId) {
-    return api("GET", `${this.BASE_PATH}/announcements/${announcementId}`);
+    return api("GET", `${this.ADMIN_PATH}/announcements/${announcementId}`);
   }
 
   static async updateAnnouncement(announcementId, announcement) {
     return api(
       "PATCH",
-      `${this.BASE_PATH}/announcements/${announcementId}`,
+      `${this.ADMIN_PATH}/announcements/${announcementId}`,
       announcement
     );
   }
 
   static async deleteAnnouncementById(announcementId) {
-    return api("DELETE", `${this.BASE_PATH}/announcements/${announcementId}`);
+    return api("DELETE", `${this.ADMIN_PATH}/announcements/${announcementId}`);
   }
 }

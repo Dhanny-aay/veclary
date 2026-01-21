@@ -1,31 +1,63 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect, useCallback } from "react";
 import {
   AdminActivePageContext,
   AdminSidebarContext,
 } from "../contexts/AdminActivePageContext";
 import arrowBlue from "./assets/arrowblue.svg";
-import backArr from "./assets/backArr.svg";
-import fwdArr from "./assets/fwdArr.svg";
+import { ComplaintsService } from "../../services/adminService";
+import GenericLoadingSkeleton from "../../utils/loadingSkeleton";
+import SnackbarUtils from "../../utils/snackbarUtils";
+import Pagination from "./Pagination";
+import nofeed from "./assets/nofeed.svg";
 
 const AdminComplaints = () => {
   const { sidebarVisible, setSidebarVisible } = useContext(AdminSidebarContext);
   const { activePage, setActivePage } = useContext(AdminActivePageContext);
+  const [complaints, setComplaints] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [pagination, setPagination] = useState({});
+  const [currentPage, setCurrentPage] = useState(1);
 
   const handleClick = (page) => {
     setActivePage(page);
   };
 
-  const issues = [
-    { id: 1, name: "Grand Rapids" },
-    { id: 2, name: "Bell Gardens" },
-    { id: 3, name: "Broomfield" },
-    { id: 4, name: "Yakima" },
-    { id: 5, name: "Springfield" },
-    { id: 6, name: "Alexandria" },
-    { id: 7, name: "Kalamazoo" },
-    { id: 8, name: "Kalamazoo" },
-    { id: 9, name: "Kalamazoo" },
-  ];
+  const fetchComplaints = useCallback(async () => {
+    setLoading(true);
+    try {
+      const params = { page: currentPage, limit: 10 };
+      const response = await ComplaintsService.getAllComplaints(params);
+      if (response && response.data) {
+        setComplaints(response.data);
+        setPagination(response.pagination || {});
+      } else {
+        setComplaints([]);
+        setPagination({});
+      }
+    } catch (err) {
+      setError(err.message || "Failed to fetch complaints.");
+      SnackbarUtils.error(err.message || "Failed to fetch complaints.");
+    } finally {
+      setLoading(false);
+    }
+  }, [currentPage]);
+
+  useEffect(() => {
+    fetchComplaints();
+  }, [fetchComplaints]);
+
+  const handlePageChange = (page) => setCurrentPage(page);
+
+  const handleMarkResolved = async (id) => {
+    try {
+      await ComplaintsService.updateComplaint(id, { status: "RESOLVED" });
+      SnackbarUtils.success("Complaint marked as resolved");
+      fetchComplaints();
+    } catch (err) {
+      SnackbarUtils.error(err.message || "Failed to update complaint");
+    }
+  };
 
   return (
     <>
@@ -56,7 +88,10 @@ const AdminComplaints = () => {
                       S/N
                     </th>
                     <th className="border-b font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 text-left px-4">
-                      Name
+                      Subject
+                    </th>
+                    <th className="border-b font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 text-center px-4">
+                      Status
                     </th>
 
                     <th className="border-b font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 text-center px-4">
@@ -65,46 +100,70 @@ const AdminComplaints = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {issues.map((data, index) => (
-                    <tr key={index}>
-                      <td className=" font-Outfit py-4 border-t border-[#EAEBF0] text-sm text-[#5F6D7E] font-medium text-center">
-                        0{index + 1}
-                      </td>
-                      <td className=" font-Outfit py-4 border-t text-left border-[#EAEBF0] text-[#272D37] font-medium text-sm">
-                        {data.name}
-                      </td>
-
-                      <td className="font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] items-center justify-center h-full text-center flex ">
-                        <button className=" py-2 px-3 bg-[#2F52FF] rounded-[10px] text-white">
-                          Mark as Resolved
-                        </button>
+                  {loading ? (
+                    <tr>
+                      <td colSpan="4">
+                        <GenericLoadingSkeleton count={5} />
                       </td>
                     </tr>
-                  ))}
+                  ) : error ? (
+                    <tr>
+                      <td
+                        colSpan="4"
+                        className="text-center py-10 text-red-500"
+                      >
+                        {error}
+                      </td>
+                    </tr>
+                  ) : complaints.length === 0 ? (
+                    <tr>
+                      <td colSpan="4" className="text-center py-10">
+                        <img
+                          src={nofeed}
+                          alt="No complaints"
+                          className="mx-auto"
+                        />
+                        <p className="font-Outfit text-lg mt-4 font-semibold">
+                          No Complaints Found
+                        </p>
+                        <p className="font-Outfit text-sm text-[#5F6D7E] mt-2">
+                          Complaints from users will appear here.
+                        </p>
+                      </td>
+                    </tr>
+                  ) : (
+                    complaints.map((data, index) => (
+                      <tr key={data._id || index}>
+                        <td className=" font-Outfit py-4 border-t border-[#EAEBF0] text-sm text-[#5F6D7E] font-medium text-center">
+                          {index + 1}
+                        </td>
+                        <td className=" font-Outfit py-4 border-t text-left border-[#EAEBF0] text-[#272D37] font-medium text-sm capitalize">
+                          {data.title || data.subject || "N/A"}
+                        </td>
+                        <td className=" font-Outfit py-4 border-t text-center border-[#EAEBF0] text-[#272D37] font-medium text-sm capitalize">
+                          {data.status?.toLowerCase() || "Pending"}
+                        </td>
+
+                        <td className="font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] items-center justify-center h-full text-center flex ">
+                          <button
+                            onClick={() => handleMarkResolved(data._id)}
+                            className=" py-2 px-3 bg-[#2F52FF] rounded-[10px] text-white text-xs font-medium"
+                          >
+                            Mark as Resolved
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>
-            <div className=" w-full py-3 px-3 flex justify-between items-center">
-              <span className=" flex space-x-1">
-                <img src={backArr} alt="" />
-                <p className=" font-Outfit font-medium text-[#5F6D7E] text-sm">
-                  Prev
-                </p>
-              </span>
-              <span className=" flex items-end space-x-4">
-                <p className=" font-Outfit text-sm text-[#0530A1]">1</p>
-                <p className=" font-Outfit text-sm">2</p>
-                <p className=" font-Outfit text-sm">...</p>
-                <p className=" font-Outfit text-sm">5</p>
-                <p className=" font-Outfit text-sm">6</p>
-              </span>
-              <span className=" flex space-x-1">
-                <p className=" font-Outfit font-medium text-[#5F6D7E] text-sm">
-                  Next
-                </p>
-                <img src={fwdArr} alt="" />
-              </span>
-            </div>
+            <Pagination
+              currentPage={currentPage}
+              itemsPerPage={pagination.limit || 10}
+              totalItems={pagination.totalItems || 0}
+              onPageChange={handlePageChange}
+            />
           </div>
         </div>
       </div>

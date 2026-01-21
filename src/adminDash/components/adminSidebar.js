@@ -76,10 +76,28 @@ const AdminSidebar = () => {
     //   page: "PendingSalaryCEO",
     // },
     {
-      name: "Publisher/Author’s Fee",
+      name: "All Users",
+      img: home,
+      activeImg: homeAc,
+      page: "AllUsers",
+    },
+    {
+      name: "Vendor's earnings",
       img: home,
       activeImg: homeAc,
       page: "PublisherFee",
+    },
+    {
+      name: "Publishers",
+      img: home,
+      activeImg: homeAc,
+      page: "Publishers",
+    },
+    {
+      name: "Payments",
+      img: home,
+      activeImg: homeAc,
+      page: "Payments",
     },
     {
       name: "Complaints",
@@ -171,6 +189,7 @@ const AdminSidebar = () => {
       "FinanceTeam",
       "TechnicalTeam",
       "PublisherFee",
+      "Payments",
       "Salary",
     ],
     FinLead: ["Home", "Transaction"],
@@ -181,6 +200,7 @@ const AdminSidebar = () => {
       "PaidSalaryCEO",
       "UnPaidSalaryCEO",
       "PendingSalaryCEO",
+      "Payments",
       "PublisherFee",
     ],
     RemunerationManager: [
@@ -234,7 +254,7 @@ const AdminSidebar = () => {
             />
           </div>
 
-          <div className="mt-5 h-[calc(100vh-180px)] overflow-y-auto">
+          <div className="mt-5 h-[calc(100vh-200px)] overflow-y-auto">
             <div>
               {/* Sidebar content */}
               {filteredSidebar.map((item, index) => (

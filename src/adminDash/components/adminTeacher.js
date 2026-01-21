@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   AdminActivePageContext,
   AdminSidebarContext,
@@ -8,62 +8,46 @@ import backArr from "./assets/backArr.svg";
 import fwdArr from "./assets/fwdArr.svg";
 import edit from "./assets/edit.svg";
 import trash from "./assets/trash.svg";
+import { SchoolService } from "../../services/adminService";
+import GenericLoadingSkeleton from "../../utils/loadingSkeleton";
+import nofeed from "./assets/nofeed.svg";
+import Pagination from "./Pagination";
 
 const AdminTeacher = () => {
   const { sidebarVisible, setSidebarVisible } = useContext(AdminSidebarContext);
   const { activePage, setActivePage } = useContext(AdminActivePageContext);
+  const [teachers, setTeachers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [pagination, setPagination] = useState({
+    page: 1,
+    limit: 10,
+    total: 0,
+  });
+
+  const fetchTeachers = async (page = 1) => {
+    setLoading(true);
+    try {
+      const response = await SchoolService.getTeachers({ page, limit: 10 });
+      setTeachers(response.data || []);
+      setPagination(response.pagination || { page, limit: 10, total: 0 });
+    } catch (error) {
+      console.error("Error fetching teachers:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchTeachers();
+  }, []);
 
   const handleClick = (page) => {
     setActivePage(page);
   };
 
-  const authors = [
-    {
-      name: "Grand Rapids",
-      school: "Federal Girls College",
-
-      class: "SSS1",
-      addy: "SCI-20-0102",
-      doe: "20/02/1990",
-      sub: "Biology",
-    },
-    {
-      name: "Grand Rapids",
-      school: "Federal Girls College",
-
-      class: "SSS1",
-      addy: "SCI-20-0102",
-      doe: "20/02/1990",
-      sub: "Biology",
-    },
-    {
-      name: "Grand Rapids",
-      school: "Federal Girls College",
-
-      class: "SSS1",
-      addy: "SCI-20-0102",
-      doe: "20/02/1990",
-      sub: "Chemistry",
-    },
-    {
-      name: "Grand Rapids",
-      school: "Federal Girls College",
-
-      class: "SSS1",
-      addy: "SCI-20-0102",
-      doe: "20/02/1990",
-      sub: "Chemistry",
-    },
-    {
-      name: "Grand Rapids",
-      school: "Federal Girls College",
-
-      class: "SSS1",
-      addy: "SCI-20-0102",
-      doe: "20/02/1990",
-      sub: "Biology",
-    },
-  ];
+  const handlePageChange = (page) => {
+    fetchTeachers(page);
+  };
 
   return (
     <>
@@ -79,7 +63,9 @@ const AdminTeacher = () => {
         >
           <img src={arrowBlue} alt="Back Arrow" />
           <p className="font-Outfit text-[#0530A1] text-sm font-medium">Back</p>
-          <p className="font-Outfit text-xl font-semibold mb-2 ml-3">Schools</p>
+          <p className="font-Outfit text-xl font-semibold mb-2 ml-3">
+            Teachers
+          </p>
         </span>
 
         <div className="w-full items-end flex flex-row mt-6 justify-between">
@@ -100,7 +86,7 @@ const AdminTeacher = () => {
               //   }}
               className="text-center text-sm font-Outfit font-medium text-white bg-[#0530A1] py-2 px-3 md:px-6 rounded-[10px]"
             >
-              Add New School
+              Add New Teacher
             </button>
           </span>
         </div>
@@ -117,9 +103,6 @@ const AdminTeacher = () => {
                     <th className="border-b font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 text-center px-4">
                       Teachers Name
                     </th>
-                    <th className="border-b font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 text-center px-4">
-                      Schools
-                    </th>
                     <th className="border-b  font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 text-center px-4">
                       Address
                     </th>
@@ -130,7 +113,7 @@ const AdminTeacher = () => {
                       Subject Taught
                     </th>
                     <th className="border-b font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 text-center px-4">
-                      Class Taught
+                      School
                     </th>
                     <th className="border-b font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 text-center px-4">
                       Actions
@@ -138,60 +121,77 @@ const AdminTeacher = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {authors.map((data, index) => (
-                    <tr key={index}>
-                      <td className=" font-Outfit py-4 border-t border-[#EAEBF0] text-sm text-[#5F6D7E] font-medium text-center">
-                        0{index + 1}
-                      </td>
-                      <td className=" font-Outfit py-4 border-t border-[#EAEBF0] text-[#272D37] font-medium text-sm text-center">
-                        {data.name}
-                      </td>
-
-                      <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">
-                        {data.school}
-                      </td>
-                      <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">
-                        {data.addy}
-                      </td>
-                      <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">
-                        {data.doe}
-                      </td>
-                      <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">
-                        {data.sub}
-                      </td>
-                      <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">
-                        {data.class}
-                      </td>
-                      <td className="font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] items-center justify-center h-full text-center flex space-x-3">
-                        <img className="w-3 mt-3" src={edit} alt="Edit" />
-                        <img className="w-3 mt-3" src={trash} alt="Trash" />
+                  {loading ? (
+                    <tr>
+                      <td colSpan="7" className="p-4">
+                        <GenericLoadingSkeleton count={5} />
                       </td>
                     </tr>
-                  ))}
+                  ) : teachers.length === 0 ? (
+                    <tr>
+                      <td colSpan="7" className="text-center py-10">
+                        <img
+                          src={nofeed}
+                          alt="No teachers found"
+                          className="mx-auto"
+                        />
+                        <p className="font-Outfit text-lg mt-4 font-semibold">
+                          No Teachers Found
+                        </p>
+                        <p className="font-Outfit text-sm text-[#5F6D7E] mt-2">
+                          Teachers list will appear here.
+                        </p>
+                      </td>
+                    </tr>
+                  ) : (
+                    teachers.map((data, index) => (
+                      <tr key={index}>
+                        <td className=" font-Outfit py-4 border-t border-[#EAEBF0] text-sm text-[#5F6D7E] font-medium text-center">
+                          {String(index + 1).padStart(2, "0")}
+                        </td>
+                        <td className=" font-Outfit py-4 border-t border-[#EAEBF0] text-[#272D37] font-medium text-sm text-center">
+                          {data.name}
+                        </td>
+
+                        <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">
+                          {data.address || "N/A"}
+                        </td>
+                        <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">
+                          {data.createdAt
+                            ? new Date(data.createdAt).toLocaleDateString()
+                            : "N/A"}
+                        </td>
+                        <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">
+                          {data.subject || "N/A"}
+                        </td>
+                        <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">
+                          {data.schoolId?.schoolName || "N/A"}
+                        </td>
+                        <td className="font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] items-center justify-center h-full text-center flex space-x-3">
+                          <img
+                            className="w-3 mt-3 cursor-pointer"
+                            src={edit}
+                            alt="Edit"
+                          />
+                          <img
+                            className="w-3 mt-3 cursor-pointer"
+                            src={trash}
+                            alt="Trash"
+                          />
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>
-            <div className=" w-full py-3 px-3 flex justify-between items-center">
-              <span className=" flex space-x-1">
-                <img src={backArr} alt="" />
-                <p className=" font-Outfit font-medium text-[#5F6D7E] text-sm">
-                  Prev
-                </p>
-              </span>
-              <span className=" flex items-end space-x-4">
-                <p className=" font-Outfit text-sm text-[#0530A1]">1</p>
-                <p className=" font-Outfit text-sm">2</p>
-                <p className=" font-Outfit text-sm">...</p>
-                <p className=" font-Outfit text-sm">5</p>
-                <p className=" font-Outfit text-sm">6</p>
-              </span>
-              <span className=" flex space-x-1">
-                <p className=" font-Outfit font-medium text-[#5F6D7E] text-sm">
-                  Next
-                </p>
-                <img src={fwdArr} alt="" />
-              </span>
-            </div>
+
+            <Pagination
+              currentPage={pagination.page || 1}
+              itemsPerPage={pagination.limit || 10}
+              totalItems={pagination.total || 0}
+              onPageChange={handlePageChange}
+            />
           </div>
         </div>
       </div>

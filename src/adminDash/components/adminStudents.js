@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   AdminActivePageContext,
   AdminSidebarContext,
@@ -6,52 +6,57 @@ import {
 import arrowBlue from "./assets/arrowblue.svg";
 import backArr from "./assets/backArr.svg";
 import fwdArr from "./assets/fwdArr.svg";
+import { SchoolService } from "../../services/adminService";
+import GenericLoadingSkeleton from "../../utils/loadingSkeleton";
+import nofeed from "./assets/nofeed.svg";
+import Pagination from "./Pagination";
 
 const AdminStudents = () => {
   const { sidebarVisible, setSidebarVisible } = useContext(AdminSidebarContext);
   const { activePage, setActivePage } = useContext(AdminActivePageContext);
+  const [students, setStudents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [pagination, setPagination] = useState({
+    page: 1,
+    limit: 10,
+    total: 0,
+  });
+
+  const fetchStudents = async (page = 1) => {
+    setLoading(true);
+    try {
+      const response = await SchoolService.getStudents({ page, limit: 10 });
+      setStudents(response.data || []);
+      setPagination(response.pagination || { page, limit: 10, total: 0 });
+    } catch (error) {
+      console.error("Error fetching students:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchStudents();
+  }, []);
+
+  const statusStyles = {
+    pending: " bg-[#FFFBEB] text-[#F59E0B]",
+    approved: " bg-green-100 text-green-600",
+    rejected: " bg-red-100 text-red-600",
+    verified: " bg-blue-100 text-blue-600",
+  };
+
+  const getStatusClass = (status) => {
+    return statusStyles[status?.toLowerCase()] || "bg-gray-100 text-gray-600";
+  };
 
   const handleClick = (page) => {
     setActivePage(page);
   };
 
-  const authors = [
-    {
-      name: "Grand Rapids",
-      dob: "20/02/1990",
-      acadRating: "90%",
-      regStu: "SCI-20-0102",
-      attend: "90%",
-    },
-    {
-      name: "Grand Rapids",
-      dob: "20/02/1990",
-      acadRating: "90%",
-      regStu: "SCI-20-0102",
-      attend: "90%",
-    },
-    {
-      name: "Grand Rapids",
-      dob: "20/02/1990",
-      acadRating: "90%",
-      regStu: "SCI-20-0102",
-      attend: "90%",
-    },
-    {
-      name: "Grand Rapids",
-      dob: "20/02/1990",
-      acadRating: "90%",
-      regStu: "SCI-20-0102",
-      attend: "90%",
-    },
-    {
-      name: "Grand Rapids",
-      dob: "20/02/1990",
-      acadRating: "90%",
-      regStu: "SCI-20-0102",
-      attend: "90%",
-    },
-  ];
+  const handlePageChange = (page) => {
+    fetchStudents(page);
+  };
 
   return (
     <>
@@ -119,73 +124,93 @@ const AdminStudents = () => {
                       Student Names
                     </th>
                     <th className="border-b  font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 text-center px-4">
-                      Registration Number
+                      School
                     </th>
                     <th className="border-b  font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 text-center px-4">
-                      Date of Birth
+                      Class
                     </th>
                     <th className="border-b font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 text-center px-4">
-                      Academic Rating
+                      Status
                     </th>
 
                     <th className="border-b font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 text-center px-4">
-                      Attendance Rating
+                      Date Joined
                     </th>
                     <th className="border-b font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 text-center px-4"></th>
                   </tr>
                 </thead>
                 <tbody>
-                  {authors.map((data, index) => (
-                    <tr key={index}>
-                      <td className=" font-Outfit py-4 border-t border-[#EAEBF0] text-sm text-[#5F6D7E] font-medium text-center">
-                        0{index + 1}
-                      </td>
-                      <td className=" font-Outfit py-4 border-t border-[#EAEBF0] text-[#272D37] font-medium text-sm text-center">
-                        {data.name}
-                      </td>
-                      <td className=" font-Outfit py-4 border-t border-[#EAEBF0] text-[#272D37] font-medium text-sm text-center">
-                        {data.regStu}
-                      </td>
-                      <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">
-                        {data.dob}
-                      </td>
-                      <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">
-                        {data.acadRating}
-                      </td>
-                      <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">
-                        {data.attend}
-                      </td>
-                      <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">
-                        <button className="text-center text-sm font-Outfit font-medium text-white bg-[#0530A1] py-2 px-3 rounded-[10px]">
-                          View Profile
-                        </button>
+                  {loading ? (
+                    <tr>
+                      <td colSpan="7" className="p-4">
+                        <GenericLoadingSkeleton count={5} />
                       </td>
                     </tr>
-                  ))}
+                  ) : students.length === 0 ? (
+                    <tr>
+                      <td colSpan="7" className="text-center py-10">
+                        <img
+                          src={nofeed}
+                          alt="No students found"
+                          className="mx-auto"
+                        />
+                        <p className="font-Outfit text-lg mt-4 font-semibold">
+                          No Students Found
+                        </p>
+                        <p className="font-Outfit text-sm text-[#5F6D7E] mt-2">
+                          Students list will appear here.
+                        </p>
+                      </td>
+                    </tr>
+                  ) : (
+                    students.map((data, index) => (
+                      <tr key={index}>
+                        <td className=" font-Outfit py-4 border-t border-[#EAEBF0] text-sm text-[#5F6D7E] font-medium text-center">
+                          {String(index + 1).padStart(2, "0")}
+                        </td>
+                        <td className=" font-Outfit py-4 border-t border-[#EAEBF0] text-[#272D37] font-medium text-sm text-center">
+                          {data.userId?.name || data.name || "N/A"}
+                        </td>
+                        <td className=" font-Outfit py-4 border-t border-[#EAEBF0] text-[#272D37] font-medium text-sm text-center">
+                          {data.schoolName ||
+                            data.schoolId?.schoolName ||
+                            "N/A"}
+                        </td>
+                        <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">
+                          {data.className || "N/A"}
+                        </td>
+                        <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">
+                          <span
+                            className={`px-3 py-1 rounded-full text-xs font-medium capitalize ${getStatusClass(
+                              data.status
+                            )}`}
+                          >
+                            {data.status || "N/A"}
+                          </span>
+                        </td>
+                        <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">
+                          {data.createdAt
+                            ? new Date(data.createdAt).toLocaleDateString()
+                            : "N/A"}
+                        </td>
+                        <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">
+                          <button className="text-center text-sm font-Outfit font-medium text-white bg-[#0530A1] py-2 px-3 rounded-[10px]">
+                            View Profile
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>
-            <div className=" w-full py-3 px-3 flex justify-between items-center">
-              <span className=" flex space-x-1">
-                <img src={backArr} alt="" />
-                <p className=" font-Outfit font-medium text-[#5F6D7E] text-sm">
-                  Prev
-                </p>
-              </span>
-              <span className=" flex items-end space-x-4">
-                <p className=" font-Outfit text-sm text-[#0530A1]">1</p>
-                <p className=" font-Outfit text-sm">2</p>
-                <p className=" font-Outfit text-sm">...</p>
-                <p className=" font-Outfit text-sm">5</p>
-                <p className=" font-Outfit text-sm">6</p>
-              </span>
-              <span className=" flex space-x-1">
-                <p className=" font-Outfit font-medium text-[#5F6D7E] text-sm">
-                  Next
-                </p>
-                <img src={fwdArr} alt="" />
-              </span>
-            </div>
+
+            <Pagination
+              currentPage={pagination.page || 1}
+              itemsPerPage={pagination.limit || 10}
+              totalItems={pagination.total || 0}
+              onPageChange={handlePageChange}
+            />
           </div>
         </div>
       </div>

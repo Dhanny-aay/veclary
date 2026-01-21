@@ -6,14 +6,19 @@ import { useAuth } from "../../contexts/AuthContext";
 import AdminDashMiniHeader from "../AdminDashMiniHeader";
 import AnnouncementSection from "../AnnouncementSection";
 import SnackbarUtils from "../../../utils/snackbarUtils";
+import { AnnouncementService } from "../../../services/adminService";
 
 const CustomerSupport = () => {
   const { activePage, setActivePage } = useContext(AdminActivePageContext);
   const { user } = useAuth();
 
-  const handleSubmitAnnouncement = (announcement) => {
-    // submit announcement logic
-    SnackbarUtils.success("Announcement Submitted");
+  const handleSubmitAnnouncement = async (announcement) => {
+    try {
+      await AnnouncementService.createAnnouncement(announcement);
+      SnackbarUtils.success("Announcement Submitted");
+    } catch (error) {
+      SnackbarUtils.error(error.message || "Failed to submit announcement");
+    }
   };
 
   const handleClick = (page) => {

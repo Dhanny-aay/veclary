@@ -32,6 +32,10 @@ import PaidSalaryCEO from "../components/PaidSalaryCEO";
 import UnPaidSalaryCEO from "../components/UnPaidSalaryCEO";
 import PendingSalaryCEO from "../components/PendingSalaryCEO";
 import JobApps from "../components/jobApps";
+import Publishers from "../components/Publishers";
+import Payments from "../components/adminPayments";
+
+import AllUsers from "../components/AllUsers"; // Add import
 
 const AdminDashBoard = () => {
   const componentMap = {
@@ -54,6 +58,8 @@ const AdminDashBoard = () => {
     TechnicalTeam: <TechnicalTeam />,
     Teachers: <AdminTeacher />,
     PublisherFee: <PublisherFee />,
+    Publishers: <Publishers />,
+    Payments: <Payments />,
     Salary: <Salary />,
     Complaints: <AdminComplaints />,
     schoolApprovalsPC: <SchoolApprovalsPC />,
@@ -64,6 +70,7 @@ const AdminDashBoard = () => {
     UnPaidSalaryCEO: <UnPaidSalaryCEO />,
     PendingSalaryCEO: <PendingSalaryCEO />,
     jobApplications: <JobApps />,
+    AllUsers: <AllUsers />, // Add new page
   };
 
   const { activePage } = useContext(AdminActivePageContext);

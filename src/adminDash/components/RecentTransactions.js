@@ -2,7 +2,7 @@ import { React, useEffect, useState } from "react";
 import { TransactionService } from "../../services/adminService";
 // import { AdminActivePageContext } from "../contexts/AdminActivePageContext";
 
-const RecentTransactions = ({ handleClick }) => {
+const RecentTransactions = ({ handleClick, className }) => {
   const [transactions, setTransactions] = useState([]);
 
   useEffect(() => {
@@ -32,7 +32,11 @@ const RecentTransactions = ({ handleClick }) => {
   };
 
   return (
-    <div className="w-full lg:w-[64%] border border-[#EAEBF0] rounded-[10px] p-4">
+    <div
+      className={`w-full ${
+        className ? className : "lg:w-[64%]"
+      } border border-[#EAEBF0] rounded-[10px] p-4`}
+    >
       <p className="font-Outfit font-semibold text-lg text-[#272D37]">
         Recent Transactions
       </p>

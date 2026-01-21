@@ -1,68 +1,49 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import edit from "../../assets/edit.svg";
 import trash from "../../assets/trash.svg";
 import Pagination from "../../Pagination";
+import { ContentService } from "../../../../services/adminService";
+import SnackbarUtils from "../../../../utils/snackbarUtils";
+import GenericLoadingSkeleton from "../../../../utils/loadingSkeleton";
+import nofeed from "../../assets/nofeed.svg";
+import AddNewBlog from "./addNewBlog";
+import ViewEditBlog from "./viewEditBlog";
 
 const Blog = () => {
   const [currentPage, setCurrentPage] = useState(1);
+  const [blogs, setBlogs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [selectedBlog, setSelectedBlog] = useState(null);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [isFetchingBlog, setIsFetchingBlog] = useState(false);
+
   const itemsPerPage = 9;
 
-  const dummyData = [
-    {
-      id: 1,
-      title: "Innovative Strategies for Educational Program Coordination",
-      date: "April 15th, 2024",
-      time: "2:30 PM",
-    },
-    {
-      id: 2,
-      title: "Crafting the Future: A Guide to Curriculum Development",
-      date: "June 30th, 2024",
-      time: "9:15 AM",
-    },
-    {
-      id: 3,
-      title: "Designing Engaging Learning Experiences: Tips and Tricks",
-      date: "August 5th, 2024",
-      time: "4:45 PM",
-    },
-    {
-      id: 4,
-      title: "Boosting Student Engagement: Creative Approaches That Work",
-      date: "September 12th, 2024",
-      time: "11:00 AM",
-    },
-    {
-      id: 5,
-      title: "Pathways to Academic Success: Insights from Top Advisors",
-      date: "November 22nd, 2024",
-      time: "3:20 PM",
-    },
-    {
-      id: 6,
-      title: "Mastering Online Course Facilitation: Best Practices",
-      date: "January 10th, 2024",
-      time: "8:05 AM",
-    },
-    {
-      id: 7,
-      title: "Harnessing Technology in Education: A Consultant's Perspective",
-      date: "March 3rd, 2024",
-      time: "1:50 PM",
-    },
-    {
-      id: 8,
-      title: "Expanding Horizons: Effective Education Outreach Strategies",
-      date: "February 18th, 2024",
-      time: "10:30 AM",
-    },
-    {
-      id: 9,
-      title: "The Art of Assessment: Evaluating Educational Outcomes",
-      date: "December 25th, 2024",
-      time: "5:15 PM",
-    },
-  ];
+  const fetchBlogs = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await ContentService.getBlogs();
+      if (response) {
+        setBlogs(response);
+      } else {
+        setBlogs([]);
+      }
+    } catch (err) {
+      setError(err.message || "Failed to fetch blogs.");
+      //   SnackbarUtils.error(err.message || "Failed to fetch blogs.");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchBlogs();
+  }, [fetchBlogs]);
 
   const columns = ["S/N", "Blog Title", "Date Posted", "Time Posted", ""];
 
@@ -70,10 +51,94 @@ const Blog = () => {
     setCurrentPage(page);
   };
 
+  const formatDate = (dateString) =>
+    new Date(dateString).toLocaleDateString("en-US", { dateStyle: "long" });
+  const formatTime = (dateString) =>
+    new Date(dateString).toLocaleTimeString("en-US", { timeStyle: "short" });
+
+  const handleOpenModal = () => setIsModalOpen(true);
+  const handleCloseModal = () => setIsModalOpen(false);
+
+  const handleOpenViewModal = async (blog) => {
+    setIsViewModalOpen(true);
+    setIsFetchingBlog(true);
+    try {
+      const fullBlog = await ContentService.getBlogById(blog._id);
+      setSelectedBlog(fullBlog);
+    } catch (error) {
+      SnackbarUtils.error("Failed to fetch blog details.");
+      handleCloseViewModal();
+    } finally {
+      setIsFetchingBlog(false);
+    }
+  };
+
+  const handleCloseViewModal = () => {
+    setSelectedBlog(null);
+    setIsViewModalOpen(false);
+  };
+
+  const handleSubmitNewBlog = async (blogData) => {
+    setIsSubmitting(true);
+    try {
+      const response = await ContentService.createBlog(blogData);
+      if (response) {
+        SnackbarUtils.success("Blog posted successfully!");
+        fetchBlogs();
+      }
+    } catch (error) {
+      //   SnackbarUtils.error(
+      //     error.response?.data?.message || error.message || "Failed to post blog."
+      //   );
+    } finally {
+      setIsSubmitting(false);
+      handleCloseModal();
+    }
+  };
+
+  const handleUpdateBlog = async (blogData) => {
+    if (!selectedBlog) return;
+    setIsUpdating(true);
+    try {
+      const response = await ContentService.updateBlog(
+        selectedBlog._id,
+        blogData
+      );
+      if (response) {
+        SnackbarUtils.success("Blog updated successfully!");
+        fetchBlogs();
+      }
+    } catch (error) {
+      //   SnackbarUtils.error(
+      //     error.response?.data?.message || error.message || "Failed to update blog."
+      //   );
+    } finally {
+      setIsUpdating(false);
+      handleCloseViewModal();
+    }
+  };
+
   return (
-    <div className="w-full">
-      <div className="flex justify-end mb-6">
-        <button className="bg-[#0530A1] text-white font-Outfit text-sm font-medium py-3 px-6 rounded-[5px]">
+    <>
+      <AddNewBlog
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onSubmit={handleSubmitNewBlog}
+        isSubmitting={isSubmitting}
+      />
+      <ViewEditBlog
+        isOpen={isViewModalOpen}
+        onClose={handleCloseViewModal}
+        blog={selectedBlog}
+        onSubmit={handleUpdateBlog}
+        isSubmitting={isUpdating}
+        isLoading={isFetchingBlog}
+      />
+      <div className="flex justify-end mb-6 mt-6">
+        <button
+          onClick={handleOpenModal}
+          className="bg-[#0530A1] text-white font-Outfit text-sm font-medium py-3 px-6 rounded-[5px]"
+        >
           Add New Blog
         </button>
       </div>
@@ -94,36 +159,70 @@ const Blog = () => {
               </tr>
             </thead>
             <tbody>
-              {dummyData.map((data, index) => (
-                <tr key={data.id}>
-                  <td className="font-Outfit py-4 border-t border-[#EAEBF0] text-sm text-[#5F6D7E] font-medium text-left px-4">
-                    {String(index + 1).padStart(2, "0")}
-                  </td>
-                  <td className="font-Outfit py-4 border-t border-[#EAEBF0] text-[#272D37] font-medium text-sm text-left px-4">
-                    {data.title}
-                  </td>
-                  <td className="font-Outfit py-4 border-t border-[#EAEBF0] text-sm text-[#5F6D7E] font-medium text-left px-4">
-                    {data.date}
-                  </td>
-                  <td className="font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-left px-4">
-                    {data.time}
-                  </td>
-                  <td className="font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-right px-4">
-                    <div className="flex items-center justify-end space-x-4">
-                      <img
-                        className="w-4 cursor-pointer"
-                        src={edit}
-                        alt="Edit"
-                      />
-                      <img
-                        className="w-4 cursor-pointer"
-                        src={trash}
-                        alt="Delete"
-                      />
-                    </div>
+              {loading ? (
+                <tr>
+                  <td colSpan={columns.length}>
+                    <GenericLoadingSkeleton count={itemsPerPage} />
                   </td>
                 </tr>
-              ))}
+              ) : error ? (
+                <tr>
+                  <td
+                    colSpan={columns.length}
+                    className="text-center py-10 text-red-500"
+                  >
+                    {error}
+                  </td>
+                </tr>
+              ) : blogs.length === 0 ? (
+                <tr>
+                  <td colSpan={columns.length} className="text-center py-10">
+                    <img
+                      src={nofeed}
+                      alt="No blogs found"
+                      className="mx-auto"
+                    />
+                    <p className="font-Outfit text-lg mt-4 font-semibold">
+                      No Blogs Found
+                    </p>
+                    <p className="font-Outfit text-sm text-[#5F6D7E] mt-2">
+                      New blogs will appear here.
+                    </p>
+                  </td>
+                </tr>
+              ) : (
+                blogs.map((data, index) => (
+                  <tr key={data._id}>
+                    <td className="font-Outfit py-4 border-t border-[#EAEBF0] text-sm text-[#5F6D7E] font-medium text-left px-4">
+                      {String(index + 1).padStart(2, "0")}
+                    </td>
+                    <td className="font-Outfit py-4 border-t border-[#EAEBF0] text-[#272D37] font-medium text-sm text-left px-4">
+                      {data.title}
+                    </td>
+                    <td className="font-Outfit py-4 border-t border-[#EAEBF0] text-sm text-[#5F6D7E] font-medium text-left px-4">
+                      {formatDate(data.createdAt)}
+                    </td>
+                    <td className="font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-left px-4">
+                      {formatTime(data.createdAt)}
+                    </td>
+                    <td className="font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-right px-4">
+                      <div className="flex items-center justify-end space-x-4">
+                        <img
+                          onClick={() => handleOpenViewModal(data)}
+                          className="w-4 cursor-pointer"
+                          src={edit}
+                          alt="Edit"
+                        />
+                        {/* <img
+                          className="w-4 cursor-pointer"
+                          src={trash}
+                          alt="Delete"
+                        /> */}
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
@@ -131,11 +230,11 @@ const Blog = () => {
         <Pagination
           currentPage={currentPage}
           itemsPerPage={itemsPerPage}
-          totalItems={dummyData.length}
+          totalItems={blogs.length}
           onPageChange={handlePageChange}
         />
       </div>
-    </div>
+    </>
   );
 };
 

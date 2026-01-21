@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect, useCallback } from "react";
 import {
   AdminActivePageContext,
   AdminSidebarContext,
@@ -13,43 +13,93 @@ import x2 from "./assets/x (2).svg";
 import pload from "./assets/pload.svg";
 import uplo from "./assets/uplo.svg";
 import cross from "./assets/cross.svg";
+import { BookService } from "../../services/adminService";
+import GenericLoadingSkeleton from "../../utils/loadingSkeleton";
+import SnackbarUtils from "../../utils/snackbarUtils";
+import Pagination from "./Pagination";
+import nofeed from "./assets/nofeed.svg";
+import ViewBookModal from "./booksComps/ViewBookModal";
 
 const UploadedBooks = () => {
   const { sidebarVisible, setSidebarVisible } = useContext(AdminSidebarContext);
   const { activePage, setActivePage } = useContext(AdminActivePageContext);
   const [uploadBook, setUploadBook] = useState(false);
+  const [viewBookModal, setViewBookModal] = useState(false);
+  const [selectedBook, setSelectedBook] = useState(null);
+  const [viewLoading, setViewLoading] = useState(false);
+  const [books, setBooks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [pagination, setPagination] = useState({});
+  const [currentPage, setCurrentPage] = useState(1);
+  const [filters, setFilters] = useState({
+    name: "",
+    author: "",
+    status: "",
+  });
+
+  const fetchBooks = useCallback(async () => {
+    setLoading(true);
+    try {
+      const params = {
+        page: currentPage,
+        limit: 10,
+        ...filters,
+      };
+      const response = await BookService.getBooks(params);
+      if (response && response.data) {
+        setBooks(response.data);
+        setPagination(response.pagination || {});
+      } else {
+        setBooks([]);
+        setPagination({});
+      }
+    } catch (err) {
+      setError(err.message || "Failed to fetch books.");
+      SnackbarUtils.error(err.message || "Failed to fetch books.");
+    } finally {
+      setLoading(false);
+    }
+  }, [currentPage, filters]);
+
+  useEffect(() => {
+    fetchBooks();
+  }, [fetchBooks]);
+
+  const handleViewDetails = async (id) => {
+    setViewBookModal(true);
+    setViewLoading(true);
+    try {
+      const response = await BookService.getBookById(id);
+      if (response) {
+        setSelectedBook(response);
+      }
+    } catch (err) {
+      SnackbarUtils.error(err.message || "Failed to fetch book details.");
+    } finally {
+      setViewLoading(false);
+    }
+  };
 
   const handleClick = (page) => {
     setActivePage(page);
   };
 
-  const authors = [
-    {
-      name: "Grand Rapids",
-      uploadedBooks: "21",
-      sub: "Biology",
-    },
-    {
-      name: "Grand Rapids",
-      uploadedBooks: "21",
-      sub: "Biology",
-    },
-    {
-      name: "Grand Rapids",
-      uploadedBooks: "21",
-      sub: "Chemistry",
-    },
-    {
-      name: "Grand Rapids",
-      uploadedBooks: "21",
-      sub: "Chemistry",
-    },
-    {
-      name: "Grand Rapids",
-      uploadedBooks: "21",
-      sub: "Biology",
-    },
-  ];
+  const handlePageChange = (page) => setCurrentPage(page);
+  const handleFilterChange = (e) =>
+    setFilters({ ...filters, [e.target.name]: e.target.value });
+
+  const statusStyles = {
+    PENDING: "text-[#E2341D] bg-[#FFF2F0]",
+    APPROVED: "text-[#2D8A39] bg-[#F0FAF0]",
+    COMPLETED: "text-[#2D8A39] bg-[#F0FAF0]",
+    default: "text-gray-600 bg-gray-100",
+  };
+
+  const getStatusClass = (status) => {
+    const upperStatus = status?.toUpperCase();
+    return statusStyles[upperStatus] || statusStyles.default;
+  };
 
   return (
     <>
@@ -165,6 +215,17 @@ const UploadedBooks = () => {
         </div>
       )}
 
+      <ViewBookModal
+        isOpen={viewBookModal}
+        onClose={() => {
+          setViewBookModal(false);
+          setSelectedBook(null);
+        }}
+        book={selectedBook}
+        loading={viewLoading}
+        refetch={fetchBooks}
+      />
+
       <div
         onClick={() => {
           setSidebarVisible(false);
@@ -183,16 +244,27 @@ const UploadedBooks = () => {
         </span>
 
         <div className="w-full items-end flex flex-row mt-6 justify-between">
-          <span className="flex items-start space-x-6">
-            <label
-              htmlFor="Class Teacher"
-              className="font-Outfit flex flex-col text-[#272D37] text-xs font-medium"
-            >
-              Filter
-              <select className="mt-2 text-[#272D37] text-sm w-[120px] md:w-[200px] font-normal border border-[#DAE0E6] rounded-[5px] font-Outfit p-2.5">
-                <option value="">Sort by Author’s name</option>
-                <option value="">Sort by Publisher name</option>
-                <option value="">Sort by ISBN</option>
+          <span className="flex items-end space-x-6">
+            <input
+              type="text"
+              name="name"
+              placeholder="Search by book name..."
+              value={filters.name}
+              onChange={handleFilterChange}
+              className="text-[#272D37] text-sm w-[180px] md:w-[250px] font-normal border border-[#DAE0E6] rounded-[5px] font-Outfit p-2.5"
+            />
+            <label className="font-Outfit flex flex-col text-[#272D37] text-xs font-medium">
+              Status
+              <select
+                name="status"
+                value={filters.status}
+                onChange={handleFilterChange}
+                className="mt-2 text-[#272D37] text-sm w-[120px] md:w-[160px] font-normal border border-[#DAE0E6] rounded-[5px] font-Outfit p-2.5"
+              >
+                <option value="">All</option>
+                <option value="pending">Pending</option>
+                <option value="approved">Approved</option>
+                <option value="completed">Completed</option>
               </select>
             </label>
           </span>
@@ -219,16 +291,13 @@ const UploadedBooks = () => {
                       S/N
                     </th>
                     <th className="border-b font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 text-center px-4">
-                      Author Names
-                    </th>
-                    <th className="border-b hidden font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 text-center px-4">
-                      Registration Number
-                    </th>
-                    <th className="border-b hidden font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 text-center px-4">
-                      Date of Employment
+                      Book Title
                     </th>
                     <th className="border-b font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 text-center px-4">
-                      Uploaded Books
+                      Author
+                    </th>
+                    <th className="border-b font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 text-center px-4">
+                      Status
                     </th>
                     <th className="border-b font-Outfit text-sm font-medium text-[#5F6D7E] border-[#EAEBF0] py-3 text-center px-4">
                       Actions
@@ -236,49 +305,80 @@ const UploadedBooks = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {authors.map((data, index) => (
-                    <tr key={index}>
-                      <td className=" font-Outfit py-4 border-t border-[#EAEBF0] text-sm text-[#5F6D7E] font-medium text-center">
-                        0{index + 1}
-                      </td>
-                      <td className=" font-Outfit py-4 border-t border-[#EAEBF0] text-[#272D37] font-medium text-sm text-center">
-                        {data.name}
-                      </td>
-
-                      <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">
-                        {data.uploadedBooks}
-                      </td>
-                      <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">
-                        <button className="text-center text-sm font-Outfit font-medium text-white bg-[#0530A1] py-2 px-3 rounded-[10px]">
-                          View Profile
-                        </button>
+                  {loading ? (
+                    <tr>
+                      <td colSpan="5">
+                        <GenericLoadingSkeleton count={5} />
                       </td>
                     </tr>
-                  ))}
+                  ) : error ? (
+                    <tr>
+                      <td
+                        colSpan="5"
+                        className="text-center py-10 text-red-500"
+                      >
+                        {error}
+                      </td>
+                    </tr>
+                  ) : books.length === 0 ? (
+                    <tr>
+                      <td colSpan="5" className="text-center py-10">
+                        <img
+                          src={nofeed}
+                          alt="No books found"
+                          className="mx-auto"
+                        />
+                        <p className="font-Outfit text-lg mt-4 font-semibold">
+                          No Books Found
+                        </p>
+                        <p className="font-Outfit text-sm text-[#5F6D7E] mt-2">
+                          Uploaded books will appear here.
+                        </p>
+                      </td>
+                    </tr>
+                  ) : (
+                    books.map((book, index) => (
+                      <tr key={book._id}>
+                        <td className=" font-Outfit py-4 border-t border-[#EAEBF0] text-sm text-[#5F6D7E] font-medium text-center">
+                          {index + 1}
+                        </td>
+                        <td className=" font-Outfit py-4 border-t border-[#EAEBF0] text-[#272D37] font-medium text-sm text-center capitalize">
+                          {book.title || "N/A"}
+                        </td>
+                        <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center capitalize">
+                          {(book.author && book.author.length > 0
+                            ? book.author.join(", ")
+                            : "N/A") || "N/A"}
+                        </td>
+                        <td className="font-Outfit text-sm py-4 border-t border-[#EAEBF0] text-center">
+                          <p
+                            className={`font-medium text-[13px] rounded-[5px] w-fit mx-auto py-[2px] px-2 capitalize ${getStatusClass(
+                              book.status
+                            )}`}
+                          >
+                            {book.status?.toLowerCase() || "N/A"}
+                          </p>
+                        </td>
+                        <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">
+                          <button
+                            onClick={() => handleViewDetails(book._id)}
+                            className="text-center text-sm font-Outfit font-medium text-white bg-[#0530A1] py-2 px-3 rounded-[10px]"
+                          >
+                            View Details
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>
-            <div className=" w-full py-3 px-3 flex justify-between items-center">
-              <span className=" flex space-x-1">
-                <img src={backArr} alt="" />
-                <p className=" font-Outfit font-medium text-[#5F6D7E] text-sm">
-                  Prev
-                </p>
-              </span>
-              <span className=" flex items-end space-x-4">
-                <p className=" font-Outfit text-sm text-[#0530A1]">1</p>
-                <p className=" font-Outfit text-sm">2</p>
-                <p className=" font-Outfit text-sm">...</p>
-                <p className=" font-Outfit text-sm">5</p>
-                <p className=" font-Outfit text-sm">6</p>
-              </span>
-              <span className=" flex space-x-1">
-                <p className=" font-Outfit font-medium text-[#5F6D7E] text-sm">
-                  Next
-                </p>
-                <img src={fwdArr} alt="" />
-              </span>
-            </div>
+            <Pagination
+              currentPage={currentPage}
+              itemsPerPage={pagination.limit || 10}
+              totalItems={pagination.totalItems || 0}
+              onPageChange={handlePageChange}
+            />
           </div>
         </div>
       </div>

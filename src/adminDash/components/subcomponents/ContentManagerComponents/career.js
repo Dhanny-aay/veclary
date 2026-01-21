@@ -127,7 +127,7 @@ const Career = () => {
         jobId={selectedJobId}
         isSubmitting={isSubmitting}
       />
-      <div className="w-full">
+      <div className="w-full mt-6">
         <div className="flex justify-end mb-6">
           <button
             onClick={handleOpenModal}

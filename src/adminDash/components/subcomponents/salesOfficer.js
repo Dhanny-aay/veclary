@@ -23,9 +23,13 @@ const SalesOfficer = () => {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [loading, setLoading] = useState(false);
 
-  const handleSubmitAnnouncement = (announcement) => {
-    // submit announcement logic
-    SnackbarUtils.success("Announcement Submitted");
+  const handleSubmitAnnouncement = async (announcement) => {
+    try {
+      await AnnouncementService.createAnnouncement(announcement);
+      SnackbarUtils.success("Announcement Submitted");
+    } catch (error) {
+      SnackbarUtils.error(error.message || "Failed to submit announcement");
+    }
   };
 
   const [dragActive, setDragActive] = useState(false);
