@@ -255,7 +255,7 @@ const AddResources = ({ triggerFetch, setAddResource }) => {
 
             <FileUploader
               label="Resource File"
-              accept="application/pdf"
+              accept="application/pdf,image/*,video/*"
               maxSize={200000000} // 200MB
               isImage={false}
               onFileSelect={handleResourceFileSelect}

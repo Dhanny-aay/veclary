@@ -11,6 +11,10 @@ import PlanManage from "./signupComponents/plan";
 import { handleSchoolRegister } from "../../controllers/schoolControllers/schoolAUthController";
 
 const ManageSignup = () => {
+  console.log("PersonalManage:", PersonalManage);
+  console.log("AcademicManage:", AcademicManage);
+  console.log("PlanManage:", PlanManage);
+
   const [currentStep, setCurrentStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -25,6 +29,7 @@ const ManageSignup = () => {
     schoolPhone: "",
     schoolWebsite: "",
     schoolAddress: "",
+    plan: "",
   });
 
   // console.log(formData);
@@ -77,7 +82,7 @@ const ManageSignup = () => {
 
             {steps[currentStep]}
 
-            <div className=" mt-16 lg:mt-0 lg:absolute bottom-0 w-full left-0 lg:px-10">
+            <div className=" mt-16 lg:mt-0 lg:absolute bottom-0 w-full left-0 lg:px-10 bg-white z-10 py-4 rounded-b-[15px]">
               <div className="flex justify-between">
                 {currentStep > 0 && (
                   <button

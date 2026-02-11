@@ -18,8 +18,6 @@ const Signin = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  // console.log(password);
-
   const onSuccess = (response) => {
     setLoading(false);
     // SnackbarUtils.success("Login successful!");
@@ -38,8 +36,10 @@ const Signin = () => {
       navigate("/vendor-dashboard");
     } else if (userRole === "SCHOOL") {
       navigate("/management-dashboard");
+    } else if (userRole === "ADMIN") {
+      navigate("/admin-dashboard");
     } else {
-      SnackbarUtils.error("Role not recognized.");
+      // SnackbarUtils.error("Role not recognized.");
     }
   };
 
@@ -69,19 +69,16 @@ const Signin = () => {
           navigate("/teachers-dashboard");
         } else if (userRole === "SCHOOL") {
           navigate("/management-dashboard");
-        } else {
-          SnackbarUtils.error("Role not recognized.");
+        } else if (userRole === "ADMIN") {
+          navigate("/admin-dashboard");
+        } else if (userRole === "AUTHOR" || userRole === "PUBLISHER") {
+          navigate("/vendor-dashboard");
         }
-      } else {
-        // SnackbarUtils.error("Please log in");
       }
     } catch (error) {
-      console.error("Error fetching note:", error);
-      // SnackbarUtils.error("An error occurred while  Note data");
+      console.error("Error fetching user data:", error);
     }
   };
-
-  // console.log(note);
 
   useEffect(() => {
     getUser();
@@ -128,15 +125,6 @@ const Signin = () => {
             </div>
 
             <div className=" w-full flex justify-between mt-3">
-              {/* <label className="flex items-center">
-                <input
-                  type="checkbox"
-                  className={`form-checkbox h-3 w-3 text-blue-600`}
-                />
-                <span className="ml-2 text-sm text-[#000] font-Outfit font-medium">
-                  Remember me
-                </span>
-              </label> */}
               <Link
                 to="/forgotpassword"
                 className=" text-[#0530A1] text-sm font-medium font-Outfit block ml-auto"
@@ -174,7 +162,7 @@ const Signin = () => {
               <img
                 src={logo}
                 className=" w-16 h-6 md:w-10 md:h-6"
-                alt="Veclary:The Best System To Enhance Your Education"
+                alt="Veclary: The Best System To Enhance Your Education"
               />
               <p className=" font-Outfit text-xl md:text-lg font-semibold text-[#121212]">
                 Veclary

@@ -4,7 +4,7 @@ const token = localStorage.getItem("veclary_token");
 // Function to get School resources
 export const handleGetSchoolResources = async () => {
   try {
-    const response = await api("GET", "/schools/resourses");
+    const response = await api("GET", "/schools/resources");
     return response;
   } catch (error) {
     console.log(error);
@@ -13,24 +13,38 @@ export const handleGetSchoolResources = async () => {
 
 export const handleCreateResources = async (formData, onSuccess, onError) => {
   try {
-    const response = await fetch(
-      "https://backend-pil9.onrender.com/api/v1/schools/resources",
-      {
-        method: "POST",
-        body: formData, // Send formData, not a JSON object
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    if (response.ok) {
-      const data = await response.json();
-      onSuccess(data);
-    } else {
-      throw new Error("Upload failed");
-    }
+    const response = await api("POST", "/schools/resources", formData);
+    onSuccess(response);
   } catch (error) {
-    onError(error);
+    if (onError) {
+      onError(error);
+    }
+  }
+};
+
+export const handleUpdateSchoolResource = async (
+  id,
+  formData,
+  onSuccess,
+  onError,
+) => {
+  try {
+    const response = await api("PATCH", `/schools/resources/${id}`, formData);
+    onSuccess(response);
+  } catch (error) {
+    if (onError) {
+      onError(error);
+    }
+  }
+};
+
+export const handleDeleteSchoolResource = async (id, onSuccess, onError) => {
+  try {
+    const response = await api("DELETE", `/schools/resources/${id}`);
+    onSuccess(response);
+  } catch (error) {
+    if (onError) {
+      onError(error);
+    }
   }
 };

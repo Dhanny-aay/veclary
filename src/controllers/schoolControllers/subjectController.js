@@ -12,9 +12,11 @@ export const handleGetSchoolSubjects = async () => {
 };
 
 // Function to get all subjectssubject
-export const handleGetAllSubjects = async () => {
+// Function to get all subjectssubject
+export const handleGetAllSubjects = async (limit) => {
   try {
-    const response = await silentApi("GET", "/schools/all-subjects");
+    const query = limit ? `?limit=${limit}` : "";
+    const response = await silentApi("GET", `/schools/all-subjects${query}`);
     return response;
   } catch (error) {
     console.log(error);
@@ -50,13 +52,13 @@ export const handleUpdateSubjectById = async (
   subjectID,
   userData,
   onSuccess,
-  onError
+  onError,
 ) => {
   try {
     const response = await api(
       "PATCH",
       `/schools/subjects/${subjectID}`,
-      userData
+      userData,
     );
     onSuccess(response);
   } catch (error) {

@@ -21,11 +21,13 @@ const FileUploader = ({ label, accept, maxSize, isImage, onFileSelect }) => {
 
     setFileName(file.name);
 
-    if (isImage) {
+    if (file.type.startsWith("image/")) {
       // If it's an image, create a preview
       const reader = new FileReader();
       reader.onloadend = () => setImagePreview(reader.result);
       reader.readAsDataURL(file);
+    } else {
+      setImagePreview(null);
     }
 
     // Call the parent callback to handle the file
@@ -58,7 +60,7 @@ const FileUploader = ({ label, accept, maxSize, isImage, onFileSelect }) => {
     <label className="w-full flex flex-col mt-6 text-[#272D37] font-Outfit font-medium text-sm">
       {label}
       <div className="mt-2 w-full border border-[#DAE0E6] rounded-[5px] flex items-center justify-center flex-col p-3">
-        {isImage && imagePreview ? (
+        {imagePreview ? (
           <img
             src={imagePreview}
             alt="Preview"

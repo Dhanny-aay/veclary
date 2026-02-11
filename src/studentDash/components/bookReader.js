@@ -1,94 +1,215 @@
-import arrowBlue from "./assets/arrowblue.svg";
-import search from "./assets/Search.svg";
-import bookmark from "./assets/Bookmark.svg";
-import edit from "./assets/UX_Writing.png";
-import { useContext, useState } from "react";
-import { ActivePageContext } from "../contexts/ActivePageContext";
+import React, { useState, useEffect } from "react";
+import { Document, Page, pdfjs } from "react-pdf";
+import { X, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
+import "react-pdf/dist/Page/AnnotationLayer.css";
+import "react-pdf/dist/Page/TextLayer.css";
 
-const BookReader = () => {
-  const { activePage, setActivePage } = useContext(ActivePageContext);
+// Configure PDF worker
+pdfjs.GlobalWorkerOptions.workerSrc =
+  "https://unpkg.com/pdfjs-dist@" + pdfjs.version + "/build/pdf.worker.min.mjs";
 
-  const handleClick = (page) => {
-    setActivePage(page);
+const BookReader = ({
+  fileUrl,
+  bookId,
+  bookName,
+  onClose,
+  onProgressUpdate,
+}) => {
+  const [numPages, setNumPages] = useState(null);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Load saved progress
+  useEffect(() => {
+    const savedPage = localStorage.getItem(`book_progress_${bookId}`);
+    if (savedPage) {
+      setPageNumber(parseInt(savedPage, 10));
+    }
+  }, [bookId]);
+
+  function onDocumentLoadSuccess({ numPages }) {
+    setNumPages(numPages);
+    setIsLoading(false);
+  }
+
+  const changePage = (offset) => {
+    setPageNumber((prevPageNumber) => {
+      const newPage = prevPageNumber + offset;
+      const progress = numPages ? Math.round((newPage / numPages) * 100) : 0;
+
+      // Save progress locally
+      localStorage.setItem(`book_progress_${bookId}`, newPage);
+      localStorage.setItem(`book_progress_percent_${bookId}`, progress);
+      localStorage.setItem(
+        `book_last_read_${bookId}`,
+        new Date().toISOString(),
+      );
+
+      // Update parent
+      if (onProgressUpdate) {
+        onProgressUpdate(bookId, progress);
+      }
+      return newPage;
+    });
+  };
+
+  const previousPage = () => {
+    if (pageNumber > 1) changePage(-1);
+  };
+
+  const nextPage = () => {
+    if (pageNumber < numPages) changePage(1);
+  };
+
+  /* Keyboard Support */
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "ArrowRight") nextPage();
+      if (e.key === "ArrowLeft") previousPage();
+      if (e.key === "Escape") onClose();
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [pageNumber, numPages]); // Dependencies ensure fresh state for next/prev
+
+  /* Swipe Support */
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
+
+  // Minimum swipe distance
+  const minSwipeDistance = 50;
+
+  const onTouchStart = (e) => {
+    setTouchEnd(null); // Reset
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (isLeftSwipe) {
+      nextPage();
+    }
+    if (isRightSwipe) {
+      previousPage();
+    }
   };
 
   return (
-    <>
-      <div className=" fixed h-dvh w-full bg-white left-0 right-0 z-[99999]">
-        <div className=" relative">
-          {/* headbar */}
-          <div className=" w-full py-8 px-8 flex items-center justify-between fixed top-0 left-0 bg-white">
-            <span
-              onClick={() => handleClick("Home")}
-              className=" cursor-pointer flex w-[300px] flex-row items-center"
-            >
-              <img src={arrowBlue} alt="" />
-              <p className=" font-Outfit text-[#0530A1] text-sm font-medium">
-                Back
-              </p>
-              <p className=" font-Outfit text-xl font-semibold mb-2 ml-3">
-                E-Library
-              </p>
-            </span>
-            <p className=" font-Outfit text-[#00000080] w-[300px] text-[32px] font-semibold">
-              Chalice of the Gods
-            </p>
-            <span className=" flex items-center justify-end w-[300px] space-x-4">
-              <img src={search} alt="search" />
-              <img src={bookmark} alt="bookmark" />
-              <img src={edit} alt="edit" />
-            </span>
-          </div>
-
-          {/* content */}
-          <div className=" w-full overflow-y-auto pb-8 mt-24 h-[70vh]">
-            <div className=" w-full px-[20%] mt-6">
-              <p className=" font-Outfit text-[#101828] font-semibold text-3xl">
-                Introduction
-              </p>
-              <p className=" font-Outfit text-[#475467] text-lg font-normal mt-6">
-                Mi tincidunt elit, id quisque ligula ac diam, amet. Vel etiam
-                suspendisse morbi eleifend faucibus eget vestibulum felis.
-                Dictum quis montes, sit sit. Tellus aliquam enim urna, etiam.
-                Mauris posuere vulputate arcu amet, vitae nisi, tellus
-                tincidunt. At feugiat sapien varius id.
-                <br />
-                <br />
-                Eget quis mi enim, leo lacinia pharetra, semper. Eget in
-                volutpat mollis at volutpat lectus velit, sed auctor. Porttitor
-                fames arcu quis fusce augue enim. Quis at habitant diam at.
-                Suscipit tristique risus, at donec. In turpis vel et quam
-                imperdiet. Ipsum molestie aliquet sodales id est ac volutpat.
-              </p>
-              <p className=" font-Outfit text-[#475467] text-lg font-normal mt-6">
-                Mi tincidunt elit, id quisque ligula ac diam, amet. Vel etiam
-                suspendisse morbi eleifend faucibus eget vestibulum felis.
-                Dictum quis montes, sit sit. Tellus aliquam enim urna, etiam.
-                Mauris posuere vulputate arcu amet, vitae nisi, tellus
-                tincidunt. At feugiat sapien varius id.
-                <br />
-                <br />
-                Eget quis mi enim, leo lacinia pharetra, semper. Eget in
-                volutpat mollis at volutpat lectus velit, sed auctor. Porttitor
-                fames arcu quis fusce augue enim. Quis at habitant diam at.
-                Suscipit tristique risus, at donec. In turpis vel et quam
-                imperdiet. Ipsum molestie aliquet sodales id est ac volutpat.
-              </p>
-            </div>
-          </div>
-
-          {/* progress bar */}
-          <div className=" flex flex-col items-center justify-center fixed w-full left-0 bottom-0 h-[120px] bg-white px-8">
-            <p className=" text-center font-Outfit text-[#00000080] font-semibold text-lg">
-              Page 1 of 120
-            </p>
-            <div className=" w-full h-2 rounded-[5px] bg-[#F5F8FE] mt-6 relative">
-              <span className=" w-[4%] absolute h-2 top-0 left-0 rounded-[5px] bg-[#0530A1]"></span>
-            </div>
-          </div>
+    <div
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 p-4"
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
+    >
+      {/* Header / Controls */}
+      <div className="absolute top-0 left-0 right-0 h-16 bg-[#1a1a1a] flex items-center justify-between px-6 z-10">
+        <h2 className="text-white font-Outfit text-lg truncate max-w-[70%]">
+          {bookName}
+        </h2>
+        <div className="flex items-center gap-4">
+          <span className="text-white/70 font-Outfit text-sm">
+            Page {pageNumber} of {numPages || "--"}
+          </span>
+          <button
+            onClick={onClose}
+            className="p-2 hover:bg-white/10 rounded-full transition-colors"
+          >
+            <X className="text-white w-6 h-6" />
+          </button>
         </div>
       </div>
-    </>
+
+      {/* Main Content */}
+      <div className="w-full h-full pt-16 pb-20 flex items-center justify-center overflow-hidden">
+        {isLoading && (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <Loader2 className="w-10 h-10 text-white animate-spin" />
+            <p className="text-white ml-3 font-Outfit">Loading Book...</p>
+          </div>
+        )}
+
+        <div className="relative flex items-center shadow-2xl">
+          {/* Previous Button */}
+          <button
+            disabled={pageNumber <= 1}
+            onClick={previousPage}
+            className="absolute -left-16 p-3 bg-white/10 hover:bg-white/20 rounded-full transition-all disabled:opacity-30 disabled:cursor-not-allowed hidden md:block"
+          >
+            <ChevronLeft className="w-8 h-8 text-white" />
+          </button>
+
+          {/* PDF Document */}
+          <div className="bg-white rounded-sm overflow-hidden max-h-[85vh] aspect-[1/1.4] relative select-none">
+            <Document
+              file={fileUrl}
+              onLoadSuccess={onDocumentLoadSuccess}
+              loading={
+                <div className="w-[500px] h-[700px] bg-white flex items-center justify-center">
+                  <Loader2 className="w-8 h-8 text-gray-400 animate-spin" />
+                </div>
+              }
+              error={
+                <div className="w-[300px] h-[200px] bg-white flex items-center justify-center text-red-500 font-Outfit p-4 text-center">
+                  Error loading PDF. Please try again.
+                </div>
+              }
+            >
+              <Page
+                pageNumber={pageNumber}
+                height={window.innerHeight * 0.8}
+                renderTextLayer={false}
+                renderAnnotationLayer={false}
+                className="shadow-xl"
+              />
+            </Document>
+          </div>
+
+          {/* Next Button */}
+          <button
+            disabled={pageNumber >= numPages}
+            onClick={nextPage}
+            className="absolute -right-16 p-3 bg-white/10 hover:bg-white/20 rounded-full transition-all disabled:opacity-30 disabled:cursor-not-allowed hidden md:block"
+          >
+            <ChevronRight className="w-8 h-8 text-white" />
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Controls (Bottom) */}
+      <div className="absolute bottom-0 left-0 right-0 h-20 bg-[#1a1a1a] flex md:hidden items-center justify-between px-8">
+        <button
+          disabled={pageNumber <= 1}
+          onClick={previousPage}
+          className="p-3 bg-white/10 hover:bg-white/20 rounded-full transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+        >
+          <ChevronLeft className="w-6 h-6 text-white" />
+        </button>
+        <span className="text-white font-Outfit text-sm">
+          {Math.round((pageNumber / numPages) * 100)}% Read
+        </span>
+        <button
+          disabled={pageNumber >= numPages}
+          onClick={nextPage}
+          className="p-3 bg-white/10 hover:bg-white/20 rounded-full transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+        >
+          <ChevronRight className="w-6 h-6 text-white" />
+        </button>
+      </div>
+
+      {/* Central Page Turn Effect (Visual only for now) */}
+      <div className="hidden md:block absolute bottom-8 left-1/2 -translate-x-1/2 text-white/50 font-Outfit text-xs">
+        Use arrows to flip pages
+      </div>
+    </div>
   );
 };
 

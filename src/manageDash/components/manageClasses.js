@@ -54,7 +54,7 @@ const ManageClasses = () => {
     try {
       const data = await handleGetSchoolClasses();
       if (data) {
-        setClasses(data);
+        setClasses(data.data);
       }
     } catch (error) {
       console.error("Error fetching classes:", error);
@@ -181,10 +181,10 @@ const ManageClasses = () => {
                           {data.name}
                         </td>
                         <td className=" font-Outfit py-4 border-t border-[#EAEBF0] text-[#272D37] font-medium text-sm text-center">
-                          {data.subject}
+                          {data.sessionId?.name || "N/A"}
                         </td>
                         <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center">
-                          {data.address}
+                          {data.teacherId?.name || "Unassigned"}
                         </td>
 
                         <td className=" font-Outfit text-sm text-[#5F6D7E] py-4 border-t border-[#EAEBF0] text-center flex items-center justify-center space-x-3">

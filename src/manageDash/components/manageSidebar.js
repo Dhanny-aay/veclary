@@ -18,6 +18,8 @@ import {
   ManageSidebarContext,
 } from "../contexts/ManageActivePageContext";
 
+import { handleUserLogout } from "../../controllers/generalController/authController";
+
 const ManageSidebar = () => {
   const { activePage, setActivePage } = useContext(ManageActivePageContext);
   const { sidebarVisible, setSidebarVisible } =
@@ -47,11 +49,15 @@ const ManageSidebar = () => {
 
   const bottom = [
     { name: "Setting", img: setting, activeImg: settingAc, page: "Settings" },
-    { name: "Logout", img: logout },
+    { name: "Logout", img: logout, page: "Logout" },
   ];
 
   const handleClick = (page) => {
-    setActivePage(page);
+    if (page === "Logout") {
+      handleUserLogout();
+    } else {
+      setActivePage(page);
+    }
   };
 
   return (

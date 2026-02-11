@@ -43,9 +43,9 @@ const Period = ({ period, onUpdate, onRemove, subjects, loadingSubjects }) => {
             </label>
             <select
               id="subject"
-              value={period.subject}
+              value={period.subjectId}
               onChange={(e) =>
-                updatePeriod({ ...period, subject: e.target.value })
+                updatePeriod({ ...period, subjectId: e.target.value })
               }
               className="border border-[#DAE0E6] p-1.5 font-Outfit font-normal text-[#272D37] text-sm rounded-[5px]"
             >
@@ -54,7 +54,7 @@ const Period = ({ period, onUpdate, onRemove, subjects, loadingSubjects }) => {
                 <option disabled>Loading...</option>
               ) : (
                 subjects.map((s) => (
-                  <option key={s._id} value={s.name}>
+                  <option key={s._id} value={s._id}>
                     {s.name}
                   </option>
                 ))
@@ -71,9 +71,9 @@ const Period = ({ period, onUpdate, onRemove, subjects, loadingSubjects }) => {
             <input
               type="number"
               id="duration"
-              value={period.ends}
+              value={period.duration}
               onChange={(e) =>
-                updatePeriod({ ...period, ends: e.target.value })
+                updatePeriod({ ...period, duration: e.target.value })
               }
               className="border border-[#DAE0E6] p-1.5 font-Outfit font-normal text-[#272D37] text-sm rounded-[5px]"
               placeholder="Enter Duration"
@@ -98,7 +98,9 @@ const Period = ({ period, onUpdate, onRemove, subjects, loadingSubjects }) => {
         <div className="flex justify-between items-center">
           <div className="font-Outfit text-sm">
             <span className="font-bold ">{period.start}</span> -{" "}
-            {period.subject} ({period.ends} min)
+            {subjects.find((s) => s._id === period.subjectId)?.name ||
+              "Unknown Subject"}{" "}
+            ({period.duration} min)
           </div>
           <div className=" flex items-center space-x-2">
             <button
@@ -126,8 +128,8 @@ const Day = ({ day, onUpdate, onRemove }) => {
 
   const [newPeriod, setNewPeriod] = useState({
     start: "07:30",
-    subject: "",
-    ends: 30,
+    subjectId: "",
+    duration: 30,
   });
 
   const fetchSubjects = async () => {
@@ -149,7 +151,7 @@ const Day = ({ day, onUpdate, onRemove }) => {
   }, []);
 
   const addPeriod = () => {
-    if (!newPeriod.subject.trim()) {
+    if (!newPeriod.subjectId.trim()) {
       SnackbarUtils.warning("Please select a subject.");
       return;
     }
@@ -161,7 +163,7 @@ const Day = ({ day, onUpdate, onRemove }) => {
     onUpdate(updatedDay);
 
     const [hours, minutes] = newPeriod.start.split(":");
-    const durationInMinutes = parseInt(newPeriod.ends);
+    const durationInMinutes = parseInt(newPeriod.duration);
     const nextStartHour =
       parseInt(hours) +
       Math.floor((parseInt(minutes) + durationInMinutes) / 60);
@@ -170,8 +172,8 @@ const Day = ({ day, onUpdate, onRemove }) => {
       start: `${nextStartHour.toString().padStart(2, "0")}:${nextStartMinute
         .toString()
         .padStart(2, "0")}`,
-      subject: "",
-      ends: 30,
+      subjectId: "",
+      duration: 30,
     });
   };
 
@@ -240,9 +242,9 @@ const Day = ({ day, onUpdate, onRemove }) => {
           </label>
           <select
             id="subject"
-            value={newPeriod.subject}
+            value={newPeriod.subjectId}
             onChange={(e) =>
-              setNewPeriod({ ...newPeriod, subject: e.target.value })
+              setNewPeriod({ ...newPeriod, subjectId: e.target.value })
             }
             className="border border-[#DAE0E6] p-1.5 font-Outfit font-normal text-[#272D37] text-sm rounded-[5px]"
           >
@@ -251,7 +253,7 @@ const Day = ({ day, onUpdate, onRemove }) => {
               <option disabled>Loading...</option>
             ) : (
               subjects.map((s) => (
-                <option key={s._id} value={s.name}>
+                <option key={s._id} value={s._id}>
                   {s.name}
                 </option>
               ))
@@ -268,9 +270,9 @@ const Day = ({ day, onUpdate, onRemove }) => {
           <input
             type="number"
             id="duration"
-            value={newPeriod.ends}
+            value={newPeriod.duration}
             onChange={(e) =>
-              setNewPeriod({ ...newPeriod, ends: e.target.value })
+              setNewPeriod({ ...newPeriod, duration: e.target.value })
             }
             className="border border-[#DAE0E6] p-1.5 font-Outfit font-normal text-[#272D37] text-sm rounded-[5px]"
           />

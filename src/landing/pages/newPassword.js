@@ -2,15 +2,94 @@ import grid from "./assets/grid.svg";
 import logo from "./assets/logo.svg";
 import ilus from "./assets/ilus.svg";
 import prog from "./assets/prog.svg";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import load from "./assets/load.gif";
 import { useEffect, useState } from "react";
+import {
+  handleResetPassword,
+  handleVerifyResetToken,
+} from "../../controllers/generalController/authController";
+import SnackbarUtils from "../../utils/snackbarUtils";
 
 const NewPassword = () => {
   const [password, setPassword] = useState("");
-
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [tokenVerified, setTokenVerified] = useState(false);
+  const [verifyingToken, setVerifyingToken] = useState(true);
+
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const token = searchParams.get("token");
+
+  useEffect(() => {
+    if (token) {
+      handleVerifyResetToken(
+        token,
+        () => {
+          setTokenVerified(true);
+          setVerifyingToken(false);
+        },
+        () => {
+          setTokenVerified(false);
+          setVerifyingToken(false);
+          SnackbarUtils.error("Invalid or expired token");
+        },
+      );
+    } else {
+      setVerifyingToken(false);
+      setTokenVerified(false);
+    }
+  }, [token]);
+
+  const onSuccess = (response) => {
+    setLoading(false);
+    SnackbarUtils.success("Password reset successful!");
+    navigate("/login");
+  };
+
+  const onError = (error) => {
+    setLoading(false);
+    SnackbarUtils.error("Failed to reset password. Please try again.");
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (password !== confirmPassword) {
+      SnackbarUtils.error("Passwords do not match");
+      return;
+    }
+    setLoading(true);
+    // Assuming the API expects { password: "..." } or similar
+    // Based on change password it was { oldPassword, newPassword }
+    // Reset usually just needs the new password.
+    const userData = { password };
+    handleResetPassword(token, userData, onSuccess, onError);
+  };
+
+  if (verifyingToken) {
+    return (
+      <div className="w-full h-[100vh] flex justify-center items-center bg-[#f1f1f1]">
+        <img src={load} className="w-10" alt="Loading..." />
+      </div>
+    );
+  }
+
+  if (!tokenVerified) {
+    return (
+      <div className="w-full h-[100vh] flex justify-center items-center bg-[#f1f1f1] flex-col">
+        <p className="font-Outfit text-xl font-medium text-red-500 mb-4">
+          Invalid or Expired Link
+        </p>
+        <Link
+          to="/login"
+          className="bg-[#0530A1] text-white px-6 py-2 rounded-lg font-Outfit font-medium"
+        >
+          Back to Login
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -26,7 +105,7 @@ const NewPassword = () => {
 
             <div className=" w-full mt-12">
               <label
-                htmlFor=""
+                htmlFor="password"
                 className=" flex flex-col w-full font-Outfit font-medium"
               >
                 New Password
@@ -37,11 +116,34 @@ const NewPassword = () => {
                   className=" border border-[#EAEBF0] h-[45px] p-2.5 font-Outfit text-sm rounded-[15px] mt-3"
                 />
               </label>
+
+              <label
+                htmlFor="confirmPassword"
+                className=" flex flex-col w-full font-Outfit font-medium mt-4"
+              >
+                Confirm New Password
+                <input
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className=" border border-[#EAEBF0] h-[45px] p-2.5 font-Outfit text-sm rounded-[15px] mt-3"
+                />
+              </label>
+            </div>
+
+            <div className=" w-full flex justify-end mt-3">
+              <Link
+                to="/login"
+                className=" text-[#0530A1] text-sm font-medium font-Outfit"
+              >
+                Back to Login
+              </Link>
             </div>
 
             <div className="mt-16 lg:mt-6  w-full ">
               <button
-                // onClick={handleSubmit}
+                onClick={handleSubmit}
+                disabled={loading}
                 className=" w-full bg-[#0530A1] rounded-[10px] flex items-center justify-center  h-[48px] text-white text-center font-Outfit text-base"
               >
                 {loading ? (

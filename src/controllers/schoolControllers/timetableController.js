@@ -1,9 +1,10 @@
+import silentApi from "../../index/silent";
 import api from "../../index/api";
 
 // Function to get timetables
 export const handleGetSchoolTimetable = async () => {
   try {
-    const response = await api("GET", "/schools/timetables");
+    const response = await silentApi("GET", "/schools/timetables");
     return response;
   } catch (error) {
     console.log(error);

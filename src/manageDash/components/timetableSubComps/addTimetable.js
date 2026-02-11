@@ -56,7 +56,7 @@ const AddTimetable = ({ setAddTimetable, triggerFetch, dashboard }) => {
     try {
       const data = await handleGetSchoolClasses();
       if (data) {
-        setClasses(data);
+        setClasses(data.data || data);
       } else {
         // enqueueSnackbar("Failed to fetch profile data", { variant: "error" });
       }
@@ -150,7 +150,7 @@ const AddTimetable = ({ setAddTimetable, triggerFetch, dashboard }) => {
       return; // If field validation fails, stop submission
     }
 
-    // setLoading(true);
+    setLoading(true);
     const userData = { schoolId, termId, classId, days };
     handleAddTimetable(userData, onSuccess, onError);
     console.log(userData);
@@ -183,6 +183,10 @@ const AddTimetable = ({ setAddTimetable, triggerFetch, dashboard }) => {
                       width="100%"
                       height={40}
                     />
+                  ) : sessions.length === 0 ? (
+                    <p className="font-Outfit text-red-500 text-sm mt-2">
+                      No sessions found. Create one in Calendar.
+                    </p>
                   ) : (
                     <select
                       value={sessionId}
@@ -211,6 +215,10 @@ const AddTimetable = ({ setAddTimetable, triggerFetch, dashboard }) => {
                       width="100%"
                       height={40}
                     />
+                  ) : terms.length === 0 && sessionId ? (
+                    <p className="font-Outfit text-red-500 text-sm mt-2">
+                      No terms found. Please add one.
+                    </p>
                   ) : (
                     <select
                       value={termId}
@@ -241,6 +249,10 @@ const AddTimetable = ({ setAddTimetable, triggerFetch, dashboard }) => {
                 Class
                 {loadingClasses ? (
                   <GenericLoadingSkeleton count={1} width="100%" height={40} />
+                ) : classes.length === 0 ? (
+                  <p className="font-Outfit text-red-500 text-sm mt-2">
+                    No classes found. Create one in Classes.
+                  </p>
                 ) : (
                   <select
                     value={classId}

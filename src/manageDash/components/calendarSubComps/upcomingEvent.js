@@ -46,7 +46,7 @@ const UpcomingEvents = ({
   const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedEvents = upcomingEvents.slice(
     startIndex,
-    startIndex + itemsPerPage
+    startIndex + itemsPerPage,
   );
 
   const goToPage = (page) => {
@@ -124,10 +124,10 @@ const UpcomingEvents = ({
                         {event.type === "mid-term break"
                           ? "MID-TERM BREAK"
                           : event.type === "exam"
-                          ? "EXAM"
-                          : event.type === "term"
-                          ? "TERM"
-                          : "EVENT"}
+                            ? "EXAM"
+                            : event.type === "term"
+                              ? "TERM"
+                              : "EVENT"}
                       </p>
                       <h3 className="font-Outfit font-semibold text-sm sm:text-base text-gray-900 truncate">
                         {event.name}
@@ -193,7 +193,7 @@ const UpcomingEvents = ({
                       >
                         {page}
                       </button>
-                    )
+                    ),
                   )}
                 </div>
 

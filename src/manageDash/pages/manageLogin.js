@@ -2,13 +2,15 @@ import grid from "./assets/grid.svg";
 import logo from "./assets/logo.svg";
 import ilus from "./assets/ilus.svg";
 import prog from "./assets/prog.svg";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, Navigate } from "react-router-dom";
 import { useState } from "react";
 import load from "./assets/load.gif";
 import { useSnackbar } from "notistack";
 import { handleUserLogin } from "../../controllers/schoolControllers/schoolAUthController";
 
 const ManageLogin = () => {
+  return <Navigate to="/login" replace />;
+  /*
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -73,15 +75,7 @@ const ManageLogin = () => {
             </div>
 
             <div className=" w-full flex justify-between mt-3">
-              {/* <label className="flex items-center">
-                <input
-                  type="checkbox"
-                  className={`form-checkbox h-3 w-3 text-blue-600`}
-                />
-                <span className="ml-2 text-sm text-[#000] font-Outfit font-medium">
-                  Remember me
-                </span>
-              </label> */}
+// Nested comment removed to prevent syntax errors
               <Link
                 to="/forgotpassword"
                 className=" text-[#0530A1] text-sm font-medium font-Outfit block ml-auto"
@@ -153,6 +147,7 @@ const ManageLogin = () => {
       </div>
     </>
   );
+  */
 };
 
 export default ManageLogin;

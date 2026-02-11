@@ -2,6 +2,13 @@ import silentApi from "../../index/silent";
 import api from "../../index/api";
 const token = localStorage.getItem("veclary_token");
 
+// Function to handle user logout
+export const handleUserLogout = () => {
+  localStorage.removeItem("veclary_token");
+  localStorage.removeItem("veclary_refresh_token");
+  window.location.href = "/";
+};
+
 // Function to handle user login
 export const handleUserLogin = async (userData, onSuccess, onError) => {
   try {
@@ -28,7 +35,7 @@ export const handleGetLoggedinUser = async () => {
 export const handleChangeCurrPassword = async (
   userData,
   onSuccess,
-  onError
+  onError,
 ) => {
   try {
     const response = await api("POST", "/users/change-password", userData);
@@ -74,7 +81,7 @@ export const handleAvatarUpload = async (formData, onSuccess, onError) => {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      }
+      },
     );
 
     if (response.ok) {
@@ -111,5 +118,70 @@ export const refreshToken = async () => {
     }
   } catch (error) {
     console.error("Failed to refresh token", error);
+  }
+};
+
+// Function to verify email
+export const handleVerifyEmail = async (token, onSuccess, onError) => {
+  try {
+    const response = await api("GET", `/users/verify-email/${token}`);
+    onSuccess(response);
+  } catch (error) {
+    if (onError) {
+      onError(error);
+    }
+  }
+};
+
+// Function to resend email verification
+export const handleResendEmailVerification = async (
+  userData,
+  onSuccess,
+  onError,
+) => {
+  try {
+    const response = await api(
+      "POST",
+      "/users/resend-email-verification",
+      userData,
+    );
+    onSuccess(response);
+  } catch (error) {
+    if (onError) {
+      onError(error);
+    }
+  }
+};
+
+// Function to verify reset password token
+export const handleVerifyResetToken = async (token, onSuccess, onError) => {
+  try {
+    const response = await api("GET", `/users/verify-token/${token}`);
+    onSuccess(response);
+  } catch (error) {
+    if (onError) {
+      onError(error);
+    }
+  }
+};
+
+// Function to reset password
+export const handleResetPassword = async (
+  token,
+  userData,
+  onSuccess,
+  onError,
+) => {
+  try {
+    const response = await api(
+      "POST",
+      `/users/reset-password/${token}`,
+      userData,
+    );
+    onSuccess(response);
+  } catch (error) {
+    if (onError) {
+      onError(error);
+    }
   }
 };

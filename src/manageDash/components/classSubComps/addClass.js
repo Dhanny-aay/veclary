@@ -239,6 +239,10 @@ const AddClass = ({ setAddClass, triggerFetch }) => {
 
           {loadingSubjects ? (
             <GenericLoadingSkeleton count={1} width="100%" height={40} />
+          ) : subjects.length === 0 ? (
+            <p className="font-Outfit text-red-500 text-sm mt-2">
+              No subjects found. Create one in Subjects.
+            </p>
           ) : (
             <>
               <span className=" w-full border border-[#DAE0E6] mt-[6px] block px-4 py-3 rounded-[5px] bg-white">

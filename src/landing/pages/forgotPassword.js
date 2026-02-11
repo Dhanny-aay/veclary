@@ -24,13 +24,13 @@ const ForgotPassword = () => {
 
   const onError = (error) => {
     setLoading(false);
-    SnackbarUtils.error("failed. Please try again.");
+    // SnackbarUtils.error("failed. Please try again.");
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
-    const userData = email;
+    const userData = { email: email.toLowerCase() };
     handleForgotPassword(userData, onSuccess, onError);
   };
 
@@ -61,6 +61,15 @@ const ForgotPassword = () => {
               </label>
             </div>
 
+            <div className=" w-full flex justify-end mt-3">
+              <Link
+                to="/login"
+                className=" text-[#0530A1] text-sm font-medium font-Outfit"
+              >
+                Back to Login
+              </Link>
+            </div>
+
             <div className="mt-16 lg:mt-6  w-full ">
               <button
                 onClick={handleSubmit}
@@ -72,7 +81,7 @@ const ForgotPassword = () => {
                   "Submit"
                 )}
               </button>
-              <Link to="/student-signup">
+              <Link to="/get-started">
                 <p className=" mt-[19px] font-Outfit font-medium text-sm text-[#12121266] text-center">
                   Dont have an Account?{" "}
                   <span className=" text-[#0530A1]">Register</span>

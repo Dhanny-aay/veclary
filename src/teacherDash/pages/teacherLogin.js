@@ -3,7 +3,7 @@ import logo from "./assets/logo.svg";
 import ilus from "./assets/ilus.svg";
 import prog from "./assets/prog.svg";
 import load from "./assets/load.gif"; // Add loading GIF
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useSnackbar } from "notistack";
 import {
@@ -13,6 +13,8 @@ import {
 import SnackbarUtils from "../../utils/snackbarUtils";
 
 const TeacherLogin = () => {
+  return <Navigate to="/login" replace />;
+  /*
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -220,6 +222,7 @@ const TeacherLogin = () => {
       </div>
     </div>
   );
+  */
 };
 
 export default TeacherLogin;

@@ -2,7 +2,7 @@ import grid from "./assets/grid.svg";
 import logo from "./assets/logo.svg";
 import ilus from "./assets/ilus.svg";
 import prog from "./assets/prog.svg";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, Navigate } from "react-router-dom";
 import load from "./assets/load.gif";
 import { useEffect, useState } from "react";
 import { handleStudentLogin } from "../../controllers/studentControllers/userAuthController";
@@ -10,6 +10,8 @@ import { useSnackbar } from "notistack";
 import SnackbarUtils from "../../utils/snackbarUtils";
 
 const Login = () => {
+  return <Navigate to="/login" replace />;
+  /*
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -77,15 +79,7 @@ const Login = () => {
             </div>
 
             <div className=" w-full flex justify-between mt-3">
-              {/* <label className="flex items-center">
-                <input
-                  type="checkbox"
-                  className={`form-checkbox h-3 w-3 text-blue-600`}
-                />
-                <span className="ml-2 text-sm text-[#000] font-Outfit font-medium">
-                  Remember me
-                </span>
-              </label> */}
+// Previous commented code removed to prevent syntax errors
               <Link
                 to="/forgotpassword"
                 className=" text-[#0530A1] text-sm font-medium font-Outfit block ml-auto"
@@ -157,6 +151,7 @@ const Login = () => {
       </div>
     </>
   );
+  */
 };
 
 export default Login;

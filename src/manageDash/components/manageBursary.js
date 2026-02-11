@@ -10,6 +10,7 @@ import FeesDue from "./feesDue";
 import FeeSchedule from "./feeschedule";
 import FeesPaid from "./feesPaid";
 import FeesReminder from "./feesReminder";
+import nofeed from "./assets/nofeed.svg";
 
 const ManageBursary = () => {
   const { sidebarVisible, setSidebarVisible } =
@@ -57,6 +58,29 @@ const ManageBursary = () => {
     setActiveButton(value);
     // Add logic for button click action here
   };
+
+  const showComingSoon = true; // Set to true to show "Coming Soon" state
+
+  if (showComingSoon) {
+    return (
+      <div
+        onClick={() => {
+          setSidebarVisible(false);
+        }}
+        className="absolute lg:left-[20%] top-[56px] w-full pb-6 lg:w-[80%] h-[calc(100vh-56px)] flex flex-col items-center justify-center"
+      >
+        <div className="flex flex-col items-center justify-center text-center">
+          <img src={nofeed} className="mb-4" alt="Coming Soon" />
+          <h1 className="font-Outfit text-3xl font-bold text-[#0530A1] mb-2">
+            Coming Soon
+          </h1>
+          <p className="font-Outfit text-[#5F6D7E] text-lg">
+            We are working hard to bring you this feature.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>

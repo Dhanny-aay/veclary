@@ -19,10 +19,12 @@ import {
   TeacherSidebarContext,
 } from "../contexts/TeacherActivePageContext";
 
+import { handleUserLogout } from "../../controllers/generalController/authController";
+
 const TeacherSidebar = () => {
   const { activePage, setActivePage } = useContext(TeacherActivePageContext);
   const { sidebarVisible, setSidebarVisible } = useContext(
-    TeacherSidebarContext
+    TeacherSidebarContext,
   );
 
   const sidebar = [
@@ -41,11 +43,15 @@ const TeacherSidebar = () => {
 
   const bottom = [
     { name: "Settings", img: setting, activeImg: settingAc, page: "Settings" },
-    { name: "Logout", img: logout },
+    { name: "Logout", img: logout, page: "Logout" },
   ];
 
   const handleClick = (page) => {
-    setActivePage(page);
+    if (page === "Logout") {
+      handleUserLogout();
+    } else {
+      setActivePage(page);
+    }
   };
 
   return (

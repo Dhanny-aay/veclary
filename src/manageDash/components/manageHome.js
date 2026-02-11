@@ -14,6 +14,10 @@ import SelectSubs from "./subjectSubComps/selectSubjects";
 import AddSubject from "./subjectSubComps/addSubject";
 import { handleGetSchoolAnnouncements } from "../../controllers/schoolControllers/annoucementController";
 import { handleGetSchoolSubjects } from "../../controllers/schoolControllers/subjectController";
+import {
+  handleGetSchoolSessions,
+  handleGetSchoolSessionEvents,
+} from "../../controllers/schoolControllers/sessionController";
 
 const ManageHome = ({ dashboard, loading }) => {
   const { sidebarVisible, setSidebarVisible } =
@@ -30,6 +34,8 @@ const ManageHome = ({ dashboard, loading }) => {
   const [addSubject, setAddSubject] = useState(false);
   const [trigger, setTrigger] = useState(false);
   const [triggerAnnouce, setTriggerAnnouce] = useState(false);
+  const [upcomingEvents, setUpcomingEvents] = useState([]);
+  const [loadingEvents, setLoadingEvents] = useState(true);
 
   const handleClick = (page) => {
     setActivePage(page);
@@ -57,25 +63,12 @@ const ManageHome = ({ dashboard, loading }) => {
     setTriggerAnnouce(!triggerAnnouce);
   };
 
-  const timetableData = [
-    { color: "#006531", time: "08:00", activity: "Morning Exercise" },
-    { color: "#006531", time: "09:00", activity: "Morning Exercise" },
-    { color: "", time: "10:00", activity: "" },
-    { color: "#1C6DF6", time: "11:00", activity: "Science Class" },
-    { color: "#1C6DF6", time: "12:00", activity: "Science Class" },
-    { color: "#E84343", time: "13:00", activity: "History Class" },
-    { color: "#E84343", time: "14:00", activity: "History Class" },
-    // Add more activities as needed
-  ];
-
   const fetchAnnouncements = async () => {
     setLoadingAnnouncements(true);
     try {
       const data = await handleGetSchoolAnnouncements();
       if (data) {
         setAnnouncements(data);
-      } else {
-        // enqueueSnackbar("Failed to fetch profile data", { variant: "error" });
       }
     } catch (error) {
       console.error("Error fetching announcements:", error);
@@ -95,7 +88,6 @@ const ManageHome = ({ dashboard, loading }) => {
       if (data) {
         setSubjects(data[0]?.subjects || []);
       } else {
-        // enqueueSnackbar("Failed to fetch profile data", { variant: "error" });
         setSubjects([]);
       }
     } catch (error) {
@@ -105,9 +97,87 @@ const ManageHome = ({ dashboard, loading }) => {
     }
   };
 
+  const fetchUpcomingEvents = async () => {
+    setLoadingEvents(true);
+    try {
+      const sessions = await handleGetSchoolSessions();
+      let currentSessionId = null;
+
+      if (Array.isArray(sessions) && sessions.length > 0) {
+        const active = sessions.find(
+          (s) => s.status === "Ongoing" || s.status === "CURRENT",
+        );
+        currentSessionId = active ? active._id : sessions[0]._id;
+      }
+
+      if (currentSessionId) {
+        const eventsData = await handleGetSchoolSessionEvents(currentSessionId);
+
+        if (Array.isArray(eventsData)) {
+          // Filter out past events
+          const now = new Date();
+          // Reset time part of now for date comparison if needed, but simple comparison is fine
+          now.setHours(0, 0, 0, 0);
+
+          const futureEvents = eventsData.filter((event) => {
+            const endDate = new Date(event.endDate);
+            return endDate >= now; // Show if not yet ended
+          });
+
+          // Sort by start date
+          futureEvents.sort(
+            (a, b) => new Date(a.startDate) - new Date(b.startDate),
+          );
+
+          // Map colors
+          const eventTypeColors = {
+            term: "#2F52FF",
+            "mid-term break": "#FFDA0B",
+            exam: "#BD4917",
+            event: "#006531",
+          };
+
+          const mappedEvents = futureEvents.map((event) => {
+            const sDate = new Date(event.startDate);
+            // Format date: "Mar 27"
+            const dateStr = sDate.toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+            });
+
+            // If event has valid time (not 00:00), maybe append it?
+            // Sample data shows T00:00:00, so assuming Date only mostly.
+
+            return {
+              color: eventTypeColors[event.type] || "#006531",
+              time: dateStr,
+              activity: event.name,
+              status: event.status,
+            };
+          });
+
+          setUpcomingEvents(mappedEvents);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching events:", error);
+    } finally {
+      setLoadingEvents(false);
+    }
+  };
+
   useEffect(() => {
     fetchSubjects();
+    fetchUpcomingEvents();
   }, [trigger]);
+
+  // Current Date Formatter
+  const currentDate = new Date().toLocaleDateString("en-US", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 
   return (
     <>
@@ -239,48 +309,69 @@ const ManageHome = ({ dashboard, loading }) => {
                   Upcoming Schedule
                 </p>
                 <p className=" font-Outfit text-[#000000B2] text-xs font-normal">
-                  Today is Wednesday, March 27th, 2024
+                  Today is {currentDate}
                 </p>
               </span>
               <button
                 onClick={() => {
-                  handleClick("Home");
+                  handleClick("Home"); // Keeping consistent with user code view
                 }}
                 className=" rounded-[10px] bg-[#0530A1] px-3 py-1 text-white text-sm font-medium"
               >
                 View all
               </button>
             </div>
-            <div className="flex mt-3 w-full border-y border-[#9292921A]">
+
+            <div className="flex mt-3 w-full border-y border-[#9292921A] max-h-[300px] overflow-y-auto">
               <div className="w-16 border-r border-[#9292921A]">
-                {timetableData.map((item, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-center border-b border-[#9292921A] h-10"
-                  >
-                    <p className="text-center text-xs text-[#929292] font-Outfit font-normal">
-                      {item.time}
-                    </p>
+                {loadingEvents ? (
+                  <div className="h-10 flex items-center justify-center">
+                    ...
                   </div>
-                ))}
+                ) : upcomingEvents.length > 0 ? (
+                  upcomingEvents.map((item, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center justify-center border-b border-[#9292921A] h-14"
+                    >
+                      <p className="text-center text-xs text-[#929292] font-Outfit font-normal">
+                        {item.time}
+                      </p>
+                    </div>
+                  ))
+                ) : (
+                  <div className="h-20 flex items-center justify-center"></div>
+                )}
               </div>
-              <div className="flex-1 w-full">
-                {timetableData.map((item, index) => (
-                  <div
-                    key={index}
-                    style={{
-                      backgroundColor: item.color
-                        ? `${item.color}2a`
-                        : "transparent",
-                      borderColor: item.color ? `${item.color}` : "transparent",
-                    }}
-                    className={`flex ml-1 backdrop-opacity-60 items-center text-left w-full border-l-4 bg-[#0000002a] justify-center h-10`}
-                  >
-                    <p className="text-left w-full text-xs ml-4 text-[#000] font-Outfit font-normal">
-                      {item.activity}
-                    </p>
+              <div className="flex-1 w-full min-w-0">
+                {loadingEvents ? (
+                  <div className="h-10 flex items-center justify-center text-xs text-gray-400">
+                    Loading events...
                   </div>
-                ))}
+                ) : upcomingEvents.length > 0 ? (
+                  upcomingEvents.map((item, index) => (
+                    <div
+                      key={index}
+                      style={{
+                        backgroundColor: item.color
+                          ? `${item.color}2a`
+                          : "transparent",
+                        borderLeftColor: item.color
+                          ? `${item.color}`
+                          : "transparent",
+                      }}
+                      className={`flex ml-1 items-center text-left w-full border-l-4 justify-center h-14 border-b border-[#f0f0f0]`}
+                    >
+                      <p className="text-left flex-1 min-w-0 text-xs ml-4 text-[#000] font-Outfit font-medium capitalize truncate pr-2">
+                        {item.activity}
+                      </p>
+                    </div>
+                  ))
+                ) : (
+                  <div className="h-20 flex items-center justify-center text-sm text-gray-500 font-Outfit">
+                    No upcoming events.
+                  </div>
+                )}
               </div>
             </div>
           </div>

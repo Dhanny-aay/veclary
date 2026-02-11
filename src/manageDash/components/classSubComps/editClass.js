@@ -36,7 +36,13 @@ const EditClass = ({ setEditClass, classID, triggerFetch }) => {
     try {
       const data = await handleGetClassById(classID);
       if (data) {
-        setClassDeets(data.class);
+        const classObj = data.class || data.data || data;
+        setClassDeets({
+          ...classObj,
+          sessionId: classObj.sessionId?._id || classObj.sessionId || "",
+          teacherId: classObj.teacherId?._id || classObj.teacherId || "",
+          subjects: classObj.subjects?.map((s) => s._id || s) || [],
+        });
       }
     } catch (error) {
       console.error("Error fetching class:", error);
@@ -229,7 +235,7 @@ const EditClass = ({ setEditClass, classID, triggerFetch }) => {
                   <GenericLoadingSkeleton count={1} width="100%" height={40} />
                 ) : (
                   <select
-                    name="sessionId"
+                    name="teacherId"
                     value={classDeets.teacherId}
                     onChange={handleChange}
                     className="mt-2 border border-[#DAE0E6] p-2.5 rounded-[5px] text-sm font-Outfit font-normal bg-white"
@@ -286,7 +292,7 @@ const EditClass = ({ setEditClass, classID, triggerFetch }) => {
                 <div className="flex flex-wrap gap-3 items-start justify-start mt-4 w-full">
                   {selectedSubjects.map((subjectId) => {
                     const subject = subjects.find(
-                      (item) => item._id === subjectId
+                      (item) => item._id === subjectId,
                     );
                     return (
                       <div

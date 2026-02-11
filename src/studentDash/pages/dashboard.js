@@ -18,7 +18,7 @@ import {
 import StudentPayment from "../components/studentPayment";
 import McqView from "../components/mcqView";
 import McqQuestions from "../components/mcqQuestions";
-import BookReader from "../components/bookReader";
+// import BookReader from "../components/BookReader";
 import StudentAssistant from "../components/studentAssistant";
 import {
   handleGetStudentDashboard,
@@ -31,6 +31,7 @@ import { useNavigate } from "react-router-dom";
 import { refreshToken } from "../../controllers/generalController/authController";
 import SnackbarUtils from "../../utils/snackbarUtils";
 import { handleGetStudentStreak } from "../../controllers/studentControllers/generalController";
+import BookReader from "../components/bookReader";
 
 const Dashboard = () => {
   const [veclaryToken, setVeclaryToken] = useState(null);
@@ -116,7 +117,7 @@ const Dashboard = () => {
       const data = await handleGetNotes();
       if (data) {
         setNote(
-          data.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
+          data.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)),
         );
       } else {
         // SnackbarUtils.error("Failed to fetch Note data");

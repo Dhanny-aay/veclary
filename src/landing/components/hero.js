@@ -1,8 +1,7 @@
 import orange from "./assets/orange.svg";
 import search from "./assets/search-normal.svg";
 import heroImg from "./assets/heroimg.webp";
-import { motion } from "framer-motion";
-import marker1 from "./assets/marker1.svg";
+import { motion, AnimatePresence } from "framer-motion";
 import heroImg1 from "./assets/heroImg1.webp";
 import heroImg2 from "./assets/heroImg2.webp";
 import heroImg3 from "./assets/heroImg3.webp";
@@ -48,63 +47,98 @@ const Hero = () => {
   }, []);
 
   const currentContent = heroContent[currentIndex];
+
+  const textVariants = {
+    initial: { y: 20, opacity: 0 },
+    animate: { y: 0, opacity: 1 },
+    exit: { y: -20, opacity: 0 },
+  };
+
+  const imageVariants = {
+    initial: { opacity: 0, scale: 1.05 },
+    animate: { opacity: 1, scale: 1 },
+    exit: { opacity: 0 },
+  };
+
   return (
     <>
-      <div className=" flex flex-col lg:flex-row space-y-10 lg:space-y-0 items-center justify-between w-full py-12 md:py-16 px-4 md:px-20">
+      <div className="flex flex-col lg:flex-row space-y-10 lg:space-y-0 items-center justify-between w-full py-12 md:py-16 px-4 md:px-20 min-h-[600px]">
         {/* column 1 */}
-        <div className="flex flex-col items-start justify-start lg:w-[48%] w-full">
-          <motion.p
-            initial={{ y: 50, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.1, duration: 0.8, type: "tween" }}
-            className="font-Outfit text-4xl leading-[50px] md:text-[50px] font-semibold md:leading-[65px] text-black text-center md:text-left"
-          >
-            {currentContent.mainText}
-          </motion.p>
+        <div className="flex flex-col items-start justify-center lg:w-[48%] w-full relative min-h-[400px]">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentIndex}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              className="w-full"
+            >
+              <motion.p
+                variants={textVariants}
+                transition={{ duration: 0.5, type: "tween" }}
+                className="font-Outfit text-4xl leading-[50px] md:text-[50px] font-semibold md:leading-[65px] text-black text-center md:text-left"
+              >
+                {currentContent.mainText}
+              </motion.p>
 
-          <motion.p
-            initial={{ y: 50, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.2, duration: 0.8, type: "tween" }}
-            className="text-lg font-normal font-Outfit text-[#000000CC] text-center md:text-left mt-2"
-          >
-            {currentContent.subText}
-          </motion.p>
+              <motion.p
+                variants={textVariants}
+                transition={{ delay: 0.1, duration: 0.5, type: "tween" }}
+                className="text-lg font-normal font-Outfit text-[#000000CC] text-center md:text-left mt-2"
+              >
+                {currentContent.subText}
+              </motion.p>
 
-          <motion.div
-            initial={{ y: 50, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.3, duration: 0.8, type: "tween" }}
-            className=" w-full md:w-[500px] lg:w-[500px] h-[54px] border-[3px] border-[#F1F1F1] rounded-[10px] relative flex items-center justify-between mt-8 bg-white pr-[6px]"
-          >
-            <img src={search} className=" absolute left-5" alt="" />
-            <input
-              type="text"
-              placeholder="Search for Books"
-              className=" placeholder:text-[#000000CC] pl-12 font-Outfit h-[54px] w-full border-y-[3px] border-[#F1F1F1]"
-            />
-            <button className=" px-8 py-[8px] rounded-[5px] bg-[#0530A1] font-Outfit text-center font-semibold text-base text-white">
-              Search
-            </button>
-          </motion.div>
+              <motion.div
+                variants={textVariants}
+                transition={{ delay: 0.2, duration: 0.5, type: "tween" }}
+                className="w-full md:w-[500px] lg:w-[500px] h-[54px] border-[3px] border-[#F1F1F1] rounded-[10px] relative flex items-center justify-between mt-8 bg-white pr-[6px]"
+              >
+                <img src={search} className="absolute left-5" alt="" />
+                <input
+                  type="text"
+                  placeholder="Search for Books"
+                  className="placeholder:text-[#000000CC] pl-12 font-Outfit h-[54px] w-full border-y-[3px] border-[#F1F1F1]"
+                />
+                <button className="px-8 py-[8px] rounded-[5px] bg-[#0530A1] font-Outfit text-center font-semibold text-base text-white">
+                  Search
+                </button>
+              </motion.div>
+            </motion.div>
+          </AnimatePresence>
         </div>
 
         {/* column 2 */}
-        <motion.div
-          initial={{ y: 50, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.3, duration: 0.8, type: "tween" }}
-          style={{
-            backgroundImage: `url(${currentContent.imag})`,
-            backgroundPosition: "center",
-            backgroundSize: "cover",
-          }}
-          className="lg:w-[48%] w-full h-[512px] 2xl:h-[620px] relative rounded-[10px] bg-[#4991EF] text-center md:text-left"
-        >
-          <div className="absolute bottom-4 w-full flex justify-center items-center">
-            <img src={marker1} className="absolute bottom-4" alt="" />
+        <div className="lg:w-[48%] w-full h-[512px] 2xl:h-[620px] relative rounded-[10px] overflow-hidden bg-[#4991EF]">
+          <AnimatePresence mode="popLayout">
+            <motion.div
+              key={currentIndex}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              variants={imageVariants}
+              transition={{ duration: 0.8 }}
+              style={{
+                backgroundImage: `url(${currentContent.imag})`,
+                backgroundPosition: "center",
+                backgroundSize: "cover",
+              }}
+              className="absolute top-0 left-0 w-full h-full"
+            />
+          </AnimatePresence>
+
+          {/* Dynamic Dots */}
+          <div className="absolute bottom-6 w-full flex justify-center items-center gap-2 z-10 pointer-events-none">
+            {heroContent.map((_, index) => (
+              <div
+                key={index}
+                className={`h-2 rounded-full transition-all duration-300 ${
+                  index === currentIndex ? "w-8 bg-white" : "w-2 bg-white/50"
+                }`}
+              />
+            ))}
           </div>
-        </motion.div>
+        </div>
       </div>
     </>
   );

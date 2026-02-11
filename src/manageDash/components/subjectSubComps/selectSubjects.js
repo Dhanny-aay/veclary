@@ -11,6 +11,7 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import GenericLoadingSkeleton from "../../../utils/loadingSkeleton";
 import SnackbarUtils from "../../../utils/snackbarUtils";
+import { SelectPicker } from "rsuite";
 
 const SelectSubs = ({ setSelectSub, setAddSubject, triggerFetch }) => {
   const [subjects, setSubjects] = useState([]);
@@ -20,7 +21,7 @@ const SelectSubs = ({ setSelectSub, setAddSubject, triggerFetch }) => {
   const [errors, setErrors] = useState({});
 
   const handleAppendSubject = (subjectId) => {
-    if (!selectedSubjects.includes(subjectId)) {
+    if (subjectId && !selectedSubjects.includes(subjectId)) {
       setSelectedSubjects([...selectedSubjects, subjectId]);
     }
   };
@@ -32,11 +33,14 @@ const SelectSubs = ({ setSelectSub, setAddSubject, triggerFetch }) => {
   const fetchSubjects = async () => {
     setLoadingSubjects(true);
     try {
-      const data = await handleGetAllSubjects();
-      if (data) {
+      const data = await handleGetAllSubjects(500);
+      if (data && data.subjects) {
+        setSubjects(data.subjects);
+      } else if (Array.isArray(data)) {
         setSubjects(data);
       } else {
         // enqueueSnackbar("Failed to fetch profile data", { variant: "error" });
+        setSubjects([]);
       }
     } catch (error) {
       console.error("Error fetching subjects:", error);
@@ -60,7 +64,7 @@ const SelectSubs = ({ setSelectSub, setAddSubject, triggerFetch }) => {
 
   const onError = (error) => {
     setLoading(false);
-    SnackbarUtils.error("Failed. Please try again.");
+    // SnackbarUtils.error("Failed. Please try again.");
   };
 
   // const handleSubmit = (e) => {
@@ -82,6 +86,11 @@ const SelectSubs = ({ setSelectSub, setAddSubject, triggerFetch }) => {
   };
 
   // console.log(selectedSubjects);
+
+  const subjectData = subjects.map((subject) => ({
+    label: subject.name,
+    value: subject._id,
+  }));
 
   return (
     <>
@@ -122,30 +131,22 @@ const SelectSubs = ({ setSelectSub, setAddSubject, triggerFetch }) => {
             {loadingSubjects ? (
               <GenericLoadingSkeleton count={1} width="100%" height={40} />
             ) : (
-              <span className=" w-full border border-[#DAE0E6] mt-[6px] block px-4 py-3 rounded-[5px] bg-white">
-                <select
-                  name=""
-                  id="subject-dropdown"
-                  onChange={(e) => {
-                    handleAppendSubject(e.target.value);
-                    e.target.value = "";
+              <div className="w-full mt-[6px]">
+                <SelectPicker
+                  data={subjectData}
+                  searchable
+                  style={{ width: "100%", fontFamily: "Outfit" }}
+                  menuStyle={{ zIndex: 9999, fontFamily: "Outfit" }}
+                  placeholder="Choose Subject"
+                  onSelect={(value) => {
+                    handleAppendSubject(value);
                   }}
-                  className=" w-full bg-transparent font-Outfit font-normal text-sm text-[#919BA7]"
-                >
-                  <option disabled selected value="">
-                    Choose Subject
-                  </option>
-                  {subjects.map((subject) => (
-                    <option
-                      className="capitalize"
-                      key={subject._id}
-                      value={subject._id} // Pass only the ID
-                    >
-                      {subject.name}
-                    </option>
-                  ))}
-                </select>
-              </span>
+                  onClean={() => {}}
+                  renderMenuItem={(label, item) => {
+                    return <div className="capitalize">{label}</div>;
+                  }}
+                />
+              </div>
             )}
 
             <div className="flex flex-wrap gap-3 items-start justify-start mt-4 w-full">

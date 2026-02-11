@@ -7,15 +7,18 @@ const api = async (method, uri, body = null) => {
   const token = localStorage.getItem("veclary_token");
 
   const headers = {
-    "Content-Type": "application/json",
     Accept: "application/json",
     ...(token && { Authorization: `Bearer ${token}` }),
   };
 
+  if (!(body instanceof FormData)) {
+    headers["Content-Type"] = "application/json";
+  }
+
   const options = {
     method,
     headers,
-    ...(body && { body: JSON.stringify(body) }),
+    body: body instanceof FormData ? body : body ? JSON.stringify(body) : null,
   };
 
   try {

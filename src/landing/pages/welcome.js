@@ -10,10 +10,10 @@ import { Link } from "react-router-dom";
 
 const Welcome = () => {
   const place = [
-    { image: student, name: "Student", link: "/student-login" },
-    { image: teacher, name: "Teacher", link: "/teachers-login" },
-    { image: school, name: "School", link: "/management-login" },
-    { image: vendor, name: "Authors/Publishers", link: "/vendor-login" },
+    { image: student, name: "Student", link: "/student-signup" },
+    { image: teacher, name: "Teacher", link: "/teachers-signup" },
+    { image: school, name: "School", link: "/management-signup" },
+    { image: vendor, name: "Authors/Publishers", link: "/vendor-signup" },
   ];
   return (
     <>
@@ -24,14 +24,14 @@ const Welcome = () => {
               <img
                 src={logo}
                 className=" w-16 h-6 md:w-10 md:h-6"
-                alt="Veclary:The Best System To Enhance Your Education"
+                alt="Veclary: The Best System To Enhance Your Education"
               />
               <p className=" font-Outfit text-xl md:text-lg font-semibold text-[#121212]">
                 Veclary
               </p>
             </span>
             <p className=" font-Outfit font-semibold text-2xl mt-6 text-center">
-              Welcome to Velcary!
+              Welcome to Veclary!
             </p>
             <p className=" text-center font-Outfit font-normal text-base mt-3 px-[15%]">
               Choose your user type to login or create an account.
@@ -92,11 +92,11 @@ const Welcome = () => {
               Dive into Engaging Learning Experiences
             </p>
 
-            <img
+            {/* <img
               src={prog}
               className=" z-50 w-[90%] absolute bottom-6 left-5"
               alt=""
-            />
+            /> */}
 
             <div className=" w-full  absolute h-[100%] top-0 left-0 bg-gradient-to-b from-[rgba(235,245,255,0)] rounded-[15px] to-[rgba(235,245,255,1)]"></div>
           </div>

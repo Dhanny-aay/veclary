@@ -3,13 +3,15 @@ import logo from "./assets/logo.svg";
 import ilus from "./assets/ilus.svg";
 import prog from "./assets/prog.svg";
 import load from "./assets/load.gif";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, Navigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import { useState } from "react";
 import { handleUserLogin } from "../../controllers/generalController/authController";
 import SnackbarUtils from "../../utils/snackbarUtils";
 
 const VendorLogin = () => {
+  return <Navigate to="/login" replace />;
+  /*
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -74,20 +76,7 @@ const VendorLogin = () => {
               </label>
             </div>
 
-            {/* <div className=" w-full flex justify-between mt-3">
-              <label className="flex items-center">
-                <input
-                  type="checkbox"
-                  className={`form-checkbox h-3 w-3 text-blue-600`}
-                />
-                <span className="ml-2 text-sm text-[#000] font-Outfit font-medium">
-                  Remember me
-                </span>
-              </label>
-              <p className=" text-[#0530A1] text-sm font-medium font-Outfit">
-                Forgot Password
-              </p>
-            </div> */}
+// Nested comment removed to prevent syntax errors
 
             <div className=" lg:absolute mt-16 lg:mt-0 bottom-0 w-full left-0 lg:px-10">
               <button
@@ -152,6 +141,7 @@ const VendorLogin = () => {
       </div>
     </>
   );
+  */
 };
 
 export default VendorLogin;

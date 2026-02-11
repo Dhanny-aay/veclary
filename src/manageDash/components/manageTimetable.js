@@ -5,18 +5,19 @@ import {
 import { useContext, useEffect, useState } from "react";
 import arrowBlue from "./assets/arrowblue.svg";
 import { handleGetSchoolTimetable } from "../../controllers/schoolControllers/timetableController";
+import { handleGetSchoolSubjects } from "../../controllers/schoolControllers/subjectController";
 import AddTimetable from "./timetableSubComps/addTimetable";
+import LoadingTable from "../../utils/loadingTable";
 
 const ManageTimetable = ({ dashboard }) => {
   const { sidebarVisible, setSidebarVisible } =
     useContext(ManageSidebarContext);
   const { activePage, setActivePage } = useContext(ManageActivePageContext);
-  const [timetable, setTimetable] = useState([]);
+  const [timetableData, setTimetableData] = useState(null); // Changed to hold the full object or null
+  const [subjects, setSubjects] = useState([]); // Store fetched subjects
   const [trigger, setTrigger] = useState(false);
   const [loading, setLoading] = useState(true);
   const [addTimetable, setAddTimetable] = useState(false);
-  const [editTimetable, setEditTimetable] = useState(false);
-  const [deleteTimetable, setDeleteTimetable] = useState(false);
 
   const triggerFetch = () => {
     setTrigger(!trigger); // Toggle trigger to true or false
@@ -25,11 +26,12 @@ const ManageTimetable = ({ dashboard }) => {
   const fetchTimetable = async () => {
     setLoading(true);
     try {
-      const data = await handleGetSchoolTimetable();
-      if (data) {
-        setTimetable(data);
+      const response = await handleGetSchoolTimetable();
+      if (response && response.data && response.data.length > 0) {
+        // Assuming we display the first timetable found for now, or you might want a selector
+        setTimetableData(response.data[0]);
       } else {
-        // enqueueSnackbar("Failed to fetch profile data", { variant: "error" });
+        setTimetableData(null);
       }
     } catch (error) {
       console.error("Error fetching timetable:", error);
@@ -40,7 +42,19 @@ const ManageTimetable = ({ dashboard }) => {
 
   useEffect(() => {
     fetchTimetable();
+    fetchSubjects();
   }, [trigger]);
+
+  const fetchSubjects = async () => {
+    try {
+      const data = await handleGetSchoolSubjects();
+      if (data && data.length > 0 && data[0].subjects) {
+        setSubjects(data[0].subjects);
+      }
+    } catch (error) {
+      console.error("Error fetching subjects:", error);
+    }
+  };
 
   const handleClick = (page) => {
     setActivePage(page);
@@ -49,20 +63,55 @@ const ManageTimetable = ({ dashboard }) => {
   // Generate array of days of the week
   const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
-  // Generate array of time slots
+  // Generate array of time slots dynamically based on data
   const timeSlots = [];
-  for (let i = 8; i <= 16; i += 2) {
-    timeSlots.push(`${i}:00 - ${i + 2}:00`);
+  let startHour = 8;
+  // let endHour = 16; // Could extend if needed
+
+  if (timetableData && timetableData.days) {
+    const allPeriods = timetableData.days.flatMap((d) => d.periods);
+    if (allPeriods.length > 0) {
+      const hours = allPeriods.map((p) => parseInt(p.start.split(":")[0]));
+      const minH = Math.min(...hours);
+      // Start at the hour of the earliest class
+      startHour = minH;
+    }
   }
 
-  // Sample subjects
-  const subjects = [
-    "Biology",
-    "Physics",
-    "Chemistry",
-    "Mathematics",
-    "History",
-  ];
+  // Generate 1-hour slots for better granularity
+  for (let i = startHour; i <= 16; i += 1) {
+    timeSlots.push(`${i}:00 - ${i + 1}:00`);
+  }
+
+  // Helper function to find subject for a specific day and time slot
+  const getPeriodForSlot = (dayName, slotStartHour) => {
+    if (!timetableData || !timetableData.days) return null;
+
+    const dayData = timetableData.days.find(
+      (d) => d.name.toLowerCase() === dayName.toLowerCase(),
+    );
+    if (!dayData) return null;
+
+    // Check if period starts within this hour slot
+    const period = dayData.periods.find((p) => {
+      const [pHour, pMin] = p.start.split(":").map(Number);
+      return pHour === slotStartHour;
+    });
+
+    if (!period) return null;
+
+    let subjectName = "Unknown Subject";
+    const subjectData = period.subjectId || period.subject;
+
+    if (subjectData && typeof subjectData === "object" && subjectData.name) {
+      subjectName = subjectData.name;
+    } else if (typeof subjectData === "string") {
+      const foundSubject = subjects.find((s) => s._id === subjectData);
+      if (foundSubject) subjectName = foundSubject.name;
+    }
+
+    return { ...period, subjectName };
+  };
 
   return (
     <>
@@ -92,6 +141,7 @@ const ManageTimetable = ({ dashboard }) => {
           </p>
         </span>
 
+        {/* Filters / Header Controls */}
         <div className=" w-full md:items-end flex flex-wrap md:flex-row mt-6 justify-between">
           <label
             htmlFor="Class Teacher"
@@ -155,7 +205,7 @@ const ManageTimetable = ({ dashboard }) => {
 
           <span className=" flex mt-6 md:mt-0 items-start">
             <button
-              onClick={setAddTimetable}
+              onClick={() => setAddTimetable(true)}
               className=" text-center  text-sm font-Outfit font-medium text-white bg-[#0530A1] py-2 px-3 md:px-6 rounded-[10px]"
             >
               Add Timetable
@@ -163,6 +213,7 @@ const ManageTimetable = ({ dashboard }) => {
           </span>
         </div>
 
+        {/* Timetable Grid */}
         <div className="w-full mt-8 border border-[#EAEBF0] rounded-[10px] overflow-x-scroll">
           <table className="border-collapse border-y border-[#EAEBF0] rounded-[10px] w-full">
             <thead>
@@ -179,21 +230,70 @@ const ManageTimetable = ({ dashboard }) => {
               </tr>
             </thead>
             <tbody>
-              {timeSlots.map((timeSlot, index) => (
-                <tr key={index}>
-                  <td className="border-y border-r border-[#EAEBF0] p-3 md:p-6 text-xs text-black bg-[#BADAFE] font-semibold font-Outfit text-center">
-                    {timeSlot}
+              {loading ? (
+                <tr>
+                  <td colSpan={daysOfWeek.length + 1}>
+                    <LoadingTable rows={5} columns={daysOfWeek.length + 1} />
                   </td>
-                  {daysOfWeek.map((day, dayIndex) => (
-                    <td
-                      key={`${index}-${dayIndex}`}
-                      className="border-y border-[#EAEBF0] px-2 text-xs font-normal font-Outfit text-center"
-                    >
-                      {subjects[Math.floor(Math.random() * subjects.length)]}
-                    </td>
-                  ))}
                 </tr>
-              ))}
+              ) : !timetableData ? (
+                <tr>
+                  <td
+                    colSpan={daysOfWeek.length + 1}
+                    className="px-4 py-10 text-center font-Outfit text-[#667085] text-sm w-full"
+                  >
+                    No timetable found. Click "Add Timetable" to create one.
+                  </td>
+                </tr>
+              ) : (
+                timeSlots.map((timeSlot, index) => {
+                  const startHour = parseInt(timeSlot.split(":")[0]);
+                  const periodsInRow = daysOfWeek.map((day) =>
+                    getPeriodForSlot(day, startHour),
+                  );
+
+                  return (
+                    <tr key={index}>
+                      <td className="border-y border-r border-[#EAEBF0] p-3 md:p-6 text-xs text-black bg-[#BADAFE] font-semibold font-Outfit text-center whitespace-nowrap">
+                        {timeSlot}
+                      </td>
+                      {periodsInRow.map((periodData, dayIndex) => {
+                        let cellContent = "-";
+                        if (periodData) {
+                          const startTime = periodData.start; // e.g. 07:30
+                          // Calculate end time
+                          const [h, m] = startTime.split(":").map(Number);
+                          const duration = periodData.duration || 30;
+                          const endM = m + duration;
+                          const endH = h + Math.floor(endM / 60);
+                          const finalM = endM % 60;
+                          const endTime = `${endH.toString().padStart(2, "0")}:${finalM.toString().padStart(2, "0")}`;
+
+                          cellContent = (
+                            <div className="flex flex-col items-center">
+                              <span className="font-medium text-black">
+                                {periodData.subjectName}
+                              </span>
+                              <span className="text-[10px] text-gray-500">
+                                {startTime} - {endTime}
+                              </span>
+                            </div>
+                          );
+                        }
+
+                        return (
+                          <td
+                            key={`${index}-${dayIndex}`}
+                            className="border-y border-[#EAEBF0] px-2 text-xs font-normal font-Outfit text-center capitalize py-4"
+                          >
+                            {cellContent}
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  );
+                })
+              )}
             </tbody>
           </table>
         </div>

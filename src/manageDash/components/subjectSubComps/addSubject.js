@@ -32,7 +32,7 @@ const AddSubject = ({ triggerFetch, setAddSubject }) => {
 
   const onError = (error) => {
     setLoading(false);
-    SnackbarUtils.error("Failed. Please try again.");
+    // SnackbarUtils.error("Failed. Please try again.");
   };
 
   const handleSubmit = (e) => {
